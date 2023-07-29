@@ -11,6 +11,7 @@
 		4C4322372A726045000687D0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4322362A726045000687D0 /* ContentView.swift */; };
 		4C4322392A726047000687D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C4322382A726047000687D0 /* Assets.xcassets */; };
 		4C43223C2A726048000687D0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C43223B2A726048000687D0 /* Preview Assets.xcassets */; };
+		4C4322432A726314000687D0 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4322422A726314000687D0 /* HomeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +20,7 @@
 		4C4322362A726045000687D0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4C4322382A726047000687D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4C43223B2A726048000687D0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		4C4322422A726314000687D0 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +34,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4C2422012A753D2D0054B93B /* View */ = {
+			isa = PBXGroup;
+			children = (
+				4C4322422A726314000687D0 /* HomeView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		4C2422022A753D4B0054B93B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4C4322362A726045000687D0 /* ContentView.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		4C2422032A753D730054B93B /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				4C4322342A726045000687D0 /* KittyApp.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		4C4322282A726045000687D0 = {
 			isa = PBXGroup;
 			children = (
@@ -51,8 +77,9 @@
 		4C4322332A726045000687D0 /* Kitty */ = {
 			isa = PBXGroup;
 			children = (
-				4C4322342A726045000687D0 /* KittyApp.swift */,
-				4C4322362A726045000687D0 /* ContentView.swift */,
+				4C2422032A753D730054B93B /* Controller */,
+				4C2422022A753D4B0054B93B /* Model */,
+				4C2422012A753D2D0054B93B /* View */,
 				4C4322382A726047000687D0 /* Assets.xcassets */,
 				4C43223A2A726048000687D0 /* Preview Content */,
 			);
@@ -138,6 +165,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C4322372A726045000687D0 /* ContentView.swift in Sources */,
+				4C4322432A726314000687D0 /* HomeView.swift in Sources */,
 				4C4322352A726045000687D0 /* KittyApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

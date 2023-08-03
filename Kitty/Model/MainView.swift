@@ -10,7 +10,6 @@ import SwiftUI
 struct MainView: View {
     var body: some View {
 
-            
             TabView {
                     SOSView()
                         .tabItem{
@@ -31,13 +30,7 @@ struct MainView: View {
                         .tabItem{
                             Label("Settings", systemImage: "gear")
                         }
-                    
                 }
-                .onAppear {
-                    UITabBar.appearance().isTranslucent = false
-            }
-        
-        
     }
 }
 

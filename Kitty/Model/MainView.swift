@@ -9,28 +9,28 @@ import SwiftUI
 
 struct MainView: View {
     var body: some View {
-
-            TabView {
-                    SOSView()
-                        .tabItem{
-                            Label("SOS", systemImage: "sos.circle.fill")
-                        }
-                    
-                    MoreMenu()
-                        .tabItem{
-                            Label("More", systemImage: "list.dash")
-                        }
-                    
-                    ExternalLinks()
-                        .tabItem{
-                            Label("External", systemImage: "square.and.arrow.up")
-                        }
-                    
-                    Settings()
-                        .tabItem{
-                            Label("Settings", systemImage: "gear")
-                        }
+        
+        TabView {
+            SOSView()
+                .tabItem{
+                    Label("SOS", systemImage: "sos.circle.fill")
                 }
+            
+            MoreMenu()
+                .tabItem{
+                    Label("More", systemImage: "list.dash")
+                }
+            
+            ExternalLinks()
+                .tabItem{
+                    Label("External", systemImage: "square.and.arrow.up")
+                }
+            
+            Settings()
+                .tabItem{
+                    Label("Settings", systemImage: "gear")
+                }
+        }
     }
 }
 

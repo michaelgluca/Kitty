@@ -54,7 +54,7 @@ struct SOSView: View {
                     
                     
                     Spacer()
-                    Button(action: {metMessage}){Image(systemName: "arrow.up.circle.fill")}
+                    Button(action: {sendMet()}){Image(systemName: "arrow.up.circle.fill")}
                     Spacer()
                     
                 } .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 2))
@@ -67,7 +67,7 @@ struct SOSView: View {
                     
                     
                     Spacer()
-                    Button(action: {}){Image(systemName: "arrow.up.circle.fill")}
+                    Button(action: {sendBtp()}){Image(systemName: "arrow.up.circle.fill")}
                     Spacer()
                     
                 } .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 2))

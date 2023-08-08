@@ -50,8 +50,6 @@ struct ExternalLinks: View {
     }
 }
 
-struct ExternalLinks_Previews: PreviewProvider {
-    static var previews: some View {
-        ExternalLinks()
-    }
+#Preview {
+    ExternalLinks()
 }

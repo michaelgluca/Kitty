@@ -29,10 +29,7 @@ extension MKCoordinateRegion {
         return .init(center: .usrerLocation, latitudinalMeters: 10000, longitudinalMeters: 10000)
     }
 }
-struct SideMenu_Previews: PreviewProvider {
-    static var previews: some View{
-        NavigationView {
-            MapView()
-        }
-    }
+
+#Preview {
+    MapView()
 }

@@ -13,12 +13,12 @@ struct MainView: View {
         TabView {
             SOSView()
                 .tabItem{
-                    Label("SOS", systemImage: "sos.circle.fill")
+                    Label("Report", systemImage: "exclamationmark.bubble.fill")
                 }
             
             MapView()
                 .tabItem{
-                    Label("More", systemImage: "list.dash")
+                    Label("Map", systemImage: "map.fill")
                 }
             
             ExternalLinks()
@@ -26,16 +26,14 @@ struct MainView: View {
                     Label("External", systemImage: "square.and.arrow.up")
                 }
             
-            Settings()
+            SetupView()
                 .tabItem{
-                    Label("Settings", systemImage: "gear")
+                    Label("Setup", systemImage: "gear")
                 }
         }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainView()
-    }
+#Preview {
+    MainView()
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Settings: View {
+struct SetupView: View {
     var body: some View {
      
             NavigationView {
@@ -51,8 +51,6 @@ struct Settings: View {
     }
 }
 
-struct Settings_Previews: PreviewProvider {
-    static var previews: some View {
-        Settings()
-    }
+#Preview {
+    SetupView()
 }

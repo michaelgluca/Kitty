@@ -93,10 +93,6 @@ struct SOSView: View {
 
 
 
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View{
-        NavigationView {
-            SOSView()
-        }
-    }
+#Preview {
+    SOSView()
 }

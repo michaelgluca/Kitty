@@ -52,12 +52,12 @@ struct SOSView: View {
                     TextField("Message the Metropolitan Police...", text: $metMessage)
                         .padding()
                     
-                    
+    
                     Spacer()
                     Button(action: {sendMet()}){Image(systemName: "arrow.up.circle.fill")}
                     Spacer()
                     
-                } .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 2))
+                } .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 2).shadow(radius: 5))
                     .padding(.all, 30)
                 
                 HStack {
@@ -70,7 +70,7 @@ struct SOSView: View {
                     Button(action: {sendBtp()}){Image(systemName: "arrow.up.circle.fill")}
                     Spacer()
                     
-                } .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 2))
+                } .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 2).shadow(radius: 5))
                     .padding(.all, 30)
                 Spacer()
                 

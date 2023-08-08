@@ -16,7 +16,7 @@ struct MainView: View {
                     Label("SOS", systemImage: "sos.circle.fill")
                 }
             
-            MoreMenu()
+            MapView()
                 .tabItem{
                     Label("More", systemImage: "list.dash")
                 }

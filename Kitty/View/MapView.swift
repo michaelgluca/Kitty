@@ -15,6 +15,9 @@ struct MapView: View {
     @State private var searchText = "Police Stations near me"
     @State private var results = [MKMapItem]()
     @State private var mapSelection: MKMapItem?
+    @State private var routeDisplaying = false
+    @State private var route: MKRoute?
+    @State private var routeDestination: MKMapItem?
     
     var body: some View {
         
@@ -25,19 +28,25 @@ struct MapView: View {
                 ZStack{
                     Circle()
                         .frame(width: 32, height: 32)
-                        .foregroundColor(.blue.opacity(0.25))
+                        .foregroundColor(.purple.opacity(0.25))
                     Circle()
                         .frame(width: 20, height: 20)
                         .foregroundColor(.white)
                     Circle()
                         .frame(width: 12, height: 12)
-                        .foregroundColor(.blue)
+                        .foregroundColor(.purple)
                 }
             }
             ForEach(results, id: \.self) { item in
                 let placemark = item.placemark
                 Marker(placemark.name ?? "", coordinate: placemark.coordinate)
             }
+            
+            if let route {
+                MapPolyline(route.polyline)
+                    .stroke(.purple, lineWidth: 6)
+            }
+            
         }.overlay(alignment:.top){
             TextField("", text: $searchText)
                 .font(.subheadline)
@@ -52,14 +61,13 @@ struct MapView: View {
             }
         }
         .onChange(of: mapSelection, { oldValue, newValue in
-            // preview location card
+            fetchRoute()
         })
         .mapControls{
             MapCompass()
             MapPitchToggle()
             MapUserLocationButton()
         }
-        
     }
 }
 
@@ -70,6 +78,26 @@ extension MapView {
         request.region = .userRegion
         let results = try? await MKLocalSearch(request: request).start()
         self.results = results?.mapItems ?? []
+    }
+    func fetchRoute(){
+        if let mapSelection{
+            let request = MKDirections.Request()
+            request.source = MKMapItem(placemark: .init(coordinate: .usrerLocation))
+            request.destination = mapSelection
+            
+            Task {
+                let result = try? await MKDirections(request: request).calculate()
+                route = result?.routes.first
+                routeDestination = mapSelection
+                withAnimation(.snappy) {
+                    routeDisplaying = true
+                    
+                    if let rect = route?.polyline.boundingMapRect, routeDisplaying {
+                        camerPosition = .rect(rect)
+                    }
+                }
+            }
+        }
     }
 }
 

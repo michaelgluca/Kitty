@@ -36,7 +36,7 @@ struct SetupView: View {
                                 .listRowSeparator(.hidden)
                                 .padding()
                         } header: {
-                            Text("Settings")
+                            Text("Emergency settings setup")
                                 .font(.title)
                                 .bold()
                                 .foregroundColor(.accentColor)

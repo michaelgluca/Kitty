@@ -35,7 +35,7 @@ struct ExternalLinks: View {
                         .listRowSeparator(.hidden)
                         .padding()
                 } header: {
-                    Text("External Links")
+                    Text("External resources")
                         .font(.title)
                         .bold()
                         .foregroundColor(.accentColor)

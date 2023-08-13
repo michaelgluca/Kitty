@@ -27,18 +27,19 @@ struct SOSView: View {
             VStack{
                 Spacer()
                 Link(destination: URL(string: "https://www.met.police.uk/ro/report/ocr/af/how-to-report-a-crime/")!, label: {
-                    Label("Report crime online", systemImage: "shield.righthalf.filled")
+                    Label("Report Crime Online", systemImage: "shield.righthalf.filled")
                         .font(.largeTitle)
                         .background(Color(.init(red: 0.815, green: 0.496, blue: 0.847, alpha: 1)))
                         .foregroundColor(.white)
                         .cornerRadius(6)
                         .shadow(radius: 5)
                 })
+
                 Spacer()
                 
                 HStack {
                     Label("For Emergency assitance \nPress & release the lock button \nFIVE times", systemImage: "bubble.right.fill")
-                    Image(systemName: "arrow.right.circle.fill")
+                    Image(systemName: "arrow.down.forward.circle.fill")
                     
                 }
                 .shadow(radius: 5)
@@ -72,8 +73,20 @@ struct SOSView: View {
                     
                 } .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 2).shadow(radius: 5))
                     .padding(.all, 30)
+               
                 Spacer()
                 
+                Link(destination: URL(string: "https://www.police.uk/")!, label: {
+                    Label("Local Crime Stats", systemImage: "list.bullet.clipboard")
+                        .font(.largeTitle)
+                        .background(Color(.init(red: 0.815, green: 0.496, blue: 0.847, alpha: 1)))
+                        .foregroundColor(.white)
+                        .cornerRadius(6)
+                        .shadow(radius: 5)
+                        .padding()
+                })
+                
+                Spacer()
             }
         }
         

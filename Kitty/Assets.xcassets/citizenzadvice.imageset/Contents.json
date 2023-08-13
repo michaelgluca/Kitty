@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "citizenzadvice.png",
+      "filename" : "citizenzadvice_21.50.07-removebg-preview-2.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "citizenzadvice@2x.png",
+      "filename" : "citizenzadvice_21.50.07-removebg-preview-2@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "citizenzadvice@3x.png",
+      "filename" : "citizenzadvice_21.50.07-removebg-preview-2@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

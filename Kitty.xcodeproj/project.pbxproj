@@ -15,6 +15,8 @@
 		4C8E08EE2A7C019B006B5509 /* ExternalLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8E08ED2A7C019B006B5509 /* ExternalLinks.swift */; };
 		4C8E08F02A7C01E3006B5509 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8E08EF2A7C01E3006B5509 /* SetupView.swift */; };
 		4CBE95B02A76597800F9CC4D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBE95AF2A76597800F9CC4D /* MapView.swift */; };
+		4CE4EDC72A893EE80029667E /* ExtLinkData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4EDC62A893EE80029667E /* ExtLinkData.swift */; };
+		4CE4EDC92A8960A70029667E /* ElinkDetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4EDC82A8960A70029667E /* ElinkDetailedView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 		4C8E08ED2A7C019B006B5509 /* ExternalLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLinks.swift; sourceTree = "<group>"; };
 		4C8E08EF2A7C01E3006B5509 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		4CBE95AF2A76597800F9CC4D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		4CE4EDC62A893EE80029667E /* ExtLinkData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtLinkData.swift; sourceTree = "<group>"; };
+		4CE4EDC82A8960A70029667E /* ElinkDetailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElinkDetailedView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +51,7 @@
 				4CBE95AF2A76597800F9CC4D /* MapView.swift */,
 				4C8E08ED2A7C019B006B5509 /* ExternalLinks.swift */,
 				4C8E08EF2A7C01E3006B5509 /* SetupView.swift */,
+				4CE4EDC82A8960A70029667E /* ElinkDetailedView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -55,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				4C4322362A726045000687D0 /* MainView.swift */,
+				4CE4EDC62A893EE80029667E /* ExtLinkData.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -175,7 +181,9 @@
 			files = (
 				4C8E08F02A7C01E3006B5509 /* SetupView.swift in Sources */,
 				4C8E08EE2A7C019B006B5509 /* ExternalLinks.swift in Sources */,
+				4CE4EDC72A893EE80029667E /* ExtLinkData.swift in Sources */,
 				4C4322372A726045000687D0 /* MainView.swift in Sources */,
+				4CE4EDC92A8960A70029667E /* ElinkDetailedView.swift in Sources */,
 				4CBE95B02A76597800F9CC4D /* MapView.swift in Sources */,
 				4C4322432A726314000687D0 /* SOSView.swift in Sources */,
 				4C4322352A726045000687D0 /* KittyApp.swift in Sources */,

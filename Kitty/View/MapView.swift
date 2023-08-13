@@ -51,7 +51,7 @@ struct MapView: View {
             TextField("", text: $searchText)
                 .font(.subheadline)
                 .padding(12)
-                .background(.white)
+                .background(.background)
                 .padding()
                 .shadow(radius: 10)
             

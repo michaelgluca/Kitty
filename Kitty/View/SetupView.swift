@@ -45,7 +45,7 @@ struct SetupView: View {
                     }
                     .scrollContentBackground(.hidden)
                     .background{
-                        Image("background")
+                        Image(.background)
                     }
             }
     }

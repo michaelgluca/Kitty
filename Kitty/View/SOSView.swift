@@ -17,7 +17,6 @@ struct SOSView: View {
     
     var body: some View {
         
-        
         ZStack {
             Image("background")
                 .resizable()
@@ -34,7 +33,7 @@ struct SOSView: View {
                         .cornerRadius(6)
                         .shadow(radius: 5)
                 })
-
+                
                 Spacer()
                 
                 HStack {
@@ -53,7 +52,7 @@ struct SOSView: View {
                     TextField("Message the Metropolitan Police...", text: $metMessage)
                         .padding()
                     
-    
+                    
                     Spacer()
                     Button(action: {sendMet()}){Image(systemName: "arrow.up.circle.fill")}
                     Spacer()
@@ -73,7 +72,7 @@ struct SOSView: View {
                     
                 } .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white, lineWidth: 2).shadow(radius: 5))
                     .padding(.all, 30)
-               
+                
                 Spacer()
                 
                 Link(destination: URL(string: "https://www.police.uk/")!, label: {
@@ -89,7 +88,6 @@ struct SOSView: View {
                 Spacer()
             }
         }
-        
     }
     func sendMet(){
         let sms: String = "sms:\(metNumber)&body=\(metMessage)"
@@ -102,8 +100,6 @@ struct SOSView: View {
         UIApplication.shared.open(URL.init(string: strURL)!, options:[:], completionHandler: nil)
     }
 }
-
-
 
 
 #Preview {

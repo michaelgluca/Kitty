@@ -8,43 +8,29 @@
 import SwiftUI
 
 struct ExternalLinks: View {
+    
+    var dlinks: [eLink] = eLinkList.links
+    
     var body: some View {
         NavigationView {
-            
-            List {
-                Section {
-                    Text("Women's Aid")
-                        .listRowBackground(Capsule().fill(Color(red: 0.815, green: 0.496, blue: 0.847, opacity: 0.9)))
-                        .foregroundColor(Color.white)
-                        .font(Font.body)
-                        .bold()
-                        .listRowSeparator(.hidden)
-                        .padding()
-                    Text("Shelters")
-                        .listRowBackground(Capsule().fill(Color(red: 0.815, green: 0.496, blue: 0.847, opacity: 0.9)))
-                        .foregroundColor(Color.white)
-                        .font(Font.body)
-                        .bold()
-                        .listRowSeparator(.hidden)
-                        .padding()
-                    Text("Citizens Advice")
-                        .listRowBackground(Capsule().fill(Color(red: 0.815, green: 0.496, blue: 0.847, opacity: 0.9)))
-                        .foregroundColor(Color.white)
-                        .font(Font.body)
-                        .bold()
-                        .listRowSeparator(.hidden)
-                        .padding()
-                } header: {
-                    Text("External resources")
-                        .font(.title)
-                        .bold()
-                        .foregroundColor(.accentColor)
-                        .shadow(radius: 5)
-                }
+            List(dlinks, id: \.id){ link in
+                NavigationLink(destination: ElinkDetailedView(links: link), label: {                VStack(alignment: .leading, spacing: 5){
+                    Text(link.title)
+                        .fontWeight(.semibold)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                    Text(link.type)
+                        .lineLimit(1)
+                        .font(.subheadline)
+                        .foregroundStyle(Color(hue: 1.0, saturation: 0.045, brightness: 0.535))
+                }})
             }
+            .navigationTitle("External Resourcess")
+            .foregroundColor(.accentColor)
+            .shadow(radius: 5)
             .scrollContentBackground(.hidden)
             .background{
-                Image("background")
+                Image(.background)
             }
         }
     }

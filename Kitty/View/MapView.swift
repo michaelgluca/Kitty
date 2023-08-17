@@ -12,7 +12,7 @@ import MapKit
 struct MapView: View {
     
     @State private var camerPosition: MapCameraPosition = .region(.userRegion)
-    @State private var searchText = "Police Stations near me"
+    @State private var searchText = ""
     @State private var results = [MKMapItem]()
     @State private var mapSelection: MKMapItem?
     @State private var showDetails = false
@@ -22,7 +22,6 @@ struct MapView: View {
     @State private var routeDestination: MKMapItem?
     
     var body: some View {
-        
         
         Map(position: $camerPosition, selection: $mapSelection) {
             
@@ -56,8 +55,8 @@ struct MapView: View {
                     .stroke(.purple, lineWidth: 6)
             }
             
-        }.overlay(alignment:.bottom){
-            TextField("", text: $searchText)
+        }.overlay(alignment:.top){
+            TextField("Police Stations near me", text: $searchText)
                 .font(.subheadline)
                 .padding(12)
                 .background(.background)

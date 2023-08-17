@@ -14,6 +14,7 @@ struct MapDetailedView: View {
     @Binding var show: Bool
     @State private var lookAroundScene: MKLookAroundScene?
     @Binding var getDirections: Bool
+    
     var body: some View {
         VStack {
             HStack{
@@ -74,6 +75,7 @@ struct MapDetailedView: View {
                         .cornerRadius(12)
                 }
             }
+            .padding(.horizontal)
             
         }.onAppear{
             fetchLookAroundPreview()

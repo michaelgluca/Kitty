@@ -14,7 +14,7 @@ struct ExternalLinks: View {
     var body: some View {
         NavigationView {
             List(dlinks, id: \.id){ link in
-                NavigationLink(destination: ElinkDetailedView(links: link), label: {                VStack(alignment: .leading, spacing: 5){
+                NavigationLink(destination: ExtlinkDetailedView(links: link), label: {                VStack(alignment: .leading, spacing: 5){
                     Text(link.title)
                         .fontWeight(.semibold)
                         .lineLimit(1)

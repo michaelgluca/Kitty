@@ -12,37 +12,30 @@ struct SetupView: View {
         
         NavigationView {
             
-            List {
-                Section {
-                    Text("Guardians Setup")
-                        .listRowBackground(Capsule().fill(Color(red: 0.815, green: 0.496, blue: 0.847, opacity: 0.9)))
-                        .foregroundColor(Color.white)
-                        .font(Font.body)
-                        .bold()
-                        .listRowSeparator(.hidden)
-                        .padding()
-                    Text("Location Access")
-                        .listRowBackground(Capsule().fill(Color(red: 0.815, green: 0.496, blue: 0.847, opacity: 0.9)))
-                        .foregroundColor(Color.white)
-                        .font(Font.body)
-                        .bold()
-                        .listRowSeparator(.hidden)
-                        .padding()
-                    Text("App Passcode")
-                        .listRowBackground(Capsule().fill(Color(red: 0.815, green: 0.496, blue: 0.847, opacity: 0.9)))
-                        .foregroundColor(Color.white)
-                        .font(Font.body)
-                        .bold()
-                        .listRowSeparator(.hidden)
-                        .padding()
-                } header: {
-                    Text("Emergency settings setup")
-                        .font(.title)
-                        .bold()
-                        .foregroundColor(.accentColor)
-                        .shadow(radius: 5)
+            Form {
+                Section(header: Text("Display"), footer: Text("System settings usses the current device display settings")){
+                    Toggle(isOn: .constant(false), label: {
+                        Text("Lock with Face ID")
+                    })
+                    Toggle(isOn: .constant(false), label: {
+                        Text("Dark mode")
+                    })
+                    Toggle(isOn: .constant(true), label: {
+                        Text("Use system settings")
+                    })
                 }
+                Section(header: Text("Contact"), footer: Text("Use the above links to be redirected")) {
+                    
+                    Link("National Domestic Abuse Halpline", destination: URL(string: Constansts.phone)!)
+                    
+                    Link("Follow me on X (Twitter)", destination: URL(string: Constansts.twitter)!)
+                    
+                    Link("Feedback", destination: URL(string: Constansts.email)!)
+                    
+                }
+                
             }
+            .navigationTitle("Settings")
             .scrollContentBackground(.hidden)
             .background{
                 Image(.background)

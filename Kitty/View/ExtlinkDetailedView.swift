@@ -9,7 +9,7 @@ import SwiftUI
 
 
 
-struct ElinkDetailedView: View {
+struct ExtlinkDetailedView: View {
     var links: eLink
     var body: some View {
         VStack {
@@ -46,5 +46,5 @@ struct ElinkDetailedView: View {
 }
 
 #Preview {
-    ElinkDetailedView(links: eLinkList.links.first!)
+    ExtlinkDetailedView(links: eLinkList.links.first!)
 }

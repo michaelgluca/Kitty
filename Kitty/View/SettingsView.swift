@@ -22,6 +22,10 @@ struct SettingsView: View {
                     Toggle(isOn: $faceIdOn, label: {
                         Text("Lock with Face ID")
                     })
+                    .onChange(of: faceIdOn) {
+                        faceIdOn.toggle()
+                        
+                    }
                     Toggle(isOn: $darkModeOn, label: {
                         Text("Dark mode")
                     })
@@ -30,7 +34,7 @@ struct SettingsView: View {
                     })
                     
                 }
-                Section(header: Text("iPhone Setup"), footer: Text("To optimise your iPhone's SOS settings")) {
+                Section(header: Text("iPhone Setup"), footer: Text("Guids to optimise  iPhone's emergency settings")) {
                     
                     Link("Contact Emergency Services", destination: URL(string: "https://support.apple.com/en-gb/guide/iphone/iph3c99374c/")!)
                     

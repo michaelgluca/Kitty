@@ -31,7 +31,7 @@ struct ContentView: View {
                     Label("External", systemImage: "square.and.arrow.up")
                 }
             
-            SetupView(darkModeOn: $darkModeOn, systemThemeOn: $systemThemeOn, faceIdOn: $faceIdOn)
+            SettingsView(darkModeOn: $darkModeOn, systemThemeOn: $systemThemeOn, faceIdOn: $faceIdOn)
                 .tabItem{
                     Label("Setup", systemImage: "gear")
                 }

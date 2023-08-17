@@ -20,7 +20,7 @@ struct ContentView: View {
         
         if unlocked {
             TabView {
-                SOSView()
+                ReportView()
                     .tabItem{
                         Label("Report", systemImage: "exclamationmark.bubble.fill")
                     }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SOSView: View {
+struct ReportView: View {
     
     @State var metMessage = ""
     @State var btpMessage = ""
@@ -105,5 +105,5 @@ struct SOSView: View {
 
 
 #Preview {
-    SOSView()
+    ReportView()
 }

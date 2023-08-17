@@ -7,7 +7,11 @@
 
 import SwiftUI
 
-struct MainView: View {
+struct ContentView: View {
+    
+    @AppStorage("darkModeOn") private var darkModeOn = false
+    @AppStorage("systemThemeOn") private var systemThemeOn = false
+    @AppStorage("f") private var faceIdOn = false
     
     var body: some View {
         
@@ -27,14 +31,18 @@ struct MainView: View {
                     Label("External", systemImage: "square.and.arrow.up")
                 }
             
-            SetupView()
+            SetupView(darkModeOn: $darkModeOn, systemThemeOn: $systemThemeOn, faceIdOn: $faceIdOn)
                 .tabItem{
                     Label("Setup", systemImage: "gear")
                 }
+        }.onAppear {
+            UITabBar.appearance().isTranslucent = false
+            SystemThemeManager.shared.handleTheme(darkMode: darkModeOn, system: systemThemeOn)
+                
         }
     }
 }
 
 #Preview {
-    MainView()
+    ContentView()
 }

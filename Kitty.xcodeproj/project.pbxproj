@@ -8,10 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		4C4322352A726045000687D0 /* KittyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4322342A726045000687D0 /* KittyApp.swift */; };
-		4C4322372A726045000687D0 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4322362A726045000687D0 /* MainView.swift */; };
+		4C4322372A726045000687D0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4322362A726045000687D0 /* ContentView.swift */; };
 		4C4322392A726047000687D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C4322382A726047000687D0 /* Assets.xcassets */; };
 		4C43223C2A726048000687D0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C43223B2A726048000687D0 /* Preview Assets.xcassets */; };
 		4C4322432A726314000687D0 /* SOSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4322422A726314000687D0 /* SOSView.swift */; };
+		4C4944B62A8E4F9600C16B18 /* SystemThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4944B52A8E4F9600C16B18 /* SystemThemeManager.swift */; };
 		4C8E08EE2A7C019B006B5509 /* ExternalLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8E08ED2A7C019B006B5509 /* ExternalLinks.swift */; };
 		4C8E08F02A7C01E3006B5509 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8E08EF2A7C01E3006B5509 /* SetupView.swift */; };
 		4CBE95B02A76597800F9CC4D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBE95AF2A76597800F9CC4D /* MapView.swift */; };
@@ -23,10 +24,11 @@
 /* Begin PBXFileReference section */
 		4C4322312A726045000687D0 /* Kitty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kitty.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C4322342A726045000687D0 /* KittyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KittyApp.swift; sourceTree = "<group>"; };
-		4C4322362A726045000687D0 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		4C4322362A726045000687D0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4C4322382A726047000687D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4C43223B2A726048000687D0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		4C4322422A726314000687D0 /* SOSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SOSView.swift; sourceTree = "<group>"; };
+		4C4944B52A8E4F9600C16B18 /* SystemThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemThemeManager.swift; sourceTree = "<group>"; };
 		4C8E08ED2A7C019B006B5509 /* ExternalLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalLinks.swift; sourceTree = "<group>"; };
 		4C8E08EF2A7C01E3006B5509 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		4CBE95AF2A76597800F9CC4D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
@@ -61,7 +63,7 @@
 		4C2422022A753D4B0054B93B /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				4C4322362A726045000687D0 /* MainView.swift */,
+				4C4322362A726045000687D0 /* ContentView.swift */,
 				4CE4EDC62A893EE80029667E /* ExtLinkData.swift */,
 				4CE9DA0F2A8E35F80016433D /* SetupData.swift */,
 			);
@@ -72,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				4C4322342A726045000687D0 /* KittyApp.swift */,
+				4C4944B52A8E4F9600C16B18 /* SystemThemeManager.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -185,11 +188,12 @@
 				4C8E08F02A7C01E3006B5509 /* SetupView.swift in Sources */,
 				4C8E08EE2A7C019B006B5509 /* ExternalLinks.swift in Sources */,
 				4CE4EDC72A893EE80029667E /* ExtLinkData.swift in Sources */,
-				4C4322372A726045000687D0 /* MainView.swift in Sources */,
+				4C4322372A726045000687D0 /* ContentView.swift in Sources */,
 				4CE4EDC92A8960A70029667E /* ExtlinkDetailedView.swift in Sources */,
 				4CE9DA102A8E35F80016433D /* SetupData.swift in Sources */,
 				4CBE95B02A76597800F9CC4D /* MapView.swift in Sources */,
 				4C4322432A726314000687D0 /* SOSView.swift in Sources */,
+				4C4944B62A8E4F9600C16B18 /* SystemThemeManager.swift in Sources */,
 				4C4322352A726045000687D0 /* KittyApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -323,6 +327,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Kitty/Preview Content\"";
+				DEVELOPMENT_TEAM = Z7QBNHBSQZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -351,6 +356,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Kitty/Preview Content\"";
+				DEVELOPMENT_TEAM = Z7QBNHBSQZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

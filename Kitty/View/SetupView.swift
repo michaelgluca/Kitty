@@ -8,21 +8,27 @@
 import SwiftUI
 
 struct SetupView: View {
+    
+    @Binding var darkModeOn: Bool
+    @Binding var systemThemeOn: Bool
+    @Binding var faceIdOn: Bool
+    
     var body: some View {
         
         NavigationView {
             
             Form {
-                Section(header: Text("Display"), footer: Text("System settings usses the current device display settings")){
-                    Toggle(isOn: .constant(false), label: {
+                Section(header: Text("Display"), footer: Text("Current theme is the system defult theme")){
+                    Toggle(isOn: $faceIdOn, label: {
                         Text("Lock with Face ID")
                     })
-                    Toggle(isOn: .constant(false), label: {
+                    Toggle(isOn: $darkModeOn, label: {
                         Text("Dark mode")
                     })
-                    Toggle(isOn: .constant(true), label: {
-                        Text("Use system settings")
+                    .onChange(of: darkModeOn, perform: { _ in
+                        SystemThemeManager.shared.handleTheme(darkMode: darkModeOn, system: systemThemeOn)
                     })
+                    
                 }
                 Section(header: Text("Contact"), footer: Text("Use the above links to be redirected")) {
                     
@@ -45,5 +51,5 @@ struct SetupView: View {
 }
 
 #Preview {
-    SetupView()
+    SetupView(darkModeOn: .constant(false), systemThemeOn: .constant(true), faceIdOn: .constant(false))
 }

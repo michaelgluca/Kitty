@@ -50,6 +50,7 @@ struct SOSView: View {
                 HStack {
                     Spacer()
                     TextField("Message the Metropolitan Police...", text: $metMessage)
+                        .foregroundColor(.white)
                         .padding()
                     
                     
@@ -63,6 +64,7 @@ struct SOSView: View {
                 HStack {
                     Spacer()
                     TextField("Message the Transport Police...", text: $btpMessage)
+                        .foregroundColor(.white)
                         .padding()
                     
                     

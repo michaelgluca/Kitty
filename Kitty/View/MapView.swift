@@ -47,7 +47,7 @@ struct MapView: View {
                     .stroke(.purple, lineWidth: 6)
             }
             
-        }.overlay(alignment:.top){
+        }.overlay(alignment:.bottom){
             TextField("", text: $searchText)
                 .font(.subheadline)
                 .padding(12)

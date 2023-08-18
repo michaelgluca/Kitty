@@ -55,12 +55,14 @@ struct MapView: View {
                     .stroke(.purple, lineWidth: 6)
             }
             
-        }.overlay(alignment:.top){
+        }
+        .overlay(alignment:.top){
             TextField("Police Stations near me", text: $searchText)
                 .font(.subheadline)
                 .padding(12)
                 .background(.background)
-                .padding()
+                .padding(.horizontal, 55)
+                .padding(.vertical, 5.0)
                 .shadow(radius: 10)
             
         }.onSubmit (of: .text){

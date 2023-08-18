@@ -38,6 +38,7 @@ struct MapView: View {
                         .foregroundColor(.purple)
                 }
             }
+            
             ForEach(results, id: \.self) { item in
                 if routeDisplaying {
                     if item == routeDestination {
@@ -56,8 +57,9 @@ struct MapView: View {
             }
             
         }
+        .mapStyle(.standard(elevation: .realistic))
         .overlay(alignment:.top){
-            TextField("Police Stations near me", text: $searchText)
+            TextField("Police Stations near me...", text: $searchText)
                 .font(.subheadline)
                 .padding(12)
                 .background(.background)
@@ -67,7 +69,7 @@ struct MapView: View {
             
         }.onSubmit (of: .text){
             Task {
-                await SearchPlaces()
+                await searchPlaces()
             }
         }
         .onChange(of: getDirections, { oldValue, newValue in
@@ -93,7 +95,7 @@ struct MapView: View {
 }
 
 extension MapView {
-    func SearchPlaces() async {
+    func searchPlaces() async {
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = searchText
         request.region = .userRegion

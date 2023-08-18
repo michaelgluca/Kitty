@@ -12,6 +12,7 @@ import SwiftUI
 struct ExtlinkDetailedView: View {
     var links: eLink
     var body: some View {
+        
         VStack {
             Spacer()
             Text(links.title)
@@ -42,7 +43,8 @@ struct ExtlinkDetailedView: View {
                     .shadow(radius: 5)
             })
             Spacer()
-        }.background(Color(hue: 0.863, saturation: 0.303, brightness: 0.986))    }
+        }.background(Color(hue: 0.863, saturation: 0.303, brightness: 0.986))
+    }
 }
 
 #Preview {

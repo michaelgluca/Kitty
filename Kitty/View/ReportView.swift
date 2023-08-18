@@ -38,7 +38,7 @@ struct ReportView: View {
                 
                 HStack {
                     Label("For Emergency assitance \nPress & release the lock button \nFIVE times", systemImage: "bubble.right.fill")
-                    Image(systemName: "arrow.down.forward.circle.fill")
+                    Image(systemName: "arrow.right.circle.fill")
                     
                 }
                 .shadow(radius: 5)

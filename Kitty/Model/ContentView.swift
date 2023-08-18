@@ -40,7 +40,9 @@ struct ContentView: View {
                         Label("Setup", systemImage: "gear")
                     }
             }.onAppear {
-                UITabBar.appearance().isTranslucent = false
+                
+                UITabBar.appearance().backgroundColor = .accent
+
                 SystemThemeManager.shared.handleTheme(darkMode: darkModeOn, system: systemThemeOn)
                 if faceIdOn {
                     authenticate()

@@ -36,11 +36,13 @@ struct SettingsView: View {
                 }
                 Section(header: Text("iPhone Setup"), footer: Text("Guids to optimise  iPhone's emergency settings")) {
                     
-                    Link("Contact Emergency Services", destination: URL(string: "https://support.apple.com/en-gb/guide/iphone/iph3c99374c/")!)
+                    Link("Contact Emergency Services Setup", destination: URL(string: Constansts.sosSetup)!)
                     
-                    Link("Medical ID", destination: URL(string: "https://support.apple.com/en-gb/guide/iphone/iph08022b192/")!)
+                    Link("Emergency SOS Guide", destination: URL(string: Constansts.sosGuide)!)
                     
-                    Link("Use Emergency SOS via satellite", destination: URL(string: "https://support.apple.com/en-gb/guide/iphone/iph2968440de/")!)
+                    Link("Medical ID Setup", destination: URL(string: Constansts.medicalId)!)
+                    
+                    Link("Emergency SOS via Satellite Guide", destination: URL(string: Constansts.satelliteGuide)!)
                     
                 }
                 Section(header: Text("Contact"), footer: Text("Use the above links to be redirected")) {

@@ -25,13 +25,14 @@ struct ReportView: View {
             
             VStack{
                 Spacer()
-                Link(destination: URL(string: "https://www.met.police.uk/ro/report/ocr/af/how-to-report-a-crime/")!, label: {
+                Link(destination: URL(string: Constansts.metReport)!, label: {
                     Label("Report Crime Online", systemImage: "shield.righthalf.filled")
                         .font(.largeTitle)
                         .background(Color(.init(red: 0.815, green: 0.496, blue: 0.847, alpha: 1)))
                         .foregroundColor(.white)
                         .cornerRadius(6)
                         .shadow(radius: 5)
+                        .frame(width: 400, height: 70)
                 })
                 
                 Spacer()
@@ -44,6 +45,7 @@ struct ReportView: View {
                 .shadow(radius: 5)
                 .foregroundColor(.white)
                 .bold()
+                
                 
                 Spacer()
                 
@@ -77,14 +79,14 @@ struct ReportView: View {
                 
                 Spacer()
                 
-                Link(destination: URL(string: "https://www.police.uk/")!, label: {
+                Link(destination: URL(string: Constansts.metStats)!, label: {
                     Label("Local Crime Stats", systemImage: "list.bullet.clipboard")
                         .font(.largeTitle)
                         .background(Color(.init(red: 0.815, green: 0.496, blue: 0.847, alpha: 1)))
                         .foregroundColor(.white)
                         .cornerRadius(6)
                         .shadow(radius: 5)
-                        .padding()
+                        .frame(width: 400, height: 70)
                 })
                 
                 Spacer()

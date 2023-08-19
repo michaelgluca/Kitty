@@ -15,4 +15,6 @@ enum Constansts {
     static let sosSetup = "https://support.apple.com/en-gb/guide/iphone/iph3c99374c/"
     static let medicalId = "https://support.apple.com/en-gb/guide/iphone/iph08022b192/"
     static let satelliteGuide = "https://support.apple.com/en-gb/guide/iphone/iph2968440de/"
+    static let metReport = "https://www.met.police.uk/ro/report/ocr/af/how-to-report-a-crime/"
+    static let metStats = "https://www.police.uk/"
 }

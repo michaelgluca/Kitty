@@ -19,7 +19,7 @@
 		4CBE95B02A76597800F9CC4D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CBE95AF2A76597800F9CC4D /* MapView.swift */; };
 		4CE4EDC72A893EE80029667E /* ExtLinkData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4EDC62A893EE80029667E /* ExtLinkData.swift */; };
 		4CE4EDC92A8960A70029667E /* ExtlinkDetailedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE4EDC82A8960A70029667E /* ExtlinkDetailedView.swift */; };
-		4CE9DA102A8E35F80016433D /* SetupData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE9DA0F2A8E35F80016433D /* SetupData.swift */; };
+		4CE9DA102A8E35F80016433D /* Constansts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE9DA0F2A8E35F80016433D /* Constansts.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,7 +36,7 @@
 		4CBE95AF2A76597800F9CC4D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		4CE4EDC62A893EE80029667E /* ExtLinkData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtLinkData.swift; sourceTree = "<group>"; };
 		4CE4EDC82A8960A70029667E /* ExtlinkDetailedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtlinkDetailedView.swift; sourceTree = "<group>"; };
-		4CE9DA0F2A8E35F80016433D /* SetupData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupData.swift; sourceTree = "<group>"; };
+		4CE9DA0F2A8E35F80016433D /* Constansts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constansts.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,7 +68,7 @@
 			children = (
 				4C4322362A726045000687D0 /* ContentView.swift */,
 				4CE4EDC62A893EE80029667E /* ExtLinkData.swift */,
-				4CE9DA0F2A8E35F80016433D /* SetupData.swift */,
+				4CE9DA0F2A8E35F80016433D /* Constansts.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -193,7 +193,7 @@
 				4CE4EDC72A893EE80029667E /* ExtLinkData.swift in Sources */,
 				4C4322372A726045000687D0 /* ContentView.swift in Sources */,
 				4CE4EDC92A8960A70029667E /* ExtlinkDetailedView.swift in Sources */,
-				4CE9DA102A8E35F80016433D /* SetupData.swift in Sources */,
+				4CE9DA102A8E35F80016433D /* Constansts.swift in Sources */,
 				4CBE95B02A76597800F9CC4D /* MapView.swift in Sources */,
 				4C4944B82A8E7BC900C16B18 /* MapDetailedView.swift in Sources */,
 				4C4322432A726314000687D0 /* ReportView.swift in Sources */,

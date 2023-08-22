@@ -15,8 +15,8 @@ struct advice: Identifiable {
 
 class AdviceList: ObservableObject {
    var advices = [
-   advice(title: "1", body: "1"),
-   advice(title: "2", body: "2"),
-   advice(title: "3", body: "3")
+   advice(title: "Active Emergency", body: "Call 999"),
+   advice(title: "Past Incident", body: "Use our Report page"),
+   advice(title: "Future Incident", body: "check our External Resources page")
    ]
 }

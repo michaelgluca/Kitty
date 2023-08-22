@@ -8,8 +8,15 @@
 import SwiftUI
 
 struct NotSureView: View {
+    
+    @StateObject var advice = AdviceList()
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        TabView{
+            ForEach(advice.advices,  id: \.id){ advice in
+                NotSrueDetailedView(advice: advice)
+            }
+        }.tabViewStyle(.page(indexDisplayMode: .automatic))
     }
 }
 

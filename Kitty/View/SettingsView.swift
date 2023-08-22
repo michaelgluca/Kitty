@@ -49,7 +49,7 @@ struct SettingsView: View {
                     
                     Link("National Domestic Abuse Helpline", destination: URL(string: Constants.phone)!)
                     
-                    Link("Follow me on X (Twitter)", destination: URL(string: Constants.twitter)!)
+                    Link("Follow me on 𝕏 (Twitter)", destination: URL(string: Constants.twitter)!)
                     
                     Link("Feedback", destination: URL(string: Constants.email)!)
                     

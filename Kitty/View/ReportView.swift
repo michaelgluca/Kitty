@@ -14,6 +14,8 @@ struct ReportView: View {
     @State var metNumber = "18000"
     @State var btpNumber = "61016"
     
+    @State var notSure = false
+    
     
     var body: some View {
         
@@ -89,6 +91,26 @@ struct ReportView: View {
                         .frame(width: 400, height: 70)
                 })
                 
+                Spacer()
+                
+                Button{
+                    self.notSure.toggle()
+                } label: {
+                    Text("Not Sure?")
+                        .padding()
+                        .font(.title3)
+                        .bold()
+                        .foregroundColor(.white)
+                        .sheet(isPresented: $notSure) {
+                            NotSureView()
+                        }
+                        .background(
+                            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                                .fill(Color(.init(red: 0.815, green: 0.496, blue: 0.847, alpha: 1)))
+                                .shadow(radius: 5)
+                            
+                        )
+                }
                 Spacer()
             }
         }

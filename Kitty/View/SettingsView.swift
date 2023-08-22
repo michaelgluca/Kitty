@@ -34,24 +34,24 @@ struct SettingsView: View {
                     })
                     
                 }
-                Section(header: Text("iPhone Setup"), footer: Text("Guids to optimise  iPhone's emergency settings")) {
+                Section(header: Text("iPhone Setup"), footer: Text("Guides to optimise iPhone's emergency settings")) {
                     
-                    Link("Contact Emergency Services Setup", destination: URL(string: Constansts.sosSetup)!)
+                    Link("Contact Emergency Services Setup", destination: URL(string: Constants.sosSetup)!)
                     
-                    Link("Emergency SOS Guide", destination: URL(string: Constansts.sosGuide)!)
+                    Link("Emergency SOS via Satellite Guide", destination: URL(string: Constants.satelliteGuide)!)
                     
-                    Link("Medical ID Setup", destination: URL(string: Constansts.medicalId)!)
+                    Link("Emergency SOS Guide", destination: URL(string: Constants.sosGuide)!)
                     
-                    Link("Emergency SOS via Satellite Guide", destination: URL(string: Constansts.satelliteGuide)!)
+                    Link("Medical ID Setup", destination: URL(string: Constants.medicalId)!)
                     
                 }
                 Section(header: Text("Contact"), footer: Text("Use the above links to be redirected")) {
                     
-                    Link("National Domestic Abuse Halpline", destination: URL(string: Constansts.phone)!)
+                    Link("National Domestic Abuse Helpline", destination: URL(string: Constants.phone)!)
                     
-                    Link("Follow me on X (Twitter)", destination: URL(string: Constansts.twitter)!)
+                    Link("Follow me on X (Twitter)", destination: URL(string: Constants.twitter)!)
                     
-                    Link("Feedback", destination: URL(string: Constansts.email)!)
+                    Link("Feedback", destination: URL(string: Constants.email)!)
                     
                 }
                 

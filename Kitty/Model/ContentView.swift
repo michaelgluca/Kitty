@@ -32,7 +32,7 @@ struct ContentView: View {
                 
                 ExternalLinks()
                     .tabItem{
-                        Label("External", systemImage: "square.and.arrow.up")
+                        Label("Resourcess", systemImage: "square.and.arrow.up")
                     }
                 
                 SettingsView(darkModeOn: $darkModeOn, systemThemeOn: $systemThemeOn, faceIdOn: $faceIdOn)
@@ -41,7 +41,7 @@ struct ContentView: View {
                     }
             }.onAppear {
                 
-                UITabBar.appearance().backgroundColor = .accent
+                UITabBar.appearance().backgroundColor = .white
 
                 SystemThemeManager.shared.handleTheme(darkMode: darkModeOn, system: systemThemeOn)
                 if faceIdOn {

@@ -25,7 +25,7 @@ struct ReportView: View {
             
             VStack{
                 Spacer()
-                Link(destination: URL(string: Constansts.metReport)!, label: {
+                Link(destination: URL(string: Constants.metReport)!, label: {
                     Label("Report Crime Online", systemImage: "shield.righthalf.filled")
                         .font(.largeTitle)
                         .background(Color(.init(red: 0.815, green: 0.496, blue: 0.847, alpha: 1)))
@@ -79,7 +79,7 @@ struct ReportView: View {
                 
                 Spacer()
                 
-                Link(destination: URL(string: Constansts.metStats)!, label: {
+                Link(destination: URL(string: Constants.metStats)!, label: {
                     Label("Local Crime Stats", systemImage: "list.bullet.clipboard")
                         .font(.largeTitle)
                         .background(Color(.init(red: 0.815, green: 0.496, blue: 0.847, alpha: 1)))

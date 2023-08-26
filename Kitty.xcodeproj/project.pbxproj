@@ -74,7 +74,6 @@
 		4C2422022A753D4B0054B93B /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				4C4322362A726045000687D0 /* ContentView.swift */,
 				4CE4EDC62A893EE80029667E /* ExtLinkData.swift */,
 				4C60CBE62A94F6B00039D69E /* AdviceData.swift */,
 				4CE9DA0F2A8E35F80016433D /* Constants.swift */,
@@ -86,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				4C4322342A726045000687D0 /* KittyApp.swift */,
+				4C4322362A726045000687D0 /* ContentView.swift */,
 				4C4944B52A8E4F9600C16B18 /* SystemThemeManager.swift */,
 			);
 			path = Controller;

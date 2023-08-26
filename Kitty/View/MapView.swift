@@ -55,7 +55,7 @@ struct MapView: View {
                 MapPolyline(route.polyline)
                     .stroke(.purple, lineWidth: 6)
             }
-            
+            UserAnnotation()
         }
         .mapStyle(.standard(elevation: .realistic))
         .overlay(alignment:.top){
@@ -137,7 +137,7 @@ extension MKCoordinateRegion {
         return .init(center: .usrerLocation, latitudinalMeters: 10000, longitudinalMeters: 10000)
     }
 }
-
+ 
 #Preview {
     MapView()
 }

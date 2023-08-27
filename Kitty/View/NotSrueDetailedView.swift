@@ -14,10 +14,10 @@ struct NotSrueDetailedView: View {
     var body: some View {
         VStack(alignment: .center, spacing: 20){
             Text(advice.title)
-                .font(.title)
+                .font(.largeTitle)
             Spacer()
             Text(advice.body)
-                .font(.body)
+                .multilineTextAlignment(.leading)
             Spacer()
         }.padding()
             .frame(width: 340, height: 650, alignment: .center)

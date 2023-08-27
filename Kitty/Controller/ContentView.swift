@@ -32,7 +32,7 @@ struct ContentView: View {
                 
                 ExternalLinks()
                     .tabItem{
-                        Label("Resourcess", systemImage: "square.and.arrow.up")
+                        Label("Resources", systemImage: "square.and.arrow.up")
                     }
                 
                 SettingsView(darkModeOn: $darkModeOn, systemThemeOn: $systemThemeOn, faceIdOn: $faceIdOn)

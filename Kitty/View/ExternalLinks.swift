@@ -25,7 +25,7 @@ struct ExternalLinks: View {
                         .foregroundStyle(Color(hue: 1.0, saturation: 0.045, brightness: 0.535))
                 }})
             }
-            .navigationTitle("External Resourcess")
+            .navigationTitle("External Resources")
             .foregroundColor(.accentColor)
             .shadow(radius: 5)
             .scrollContentBackground(.hidden)

@@ -38,6 +38,9 @@ jobs:
       - name: Safety code rules
         run: ./scripts/guard-safety-rules.sh
 
+      - name: SafetyDomain stays platform-neutral (ADR-0003)
+        run: ./scripts/guard-domain-purity.sh
+
   links:
     name: Outbound URLs resolve
     runs-on: ubuntu-latest

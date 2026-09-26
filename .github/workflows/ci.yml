@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  packages:
+    name: Package tests
+    # The local packages all support macOS, so their tests run on the host. That
+    # avoids depending on a particular simulator runtime being present on the runner,
+    # which is the usual source of flaky iOS CI.
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Test SafetyDomain
+        run: swift test --package-path Packages/SafetyDomain
+
+      - name: Test SafetyContent
+        run: swift test --package-path Packages/SafetyContent
+
+      - name: Test SafetyUI
+        run: swift test --package-path Packages/SafetyUI
+
+      - name: Build SafetyServices
+        run: swift build --package-path Packages/SafetyServices
+
+      - name: Build SafetyTesting
+        run: swift build --package-path Packages/SafetyTesting
+
+  app:
+    name: App build
+    # Needs Xcode 27 for the iOS 27 SDK. Note that `macos-latest` still maps to
+    # macOS 26, and any `-xlarge` runner label is billed even on a public repository,
+    # so neither is used here. If this job cannot find Xcode 27, switch `runs-on` to
+    # the `xcode-27` image — it was still in public preview at the time of writing,
+    # which is why the GA image is tried first. The Toolchain step prints what is
+    # actually available so the first run settles it.
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Toolchain
+        run: |
+          ls /Applications | grep -i '^Xcode' || true
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i 'ios' || true
+
+      - name: Build for simulator
+        # No signing, so no secrets are needed and pull requests from forks work.
+        run: |
+          xcodebuild \
+            -project Kitty.xcodeproj \
+            -scheme Kitty \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            build

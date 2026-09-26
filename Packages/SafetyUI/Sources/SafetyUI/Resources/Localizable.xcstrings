@@ -1,0 +1,69 @@
+{
+  "sourceLanguage" : "en",
+  "version" : "1.0",
+  "strings" : {
+    "alert.body.header" : {
+      "comment" : "First line of the message sent to trusted contacts.",
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "I need help." } } }
+    },
+    "alert.body.sentAt" : {
+      "comment" : "%@ is the time the alert was composed.",
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Sent %@" } } }
+    },
+    "alert.body.locationLink" : {
+      "comment" : "%@ is a maps link.",
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Where I am: %@" } } }
+    },
+    "alert.body.coordinates" : {
+      "comment" : "%@ is a plain latitude and longitude, for recipients not on an iPhone.",
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Coordinates: %@" } } }
+    },
+    "alert.body.locationUnavailable" : {
+      "comment" : "Stated explicitly rather than omitted, so the recipient knows it is missing.",
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "My location is not available." } } }
+    },
+    "alert.body.battery" : {
+      "comment" : "%@ is a battery percentage.",
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Phone battery: %@" } } }
+    },
+    "alert.body.disclaimer" : {
+      "comment" : "Makes clear to the recipient that no service was contacted.",
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Sent by hand from Kitty G. This app does not contact emergency services." } } }
+    },
+    "tab.alert" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Alert" } } }
+    },
+    "tab.help" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Get help" } } }
+    },
+    "tab.nearby" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Nearby" } } }
+    },
+    "tab.settings" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Settings" } } }
+    },
+    "alert.button.title" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Alert my contacts" } } }
+    },
+    "alert.button.accessibilityHint" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Opens a message to your trusted contacts. You review it and send it yourself." } } }
+    },
+    "disclaimer.persistent" : {
+      "extractionState" : "manual",
+      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Kitty G does not contact emergency services. In an emergency, call 999." } } }
+    }
+  }
+}

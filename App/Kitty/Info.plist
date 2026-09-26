@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Standard bundle keys. Written out rather than generated so that every key
+	     in the shipped bundle is visible in review; the values come from
+	     Config/Shared.xcconfig. -->
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Kitty G</string>
+	<key>CFBundlePackageType</key>
+	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+
+	<!-- Mandatory for iOS 27 SDK builds. An app without a launch screen key is
+	     rejected by the App Store. -->
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>AccentColor</string>
+	</dict>
+
+	<!-- The app's only permission. There is deliberately no
+	     NSLocationAlwaysAndWhenInUseUsageDescription: omitting it is a checkable
+	     signal, to App Review and to users, that this app cannot track anyone in the
+	     background. See ADR-0005. -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Kitty G uses your location on this device to find nearby police stations and to put where you are into a message you choose to send. Your location is never sent to the developer, because there is no server.</string>
+
+	<!-- Uses only HTTPS and the encryption built into iOS. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+
+	<!-- Scene-based life cycle. An app built with the iOS 27 SDK that does not adopt
+	     it fails to launch outright. A pure SwiftUI App satisfies this. -->
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+	</dict>
+
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>arm64</string>
+	</array>
+</dict>
+</plist>

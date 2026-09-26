@@ -1,3 +1,4 @@
+import SafetyDomain
 import SwiftUI
 
 /// The primary safety control.
@@ -74,10 +75,19 @@ public struct PrimaryAlertButton: View {
 /// guideline — but it is the cheapest defence against a reviewer reading the app as
 /// an emergency service under 5.1.5, and it is honest.
 public struct SafetyDisclaimer: View {
+    @Environment(\.regionStance) private var region
+
     public init() {}
 
+    /// Region-aware because this line is a bare instruction with no surrounding
+    /// context. Telling someone in the United States to "call 999" would be wrong at
+    /// exactly the moment it matters; 999 does not work there.
+    static func key(for region: RegionStance) -> LocalizedStringKey {
+        region.isUnitedKingdom ? "disclaimer.persistent" : "disclaimer.persistent.elsewhere"
+    }
+
     public var body: some View {
-        Text("disclaimer.persistent", bundle: .module)
+        Text(Self.key(for: region), bundle: .module)
             .font(.footnote)
             .foregroundStyle(.secondary)
             .multilineTextAlignment(.center)

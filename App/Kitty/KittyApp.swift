@@ -21,41 +21,21 @@ struct KittyApp: App {
         WindowGroup {
             RootView()
                 .environment(\.services, services)
+                .environment(\.regionStance, RegionDetection.current())
         }
     }
 }
 
-/// The set of capabilities the app is built from.
-///
-/// A struct of protocol existentials rather than a container type, so the wiring is
-/// visible at a glance and a test can replace exactly one thing.
-struct Services: Sendable {
-    var location: any LocationProviding
-    var messages: any MessageComposing
-    var dialler: any Dialling
-    var contacts: any TrustedContactStoring
-    var battery: any BatteryReading
-    var time: any TimeSource
-
+extension Services {
+    /// The real wiring. CoreLocation and MessageUI implementations land in M3 and
+    /// M4; until then those capabilities report themselves unavailable rather than
+    /// silently doing nothing.
     static func live() -> Services {
-        Services(
-            location: UnavailableLocationProvider(),
-            messages: UnavailableMessageComposer(),
-            dialler: UnavailableDialler(),
-            contacts: KeychainContactStore(service: Bundle.main.bundleIdentifier ?? "uk.co.example.safety"),
-            battery: DeviceBattery(),
-            time: SystemTimeSource()
+        var services = Services.unavailable
+        services.contacts = KeychainContactStore(
+            service: Bundle.main.bundleIdentifier ?? "uk.co.example.safety"
         )
-    }
-}
-
-private struct ServicesKey: EnvironmentKey {
-    static let defaultValue = Services.live()
-}
-
-extension EnvironmentValues {
-    var services: Services {
-        get { self[ServicesKey.self] }
-        set { self[ServicesKey.self] = newValue }
+        services.battery = DeviceBattery()
+        return services
     }
 }

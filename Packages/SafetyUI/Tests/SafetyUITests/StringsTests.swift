@@ -1,4 +1,5 @@
 import Foundation
+import SafetyDomain
 import Testing
 
 @testable import SafetyUI
@@ -39,5 +40,24 @@ struct StringsTests {
     @Test("The disclaimer says the app does not contact emergency services")
     func disclaimerIsHonest() {
         #expect(Strings.alert.disclaimer.lowercased().contains("does not contact emergency services"))
+    }
+}
+
+@Suite("Region-aware disclaimer")
+struct DisclaimerTests {
+
+    @Test("Outside the UK the disclaimer never tells anyone to call 999")
+    func elsewhereDoesNotSay999() {
+        // Found by testing on an en_US simulator: the Alert tab told a US user to call
+        // 999, which does not work there. Pinned so it cannot quietly come back.
+        let text = Strings.localized("disclaimer.persistent.elsewhere")
+        #expect(!text.contains("999"))
+        #expect(text.lowercased().contains("local emergency number"))
+        #expect(text.lowercased().contains("does not contact emergency services"))
+    }
+
+    @Test("In the UK the disclaimer names 999")
+    func ukSays999() {
+        #expect(Strings.localized("disclaimer.persistent").contains("999"))
     }
 }

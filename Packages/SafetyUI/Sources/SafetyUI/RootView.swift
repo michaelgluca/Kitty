@@ -15,7 +15,7 @@ public struct RootView: View {
             Tab { AlertScreen() } label: {
                 Label { Text("tab.alert", bundle: .module) } icon: { Image(systemName: "exclamationmark.bubble.fill") }
             }
-            Tab { PlaceholderScreen(titleKey: "tab.help") } label: {
+            Tab { HelpScreen() } label: {
                 Label { Text("tab.help", bundle: .module) } icon: { Image(systemName: "lifepreserver.fill") }
             }
             Tab { PlaceholderScreen(titleKey: "tab.nearby") } label: {

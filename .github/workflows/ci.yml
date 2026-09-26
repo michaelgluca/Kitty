@@ -18,7 +18,10 @@ jobs:
     # The local packages all support macOS, so their tests run on the host. That
     # avoids depending on a particular simulator runtime being present on the runner,
     # which is the usual source of flaky iOS CI.
-    runs-on: macos-26
+    #
+    # Must be xcode-27: the packages declare swift-tools-version 6.4, and macos-26
+    # ships Swift 6.3.3, which refuses to resolve them outright.
+    runs-on: xcode-27
     steps:
       - uses: actions/checkout@v7
 
@@ -44,13 +47,15 @@ jobs:
 
   app:
     name: App build
-    # Needs Xcode 27 for the iOS 27 SDK. Note that `macos-latest` still maps to
-    # macOS 26, and any `-xlarge` runner label is billed even on a public repository,
-    # so neither is used here. If this job cannot find Xcode 27, switch `runs-on` to
-    # the `xcode-27` image — it was still in public preview at the time of writing,
-    # which is why the GA image is tried first. The Toolchain step prints what is
-    # actually available so the first run settles it.
-    runs-on: macos-26
+    # Needs Xcode 27 for the iOS 27 SDK. Verified against actions/runner-images:
+    # `xcode-27` (arm64) is the ONLY label carrying Xcode 27. `macos-26` and
+    # `macos-latest` both top out at Xcode 26.6 / iOS SDK 26.5, and `xcode-27-xlarge`
+    # is a larger runner that is billed even on a public repository.
+    #
+    # `xcode-27` is still a preview image, so it can change without the GA
+    # stability guarantee. The Toolchain step prints what is actually installed, so
+    # a future break is diagnosable from the log rather than a mystery.
+    runs-on: xcode-27
     steps:
       - uses: actions/checkout@v7
 

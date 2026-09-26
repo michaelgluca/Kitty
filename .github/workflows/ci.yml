@@ -39,8 +39,8 @@ jobs:
       - name: Test SafetyUI
         run: swift test --package-path Packages/SafetyUI
 
-      - name: Build SafetyServices
-        run: swift build --package-path Packages/SafetyServices
+      - name: Test SafetyServices
+        run: swift test --package-path Packages/SafetyServices
 
       - name: Build SafetyTesting
         run: swift build --package-path Packages/SafetyTesting

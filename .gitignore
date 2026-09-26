@@ -1,0 +1,64 @@
+# ── Assistant instructions (workspace rule: never publish these) ───────────────
+CLAUDE.md
+.claude/
+
+# ── Project source material (not ours to redistribute) ─────────────────────────
+Dissertation.pdf
+docs/dissertation/
+
+# ── Signing and secrets ────────────────────────────────────────────────────────
+# Local.xcconfig carries DEVELOPMENT_TEAM and the bundle identifier so that
+# contributors build with their own Apple account. See Local.xcconfig.example.
+Local.xcconfig
+*.mobileprovision
+*.p12
+*.cer
+*.certSigningRequest
+*.p8
+.env
+.env.*
+!.env.example
+
+# ── macOS ──────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# ── Xcode: user state ──────────────────────────────────────────────────────────
+# The 2023 repository committed 31 revisions of UserInterfaceState.xcuserstate,
+# which leaked a device hardware identifier, local paths and the macOS username.
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+
+# ── Xcode: build output ────────────────────────────────────────────────────────
+build/
+DerivedData/
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM
+*.dSYM.zip
+*.xcarchive
+timeline.xctimeline
+playground.xcworkspace
+
+# ── Swift Package Manager ──────────────────────────────────────────────────────
+# NOTE: /Packages is deliberately NOT ignored. This project keeps its own local
+# Swift packages there (SafetyDomain, SafetyContent, SafetyServices, SafetyUI,
+# SafetyTesting). Only SwiftPM's build and checkout artefacts are ignored.
+.build/
+.swiftpm/
+# Package.resolved is committed on purpose: this is an application, so pinned
+# dependency revisions are part of a reproducible build. (Currently empty by
+# design — see ADR-0007, no third-party dependencies.)
+
+# ── Tooling ────────────────────────────────────────────────────────────────────
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+*.log

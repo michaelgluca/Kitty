@@ -1,0 +1,35 @@
+// Local.xcconfig.example
+//
+// Copy this file to Local.xcconfig and fill in your own values:
+//
+//     cp Local.xcconfig.example Local.xcconfig
+//
+// Local.xcconfig is gitignored. It exists so that contributors build with their own
+// Apple account and so that no signing identity is ever committed. The 2023
+// repository hardcoded DEVELOPMENT_TEAM into project.pbxproj in all nine of its
+// revisions, which is what this avoids.
+//
+// You do NOT need a paid Apple Developer Program membership to build and run the
+// tests. Simulator builds need no signing at all:
+//
+//     xcodebuild -scheme Kitty -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+//       CODE_SIGNING_ALLOWED=NO test
+//
+// To run on your own device, a free Apple Account works via Xcode's automatic
+// signing (7-day provisioning profiles).
+
+// Your 10-character Apple Developer Team ID.
+// Xcode > Settings > Accounts, or developer.apple.com/account (Membership details).
+// Leave empty for unsigned simulator builds.
+DEVELOPMENT_TEAM =
+
+// Reverse-DNS bundle identifier. Must be unique across the App Store, so use a
+// domain you control. Contributors should change this to their own.
+//
+// Note the product name is deliberately absent: a bundle identifier can never be
+// changed after release, whereas the App Store name can. Keeping the name out of it
+// means a forced rename stays a metadata change rather than a new listing. See ADR-0009.
+PRODUCT_BUNDLE_IDENTIFIER = uk.co.example.safety
+
+// Automatic is right for almost everyone.
+CODE_SIGN_STYLE = Automatic

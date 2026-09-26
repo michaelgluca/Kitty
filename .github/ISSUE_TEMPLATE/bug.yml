@@ -1,0 +1,46 @@
+name: Bug report
+description: Something does not work as described
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not include anything that identifies you or anyone else — no real phone numbers,
+        addresses, contact names or screenshots showing them. Redact before pasting.
+  - type: checkboxes
+    attributes:
+      label: Before you start
+      options:
+        - label: This is not a security vulnerability or an incorrect emergency number or link (those are reported privately — see SECURITY.md)
+          required: true
+  - type: textarea
+    attributes:
+      label: What happened
+    validations: {required: true}
+  - type: textarea
+    attributes:
+      label: What you expected instead
+    validations: {required: true}
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations: {required: true}
+  - type: input
+    attributes:
+      label: iOS version
+      placeholder: "26.1"
+    validations: {required: true}
+  - type: input
+    attributes:
+      label: Device
+      placeholder: "iPhone 15"
+  - type: dropdown
+    attributes:
+      label: Does this affect a safety-critical path?
+      description: The alert flow, the 999 confirmation, emergency guidance content, or location accuracy.
+      options: ["Yes", "No", "Not sure"]
+    validations: {required: true}

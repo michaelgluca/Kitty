@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/michaelgluca/Kitty/security/advisories/new
+    about: Please report privately. Do not open a public issue. Incorrect emergency information is treated as a security issue.
+  - name: I need help right now
+    url: https://www.nationaldahelpline.org.uk/
+    about: This repository cannot help in an emergency. In the UK call 999. The National Domestic Abuse Helpline is 0808 2000 247, free, 24 hours.

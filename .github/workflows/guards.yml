@@ -27,7 +27,7 @@ jobs:
     name: Constraints
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: No third-party dependencies (ADR-0007)
         run: ./scripts/guard-dependencies.sh
@@ -45,7 +45,7 @@ jobs:
     # the scheduled run and pushes to main are what must stay honest.
     continue-on-error: ${{ github.event_name == 'pull_request' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Check every allowlisted URL
         run: ./scripts/check-urls.sh
 
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Every commit is signed off

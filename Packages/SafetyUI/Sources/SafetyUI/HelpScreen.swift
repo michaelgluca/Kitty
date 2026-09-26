@@ -100,13 +100,32 @@ struct ServiceRow: View {
     let service: SupportService
     let now: Date
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     private var status: OpeningStatus { service.availability.status(at: now) }
+
+    /// Side by side at normal sizes; stacked at accessibility sizes.
+    ///
+    /// Found by checking on device at AX5: side by side, the badge took half the
+    /// width and squeezed "National Domestic Abuse Helpline" into a narrow column
+    /// that broke mid-word — "Helplin / e", with no hyphen. That is worst for exactly
+    /// the people who use the largest text, so the layout changes rather than the
+    /// text shrinking.
+    private var headerLayout: AnyLayout {
+        typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: Design.Space.tight))
+            : AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: Design.Space.tight))
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Design.Space.tight) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(service.name).font(.headline)
-                Spacer(minLength: Design.Space.tight)
+            headerLayout {
+                Text(service.name)
+                    .font(.headline)
+                    .fixedSize(horizontal: false, vertical: true)
+                if !typeSize.isAccessibilitySize {
+                    Spacer(minLength: Design.Space.tight)
+                }
                 CoverageBadge(coverage: service.coverage)
             }
 

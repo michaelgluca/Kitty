@@ -15,13 +15,7 @@ public struct KeychainContactStore: TrustedContactStoring {
         case corruptData
     }
 
-    /// Versioned so a future shape change is a migration rather than a data loss.
-    private struct Envelope: Codable {
-        var schemaVersion: Int
-        var contacts: [TrustedContact]
-    }
-
-    private static let currentSchemaVersion = 1
+    private static let currentSchemaVersion = ContactEnvelope.currentSchemaVersion
 
     private let service: String
     private let account = "trusted-contacts"
@@ -51,15 +45,14 @@ public struct KeychainContactStore: TrustedContactStoring {
         guard let data = item as? Data else { throw Failure.corruptData }
 
         do {
-            return try migrate(JSONDecoder().decode(Envelope.self, from: data))
+            return try ContactEnvelope.decode(data)
         } catch {
             throw Failure.corruptData
         }
     }
 
     public func save(_ contacts: [TrustedContact]) throws {
-        let envelope = Envelope(schemaVersion: Self.currentSchemaVersion, contacts: contacts)
-        let data = try JSONEncoder().encode(envelope)
+        let data = try ContactEnvelope.encode(contacts)
 
         let attributes: [String: Any] = [
             kSecValueData as String: data,
@@ -77,16 +70,5 @@ public struct KeychainContactStore: TrustedContactStoring {
         insert.merge(attributes) { _, new in new }
         let addStatus = SecItemAdd(insert as CFDictionary, nil)
         guard addStatus == errSecSuccess else { throw Failure.unexpectedStatus(addStatus) }
-    }
-
-    private func migrate(_ envelope: Envelope) throws -> [TrustedContact] {
-        switch envelope.schemaVersion {
-        case Self.currentSchemaVersion:
-            return envelope.contacts
-        default:
-            // A newer build wrote this. Refusing is safer than guessing: silently
-            // dropping someone's emergency contacts is the worst available outcome.
-            throw Failure.corruptData
-        }
     }
 }

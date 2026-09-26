@@ -1,0 +1,30 @@
+name: Content correction
+description: A phone number, link, helpline detail or piece of guidance is wrong or out of date
+labels: [content, safety]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Content is treated as code here, because a wrong number or a dead link has real
+        consequences. **Every correction needs a citation to the issuing body's own page** — the
+        police force, the charity, gov.uk. Not a news article, not another app.
+
+        If the current content could actively send someone somewhere harmful, please report it
+        privately through SECURITY.md instead.
+  - type: input
+    attributes:
+      label: What the app currently says
+    validations: {required: true}
+  - type: input
+    attributes:
+      label: What it should say
+    validations: {required: true}
+  - type: input
+    attributes:
+      label: Source URL from the issuing body
+      placeholder: https://www.met.police.uk/...
+    validations: {required: true}
+  - type: textarea
+    attributes:
+      label: Anything else
+      placeholder: Coverage (England / Wales / Scotland / NI), opening hours, when it changed.

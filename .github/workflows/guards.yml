@@ -1,0 +1,81 @@
+name: Guards
+
+# These enforce the project's non-negotiable constraints mechanically, so the
+# guarantees do not depend on a reviewer remembering them. See ADR-0002 and ADR-0007.
+#
+# Pull requests from forks receive no secrets, and these jobs need none.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Link rot in a safety app is a safety incident: emergencysms.org.uk was still
+    # linked from UK police and fire pages after it became a gambling affiliate site.
+    # Re-check the allowlist weekly rather than only on change.
+    - cron: '17 6 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: guards-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  constraints:
+    name: Constraints
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: No third-party dependencies (ADR-0007)
+        run: ./scripts/guard-dependencies.sh
+
+      - name: No networking or collection frameworks (ADR-0002)
+        run: ./scripts/guard-networking.sh
+
+      - name: Safety code rules
+        run: ./scripts/guard-safety-rules.sh
+
+  links:
+    name: Outbound URLs resolve
+    runs-on: ubuntu-latest
+    # Do not fail a pull request because someone else's server is briefly down;
+    # the scheduled run and pushes to main are what must stay honest.
+    continue-on-error: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Check every allowlisted URL
+        run: ./scripts/check-urls.sh
+
+  dco:
+    name: DCO sign-off
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Every commit is signed off
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          missing=0
+          while IFS= read -r sha; do
+            [ -z "$sha" ] && continue
+            author=$(git show -s --format='%an <%ae>' "$sha")
+            if ! git show -s --format='%B' "$sha" | grep -qiF "Signed-off-by: $author"; then
+              echo "FAIL: $sha is not signed off by $author"
+              missing=1
+            fi
+          done < <(git rev-list --no-merges "$BASE..$HEAD")
+          if [ "$missing" -ne 0 ]; then
+            echo
+            echo "Sign off with:  git commit -s   (or: git rebase --signoff $BASE)"
+            echo "See CONTRIBUTING.md — this project uses the Developer Certificate of Origin."
+            exit 1
+          fi
+          echo "OK: all commits signed off."

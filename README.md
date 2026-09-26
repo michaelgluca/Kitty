@@ -61,16 +61,23 @@ Requires Xcode 27 or later. Minimum deployment target is iOS 26.
 ```bash
 git clone https://github.com/michaelgluca/Kitty
 cd Kitty
-cp Local.xcconfig.example Local.xcconfig   # then add your own Apple team ID
 open Kitty.xcodeproj
 ```
 
-`Local.xcconfig` is gitignored so you build with your own signing identity and nothing of yours ends
-up in the repository. Tests run without signing:
+That is the whole setup. `Local.xcconfig` is optional — the project includes it only if it exists —
+so a fresh clone builds and runs in the simulator with no Apple account and no configuration. Copy
+`Local.xcconfig.example` to `Local.xcconfig` and add your team ID only when you want to run on a
+physical device. It is gitignored, so nothing of yours reaches the repository.
+
+From the command line:
 
 ```bash
-xcodebuild -scheme Kitty -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
-  CODE_SIGNING_ALLOWED=NO test
+# All package tests
+for p in Packages/*/; do swift test --package-path "$p"; done
+
+# Build the app, no signing required
+xcodebuild -project Kitty.xcodeproj -scheme Kitty \
+  -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
 ```
 
 ## Contributing

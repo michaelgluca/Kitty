@@ -1,0 +1,98 @@
+{
+  "version": 1,
+  "reviewedOn": "2026-09-26",
+  "services": [
+    {
+      "id": "national-domestic-abuse-helpline",
+      "name": "National Domestic Abuse Helpline",
+      "kind": "helpline",
+      "coverage": "england",
+      "summary": "Free, confidential support, 24 hours a day. Run by Refuge.",
+      "phone": "08082000247",
+      "url": "https://www.nationaldahelpline.org.uk/",
+      "availability": "allHours",
+      "attribution": null
+    },
+    {
+      "id": "refuge",
+      "name": "Refuge",
+      "kind": "charity",
+      "coverage": "england",
+      "summary": "The largest specialist domestic abuse organisation in the UK. Runs the National Domestic Abuse Helpline.",
+      "phone": null,
+      "url": "https://refuge.org.uk/",
+      "availability": "seeWebsite",
+      "attribution": null
+    },
+    {
+      "id": "womens-aid",
+      "name": "Women's Aid",
+      "kind": "charity",
+      "coverage": "england",
+      "summary": "Support through live chat and email. Women's Aid does not operate a telephone helpline.",
+      "phone": null,
+      "url": "https://chat.womensaid.org.uk/",
+      "availability": { "weekdays": { "openHour": 10, "closeHour": 16 } },
+      "attribution": null
+    },
+    {
+      "id": "rape-crisis-support-line",
+      "name": "24/7 Rape & Sexual Abuse Support Line",
+      "kind": "helpline",
+      "coverage": "englandAndWales",
+      "summary": "Free support, 24 hours a day, for anyone affected by rape or sexual abuse.",
+      "phone": "08085002222",
+      "url": "https://247sexualabusesupport.org.uk/",
+      "availability": "allHours",
+      "attribution": null
+    },
+    {
+      "id": "samaritans",
+      "name": "Samaritans",
+      "kind": "helpline",
+      "coverage": "unitedKingdom",
+      "summary": "Free, 24 hours a day, from any phone. The number is not itemised on phone bills.",
+      "phone": "116123",
+      "url": "https://www.samaritans.org/",
+      "availability": "allHours",
+      "attribution": null
+    }
+  ],
+  "emergencyRoutes": [
+    {
+      "id": "voice-999",
+      "name": "Call 999",
+      "detail": "The fastest route. Your iPhone sends your location automatically to the 999 call handler, so you do not need an app to do that.",
+      "prerequisite": null,
+      "learnMoreURL": null
+    },
+    {
+      "id": "silent-solution-55",
+      "name": "Call 999 when you cannot speak",
+      "detail": "A silent 999 call does NOT automatically bring police. If you cannot speak, listen for the automated prompt and then press 55. Pressing 55 tells the operator the call is genuine. It does not let police track you and does not guarantee officers are sent. This works from a mobile.",
+      "prerequisite": null,
+      "learnMoreURL": null
+    },
+    {
+      "id": "text-999",
+      "name": "Text 999",
+      "detail": "Send a text to 999 saying which service you need, what is happening and where you are. It is slower than a voice call.",
+      "prerequisite": "You must register your phone first. Text the word 'register' to 999 and reply 'yes' to the message you get back. This app cannot register you and cannot tell whether you are registered.",
+      "learnMoreURL": "https://www.relayuk.bt.com/how-to-use-relay-uk/contact-999-using-relay-uk.html"
+    },
+    {
+      "id": "999-bsl",
+      "name": "999 BSL",
+      "detail": "A free 24-hour British Sign Language interpreter service for contacting 999.",
+      "prerequisite": null,
+      "learnMoreURL": "https://999bsl.co.uk/"
+    },
+    {
+      "id": "relay-uk-18000",
+      "name": "Relay UK (18000)",
+      "detail": "Dial 18000 to reach 999 through a relay assistant, for people who are deaf, hard of hearing or have a speech impairment. 18000 is a number you call, not one you text.",
+      "prerequisite": null,
+      "learnMoreURL": "https://www.relayuk.bt.com/how-to-use-relay-uk/contact-999-using-relay-uk.html"
+    }
+  ]
+}

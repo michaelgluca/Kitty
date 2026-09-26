@@ -7,7 +7,7 @@
 
 /* Begin PBXBuildFile section */
 		AA00000000000000000060 /* KittyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000050 /* KittyApp.swift */; };
-		AA00000000000000000061 /* PendingServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000051 /* PendingServices.swift */; };
+		AA00000000000000000061 /* RegionDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000051 /* RegionDetection.swift */; };
 		AA00000000000000000062 /* DeviceBattery.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000052 /* DeviceBattery.swift */; };
 		AA00000000000000000063 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000053 /* Assets.xcassets */; };
 		AA00000000000000000064 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000054 /* PrivacyInfo.xcprivacy */; };
@@ -22,7 +22,7 @@
 		AA00000000000000000041 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
 		AA00000000000000000042 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA00000000000000000050 /* KittyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KittyApp.swift; sourceTree = "<group>"; };
-		AA00000000000000000051 /* PendingServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingServices.swift; sourceTree = "<group>"; };
+		AA00000000000000000051 /* RegionDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionDetection.swift; sourceTree = "<group>"; };
 		AA00000000000000000052 /* DeviceBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceBattery.swift; sourceTree = "<group>"; };
 		AA00000000000000000053 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AA00000000000000000054 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -64,7 +64,7 @@
 			isa = PBXGroup;
 			children = (
 				AA00000000000000000050 /* KittyApp.swift */,
-				AA00000000000000000051 /* PendingServices.swift */,
+				AA00000000000000000051 /* RegionDetection.swift */,
 				AA00000000000000000052 /* DeviceBattery.swift */,
 				AA00000000000000000053 /* Assets.xcassets */,
 				AA00000000000000000054 /* PrivacyInfo.xcprivacy */,
@@ -157,7 +157,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA00000000000000000060 /* KittyApp.swift in Sources */,
-				AA00000000000000000061 /* PendingServices.swift in Sources */,
+				AA00000000000000000061 /* RegionDetection.swift in Sources */,
 				AA00000000000000000062 /* DeviceBattery.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

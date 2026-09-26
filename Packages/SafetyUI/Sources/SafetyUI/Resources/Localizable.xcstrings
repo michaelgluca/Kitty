@@ -1,69 +1,457 @@
 {
-  "sourceLanguage" : "en",
-  "version" : "1.0",
-  "strings" : {
-    "alert.body.header" : {
-      "comment" : "First line of the message sent to trusted contacts.",
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "I need help." } } }
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "alert.body.header": {
+      "comment": "First line of the message sent to trusted contacts.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I need help."
+          }
+        }
+      }
     },
-    "alert.body.sentAt" : {
-      "comment" : "%@ is the time the alert was composed.",
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Sent %@" } } }
+    "alert.body.sentAt": {
+      "comment": "%@ is the time the alert was composed.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sent %@"
+          }
+        }
+      }
     },
-    "alert.body.locationLink" : {
-      "comment" : "%@ is a maps link.",
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Where I am: %@" } } }
+    "alert.body.locationLink": {
+      "comment": "%@ is a maps link.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where I am: %@"
+          }
+        }
+      }
     },
-    "alert.body.coordinates" : {
-      "comment" : "%@ is a plain latitude and longitude, for recipients not on an iPhone.",
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Coordinates: %@" } } }
+    "alert.body.coordinates": {
+      "comment": "%@ is a plain latitude and longitude, for recipients not on an iPhone.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coordinates: %@"
+          }
+        }
+      }
     },
-    "alert.body.locationUnavailable" : {
-      "comment" : "Stated explicitly rather than omitted, so the recipient knows it is missing.",
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "My location is not available." } } }
+    "alert.body.locationUnavailable": {
+      "comment": "Stated explicitly rather than omitted, so the recipient knows it is missing.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My location is not available."
+          }
+        }
+      }
     },
-    "alert.body.battery" : {
-      "comment" : "%@ is a battery percentage.",
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Phone battery: %@" } } }
+    "alert.body.battery": {
+      "comment": "%@ is a battery percentage.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phone battery: %@"
+          }
+        }
+      }
     },
-    "alert.body.disclaimer" : {
-      "comment" : "Makes clear to the recipient that no service was contacted.",
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Sent by hand from Kitty G. This app does not contact emergency services." } } }
+    "alert.body.disclaimer": {
+      "comment": "Makes clear to the recipient that no service was contacted.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sent by hand from Kitty G. This app does not contact emergency services."
+          }
+        }
+      }
     },
-    "tab.alert" : {
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Alert" } } }
+    "tab.alert": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alert"
+          }
+        }
+      }
     },
-    "tab.help" : {
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Get help" } } }
+    "tab.help": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get help"
+          }
+        }
+      }
     },
-    "tab.nearby" : {
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Nearby" } } }
+    "tab.nearby": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nearby"
+          }
+        }
+      }
     },
-    "tab.settings" : {
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Settings" } } }
+    "tab.settings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
     },
-    "alert.button.title" : {
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Alert my contacts" } } }
+    "alert.button.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alert my contacts"
+          }
+        }
+      }
     },
-    "alert.button.accessibilityHint" : {
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Opens a message to your trusted contacts. You review it and send it yourself." } } }
+    "alert.button.accessibilityHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens a message to your trusted contacts. You review it and send it yourself."
+          }
+        }
+      }
     },
-    "disclaimer.persistent" : {
-      "extractionState" : "manual",
-      "localizations" : { "en" : { "stringUnit" : { "state" : "translated", "value" : "Kitty G does not contact emergency services. In an emergency, call 999." } } }
+    "disclaimer.persistent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kitty G does not contact emergency services. In an emergency, call 999."
+          }
+        }
+      },
+      "comment": "Shown in the UK only. Outside the UK, disclaimer.persistent.elsewhere is used instead."
+    },
+    "help.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get help"
+          }
+        }
+      }
+    },
+    "help.section.emergency": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reaching 999"
+          }
+        }
+      }
+    },
+    "help.section.services": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Support services"
+          }
+        }
+      }
+    },
+    "help.status.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open now"
+          }
+        }
+      }
+    },
+    "help.status.closed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Closed now"
+          }
+        }
+      }
+    },
+    "help.status.unknown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check their website for hours"
+          }
+        }
+      }
+    },
+    "help.coverage.unitedKingdom": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "UK"
+          }
+        }
+      }
+    },
+    "help.coverage.england": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "England"
+          }
+        }
+      }
+    },
+    "help.coverage.englandAndWales": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "England and Wales"
+          }
+        }
+      }
+    },
+    "help.coverage.wales": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wales"
+          }
+        }
+      }
+    },
+    "help.coverage.scotland": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scotland"
+          }
+        }
+      }
+    },
+    "help.coverage.northernIreland": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Northern Ireland"
+          }
+        }
+      }
+    },
+    "help.prerequisite": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Before you can use this: %@"
+          }
+        }
+      },
+      "comment": "%@ is something the user must do in advance, such as registering for text-to-999."
+    },
+    "help.call": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Call %@"
+          }
+        }
+      },
+      "comment": "%@ is a phone number."
+    },
+    "help.openWebsite": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open website"
+          }
+        }
+      }
+    },
+    "help.noPhone": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This service has no phone line."
+          }
+        }
+      }
+    },
+    "help.callConfirm.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Call %@?"
+          }
+        }
+      }
+    },
+    "help.callConfirm.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This will open your phone app. Kitty G does not make the call for you."
+          }
+        }
+      }
+    },
+    "help.callConfirm.confirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Call"
+          }
+        }
+      }
+    },
+    "help.callConfirm.cancel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "help.callFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your phone could not start the call. You can dial %@ yourself."
+          }
+        }
+      }
+    },
+    "region.notice.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Written for the UK"
+          }
+        }
+      }
+    },
+    "region.notice.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kitty G's helplines, police contacts and 999 guidance apply in the United Kingdom. Alerting your trusted contacts works anywhere. Check the emergency number where you are — in much of Europe it is 112."
+          }
+        }
+      }
+    },
+    "region.notice.dismiss": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I understand"
+          }
+        }
+      }
+    },
+    "region.notice.setUK": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I am in the UK"
+          }
+        }
+      }
+    },
+    "disclaimer.persistent.elsewhere": {
+      "comment": "Shown outside the UK. Must NOT name 999, which does not work in most countries.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kitty G does not contact emergency services. In an emergency, call your local emergency number."
+          }
+        }
+      }
     }
   }
 }

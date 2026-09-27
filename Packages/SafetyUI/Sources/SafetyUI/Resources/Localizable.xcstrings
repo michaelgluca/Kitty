@@ -1910,6 +1910,354 @@
           }
         }
       }
+    },
+    "filter.nation.title": {
+      "comment": "Label of the menu that narrows Get help and Learn to one UK nation.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where you are"
+          }
+        }
+      }
+    },
+    "filter.nation.all": {
+      "comment": "Nation menu option, and the default: no nation chosen, so help for every UK nation is shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All of the UK"
+          }
+        }
+      }
+    },
+    "filter.nation.offer": {
+      "comment": "%@ is a UK nation, such as Scotland. One tap chooses it; it is never applied without the tap.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use %@ — detected from your location"
+          }
+        }
+      }
+    },
+    "filter.nation.couldNotRead": {
+      "comment": "Get help and Learn: the saved nation cannot be read.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your saved choice of where you are could not be read, so help for all of the UK is shown."
+          }
+        }
+      }
+    },
+    "filter.nation.couldNotSave": {
+      "comment": "Get help and Learn: choosing a nation could not be saved.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your choice of where you are could not be saved, so help for all of the UK is shown."
+          }
+        }
+      }
+    },
+    "refuges.nation.couldNotRead": {
+      "comment": "Refuges: the saved nation cannot be read.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your saved choice of where you are could not be read. Choose where you are below."
+          }
+        }
+      }
+    },
+    "refuges.nation.notSaved": {
+      "comment": "Refuges: the chosen nation could not be saved.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your choice could not be saved, so it is used on this screen only. Get help and Learn show all of the UK."
+          }
+        }
+      }
+    },
+    "filter.topics.label": {
+      "comment": "Accessibility label for the group of topic chips.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Topics"
+          }
+        }
+      }
+    },
+    "topic.domesticAbuse": {
+      "comment": "Topic chip.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Domestic abuse"
+          }
+        }
+      }
+    },
+    "topic.sexualViolence": {
+      "comment": "Topic chip.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sexual violence"
+          }
+        }
+      }
+    },
+    "topic.stalkingAndHarassment": {
+      "comment": "Topic chip.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stalking & harassment"
+          }
+        }
+      }
+    },
+    "topic.onlineAbuse": {
+      "comment": "Topic chip.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Online abuse"
+          }
+        }
+      }
+    },
+    "topic.forcedMarriageAndFGM": {
+      "comment": "Topic chip. FGM is female genital mutilation.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forced marriage & FGM"
+          }
+        }
+      }
+    },
+    "topic.housingAndMoney": {
+      "comment": "Topic chip.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Housing & money"
+          }
+        }
+      }
+    },
+    "topic.work": {
+      "comment": "Topic chip.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Work"
+          }
+        }
+      }
+    },
+    "topic.reportingAndVictimsRights": {
+      "comment": "Topic chip.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reporting & victims' rights"
+          }
+        }
+      }
+    },
+    "filter.search.prompt": {
+      "comment": "Placeholder in the search field on Get help, Learn and iPhone safety features.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search"
+          }
+        }
+      }
+    },
+    "filter.summary": {
+      "comment": "%@ is what the list is narrowed to, such as: Scotland · Stalking & harassment.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Showing %@"
+          }
+        }
+      }
+    },
+    "filter.summary.separator": {
+      "comment": "Separates the parts of the filter summary line. Keep the spaces.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " · "
+          }
+        }
+      }
+    },
+    "filter.summary.search": {
+      "comment": "%@ is the text typed in the search field.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "matching “%@”"
+          }
+        }
+      }
+    },
+    "filter.clear": {
+      "comment": "Clears the topics and the search. Where you are stays chosen.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear"
+          }
+        }
+      }
+    },
+    "filter.clear.hint": {
+      "comment": "Accessibility hint for the Clear button.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clears the topics and the search. Where you are stays chosen."
+          }
+        }
+      }
+    },
+    "filter.clearFilters": {
+      "comment": "Button in the no-matches state.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear filters"
+          }
+        }
+      }
+    },
+    "filter.noMatches.title": {
+      "comment": "Shown, and announced, when the filter leaves nothing.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing matches"
+          }
+        }
+      }
+    },
+    "filter.noMatches.rights": {
+      "comment": "Learn: no rights topic matches, though iPhone features may.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No rights topics match"
+          }
+        }
+      }
+    },
+    "filter.noMatches.body": {
+      "comment": "Body of the no-matches state.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear the topics and search to see everything again. Where you are stays as chosen above."
+          }
+        }
+      }
+    },
+    "rights.elsewhere": {
+      "comment": "Collapsed group holding the points of law for the other UK nations.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Different elsewhere in the UK"
+          }
+        }
+      }
+    },
+    "filter.resultCount %lld": {
+      "comment": "VoiceOver announcement of how many items the filter shows.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld result"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld results"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -5,9 +5,12 @@ import SwiftUI
 struct ContactsScreen: View {
 
     @Environment(ContactsModel.self) private var model
+    @Environment(AlertModel.self) private var alert
 
     @State private var pendingRemoval: TrustedContact?
     @State private var confirmNewList = false
+    /// Guards the picker button against a double tap starting two pickers at once.
+    @State private var isPicking = false
 
     var body: some View {
         List {
@@ -45,14 +48,37 @@ struct ContactsScreen: View {
                         Text("contacts.empty", bundle: .module).foregroundStyle(.secondary)
                     }
                     ForEach(model.contacts) { contact in
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(contact.displayName)
-                            Text(contact.phoneNumber.raw)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                        HStack(spacing: Design.Space.tight) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(contact.displayName)
+                                Text(contact.phoneNumber.raw)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .accessibilityElement(children: .combine)
+                            .accessibilityIdentifier("contact.\(contact.displayName)")
+
+                            Spacer(minLength: Design.Space.tight)
+
+                            // A visible, one-tap way to remove a contact, alongside the
+                            // swipe action below — not everyone discovers swipe-to-delete,
+                            // and US-2 asks for a visible tap plus confirmation.
+                            if model.canEdit {
+                                Button {
+                                    pendingRemoval = contact
+                                } label: {
+                                    Image(systemName: "minus.circle.fill")
+                                        .foregroundStyle(.red)
+                                        .frame(minWidth: Design.minimumTapTarget, minHeight: Design.minimumTapTarget)
+                                        .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.borderless)
+                                .accessibilityLabel(
+                                    Text(String(format: Strings.localized("contacts.remove.row"), contact.displayName))
+                                )
+                                .accessibilityIdentifier("contact.remove.\(contact.displayName)")
+                            }
                         }
-                        .accessibilityElement(children: .combine)
-                        .accessibilityIdentifier("contact.\(contact.displayName)")
                         // Not role: .destructive — that animates the row away before
                         // the person has confirmed, and it springs back on Cancel.
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
@@ -65,17 +91,25 @@ struct ContactsScreen: View {
                     .onMove { model.move(fromOffsets: $0, toOffset: $1) }
                 }
 
-                Section {
-                    Button {
-                        Task { await model.addFromPicker() }
-                    } label: {
-                        Label {
-                            Text("contacts.add", bundle: .module)
-                        } icon: {
-                            Image(systemName: "person.crop.circle.badge.plus")
+                if model.canEdit {
+                    Section {
+                        Button {
+                            guard !isPicking else { return }
+                            isPicking = true
+                            Task {
+                                await model.addFromPicker()
+                                isPicking = false
+                            }
+                        } label: {
+                            Label {
+                                Text("contacts.add", bundle: .module)
+                            } icon: {
+                                Image(systemName: "person.crop.circle.badge.plus")
+                            }
                         }
+                        .disabled(isPicking)
+                        .accessibilityIdentifier("contacts.add")
                     }
-                    .accessibilityIdentifier("contacts.add")
                 }
             }
         }
@@ -111,6 +145,20 @@ struct ContactsScreen: View {
             isPresented: Binding(get: { model.problem != nil }, set: { if !$0 { model.problem = nil } })
         ) {
             Button(Strings.localized("help.ok"), role: .cancel) {}
+        }
+        .onChange(of: model.contacts) { _, _ in clearStaleAlertResult() }
+        .onChange(of: model.loadState) { _, _ in clearStaleAlertResult() }
+    }
+
+    /// A change made here can leave the Alert tab showing a result that is no longer
+    /// true — "no contacts" after one was just added, or "unreadable" after starting a
+    /// new list — so it is cleared rather than left to mislead on return.
+    private func clearStaleAlertResult() {
+        switch alert.phase {
+        case .finished(.needsContacts), .finished(.contactsUnreadable):
+            alert.reset()
+        default:
+            break
         }
     }
 }

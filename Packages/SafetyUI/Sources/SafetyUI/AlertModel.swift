@@ -33,6 +33,10 @@ public final class AlertModel {
     public private(set) var phase: Phase = .idle
     /// Who the alert was for, kept so the failure states can offer to call them.
     public private(set) var recipients: [AlertRecipient] = []
+    /// Whether the current result was raised in Test Mode — so its drama numbers, or
+    /// its real ones, are never offered once the mode has changed. See
+    /// `callableRecipients(testModeIsOn:)`.
+    public private(set) var raisedInTestMode = false
 
     /// `true` for as long as a `raise` is in flight, from the moment it is called
     /// to the moment it returns — tracked independently of `phase`, which exists
@@ -74,16 +78,19 @@ public final class AlertModel {
 
         guard contactsReadable else {
             recipients = []
+            raisedInTestMode = testMode
             return finish(.contactsUnreadable)
         }
 
         switch AlertPlanner.plan(contacts: contacts, testMode: testMode) {
         case .needsContacts:
             recipients = []
+            raisedInTestMode = testMode
             finish(.needsContacts)
 
         case let .ready(planned, isTest):
             recipients = planned
+            raisedInTestMode = isTest
             // Checked before looking for a location, so someone with no SIM is sent
             // straight to calling instead of waiting to be told.
             guard services.messages.canSendText else { return finish(.cannotText) }
@@ -107,10 +114,23 @@ public final class AlertModel {
         }
     }
 
-    /// Clears a finished outcome. Does nothing while an alert is being prepared.
+    /// Clears a finished outcome, and with it everyone it offered to call. Does
+    /// nothing while an alert is being prepared.
     public func reset() {
         guard !isBusy else { return }
         phase = .idle
+        recipients = []
+        raisedInTestMode = false
+    }
+
+    /// Who the result may offer to call, given whether Test Mode is on *now*.
+    ///
+    /// Nobody, if the mode has changed since the alert was raised. A real result
+    /// seen in Test Mode would offer a real person's number under a banner that
+    /// promises nobody will be contacted; a rehearsal seen after Test Mode switched
+    /// off would offer "Call Alice" on a drama number that reaches no one.
+    public func callableRecipients(testModeIsOn: Bool) -> [AlertRecipient] {
+        raisedInTestMode == testModeIsOn ? recipients : []
     }
 
     /// Reads a location only if the person has already allowed it at full accuracy.

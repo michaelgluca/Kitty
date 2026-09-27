@@ -110,6 +110,67 @@ struct AlertModelTests {
         #expect(location.fixRequestCount == 0)
     }
 
+    @Test("Done clears who a failed alert offered to call, not only the outcome")
+    func resetClearsRecipients() async throws {
+        let m = model(services(messages: SpyMessageComposer(canSendText: false)))
+        await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: true)
+        try #require(m.phase == .finished(.cannotText))
+        try #require(!m.recipients.isEmpty)
+        #expect(m.raisedInTestMode)
+
+        m.reset()
+        #expect(m.phase == .idle)
+        #expect(m.recipients.isEmpty, "A cleared result must not keep anyone to call")
+        #expect(!m.raisedInTestMode)
+    }
+
+    @Test("Records the mode each result was raised in", arguments: [false, true])
+    func recordsTheMode(testMode: Bool) async throws {
+        let m = model(services(messages: SpyMessageComposer(canSendText: false)))
+        await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: testMode)
+        try #require(m.phase == .finished(.cannotText))
+        #expect(m.raisedInTestMode == testMode)
+
+        // A later alert in the other mode replaces it, rather than inheriting it.
+        await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: !testMode)
+        #expect(m.raisedInTestMode == !testMode)
+    }
+
+    @Test("A real result offers nobody to call once Test Mode is on")
+    func realResultIsNotCallableInTestMode() async throws {
+        // Not drama numbers: if one of these were offered in Test Mode, a tap would
+        // call a real person under a banner promising nobody will be contacted.
+        let realLooking = [
+            TrustedContact(displayName: "Alice", phoneNumber: try #require(PhoneNumber("020 7946 0018"))),
+            TrustedContact(displayName: "Bob", phoneNumber: try #require(PhoneNumber("0113 496 0001"))),
+        ]
+        let m = model(services(messages: SpyMessageComposer(canSendText: false)))
+        await m.raise(contacts: realLooking, contactsReadable: true, testMode: false)
+        try #require(m.phase == .finished(.cannotText))
+
+        #expect(m.callableRecipients(testModeIsOn: false).map(\.number) == realLooking.map(\.phoneNumber))
+        #expect(m.callableRecipients(testModeIsOn: true).isEmpty)
+    }
+
+    @Test("A rehearsal offers nobody to call once Test Mode is off")
+    func rehearsalIsNotCallableOutsideTestMode() async throws {
+        // Otherwise a real emergency would be offered "Call Alice" on a drama number
+        // that reaches nobody.
+        let m = model(services(messages: SpyMessageComposer(canSendText: false)))
+        await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: true)
+        try #require(m.phase == .finished(.cannotText))
+
+        let rehearsal = m.callableRecipients(testModeIsOn: true)
+        #expect(rehearsal.map(\.number) == [TestModeNumbers.contact(at: 0), TestModeNumbers.contact(at: 1)])
+        #expect(m.callableRecipients(testModeIsOn: false).isEmpty)
+
+        // What is offered in Test Mode can be dialled by a double that refuses any
+        // number outside the drama range.
+        let dialler = SpyDialler()
+        for recipient in rehearsal { _ = await dialler.dial(recipient.number) }
+        #expect(dialler.dialled == rehearsal.map(\.number))
+    }
+
     @Test("Sends one message to every contact, with where they are")
     func sendsWithLocation() async throws {
         let spy = SpyMessageComposer()

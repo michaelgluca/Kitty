@@ -151,14 +151,12 @@ struct ContactsScreen: View {
     }
 
     /// A change made here can leave the Alert tab showing a result that is no longer
-    /// true — "no contacts" after one was just added, or "unreadable" after starting a
-    /// new list — so it is cleared rather than left to mislead on return.
+    /// true — "no contacts" after one was just added, "unreadable" after starting a
+    /// new list, or an offer to call someone who has just been removed — so any
+    /// finished result is cleared rather than left to mislead on return.
     private func clearStaleAlertResult() {
-        switch alert.phase {
-        case .finished(.needsContacts), .finished(.contactsUnreadable):
+        if case .finished = alert.phase {
             alert.reset()
-        default:
-            break
         }
     }
 }

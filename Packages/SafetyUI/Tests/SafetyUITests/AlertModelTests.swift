@@ -16,13 +16,59 @@ private func london(age: TimeInterval = 5) -> LocationFix {
     )
 }
 
+/// A message composer that never answers until released. Proves the busy guard
+/// holds while `.composing`, not just while `.locating`. Same shape as
+/// `HangingLocationProvider`: a lock, stored continuations, and a `release`.
+private final class HangingMessageComposer: MessageComposing, @unchecked Sendable {
+    private let lock = NSLock()
+    private var released: MessageOutcome?
+    private var waiters: [CheckedContinuation<MessageOutcome, Never>] = []
+    private var _composedCount = 0
+
+    let canSendText: Bool
+
+    init(canSendText: Bool = true) {
+        self.canSendText = canSendText
+    }
+
+    var composedCount: Int { lock.withLock { _composedCount } }
+
+    @MainActor
+    func compose(recipients: [PhoneNumber], body: String) async -> MessageOutcome {
+        // A double that could reach a real person would defeat the point.
+        precondition(
+            recipients.allSatisfy(\.isReservedForDrama),
+            "HangingMessageComposer was given a number outside Ofcom's reserved drama range: \(recipients.map(\.dialable))"
+        )
+        lock.withLock { _composedCount += 1 }
+        return await withCheckedContinuation { continuation in
+            let answerNow = lock.withLock { () -> MessageOutcome? in
+                if let released { return released }
+                waiters.append(continuation)
+                return nil
+            }
+            if let answerNow { continuation.resume(returning: answerNow) }
+        }
+    }
+
+    /// Lets every waiting caller finish, so a test leaves nothing hanging.
+    func release(with outcome: MessageOutcome = .sent) {
+        let pending = lock.withLock { () -> [CheckedContinuation<MessageOutcome, Never>] in
+            released = outcome
+            defer { waiters = [] }
+            return waiters
+        }
+        pending.forEach { $0.resume(returning: outcome) }
+    }
+}
+
 @MainActor
 @Suite("Alert model")
 struct AlertModelTests {
 
     private func services(
         location: any LocationProviding = StubLocationProvider(fix: london()),
-        messages: SpyMessageComposer = SpyMessageComposer()
+        messages: any MessageComposing = SpyMessageComposer()
     ) -> Services {
         var services = Services.unavailable
         services.location = location
@@ -96,6 +142,7 @@ struct AlertModelTests {
     @Test("A provider that never answers does not hold the alert")
     func hungProvider() async throws {
         let hanging = HangingLocationProvider()
+        defer { hanging.release() }
         let spy = SpyMessageComposer()
         let m = model(services(location: hanging, messages: spy), timeout: .milliseconds(200))
 
@@ -106,7 +153,7 @@ struct AlertModelTests {
 
         let composed = try #require(spy.composed.first)
         #expect(composed.body.contains("My location is not available."))
-        hanging.release()
+        #expect(m.phase == .finished(.handedToMessages(includedLocation: false)))
     }
 
     @Test("A stale cached fix is not sent as where they are now")
@@ -116,6 +163,7 @@ struct AlertModelTests {
         await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: false)
         let composed = try #require(spy.composed.first)
         #expect(!composed.body.contains("maps.apple.com"))
+        #expect(composed.body.contains("My location is not available."))
         #expect(m.phase == .finished(.handedToMessages(includedLocation: false)))
     }
 
@@ -146,6 +194,7 @@ struct AlertModelTests {
         #expect(composed.recipients == [TestModeNumbers.contact(at: 0), TestModeNumbers.contact(at: 1)])
         #expect(composed.body.components(separatedBy: "\n").first == Strings.alert.testNotice)
         #expect(m.recipients.map(\.name) == ["Alice", "Bob"])
+        #expect(m.recipients.map(\.number) == [TestModeNumbers.contact(at: 0), TestModeNumbers.contact(at: 1)])
     }
 
     @Test("A second tap while the first is still working does nothing")
@@ -169,5 +218,29 @@ struct AlertModelTests {
 
         m.reset()
         #expect(m.phase == .idle)
+    }
+
+    @Test("The busy guard also holds while a compose sheet is up, not only while locating")
+    func doubleTapWhileComposing() async throws {
+        let composer = HangingMessageComposer()
+        defer { composer.release() }
+        let m = model(services(messages: composer))
+
+        let first = Task { await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: false) }
+        for _ in 0..<10_000 where m.phase != .composing { await Task.yield() }
+        try #require(m.phase == .composing)
+        #expect(m.isBusy)
+
+        await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: false)
+
+        composer.release(with: .sent)
+        await first.value
+        #expect(composer.composedCount == 1)
+        #expect(m.phase == .finished(.handedToMessages(includedLocation: true)))
+    }
+
+    @Test("Defaults to a three-second location timeout")
+    func defaultTimeout() {
+        #expect(AlertModel.defaultLocationTimeout == .seconds(3))
     }
 }

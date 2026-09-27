@@ -47,6 +47,11 @@ public protocol MessageComposing: Sendable {
     /// Presents the system composer, pre-filled. iOS never sends without the user
     /// tapping Send, and never will — see ADR-0002. The returned outcome says what
     /// the user actually did, which is what lets the UI avoid claiming success.
+    ///
+    /// Must always return. The alert stays busy for as long as this call is in
+    /// flight, so an implementation that never returns would hang the alert with
+    /// it. If the composer sheet itself cannot be presented, report `.failed`
+    /// rather than never completing.
     @MainActor
     func compose(recipients: [PhoneNumber], body: String) async -> MessageOutcome
 }

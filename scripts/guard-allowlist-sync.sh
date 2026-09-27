@@ -16,10 +16,25 @@ ALLOWLIST="docs/url-allowlist.txt"
 in_content=$(python3 -c '
 import json, sys
 d = json.load(open(sys.argv[1]))
-urls = {s["url"] for s in d.get("services", []) if s.get("url")}
-urls |= {r["learnMoreURL"] for r in d.get("emergencyRoutes", []) if r.get("learnMoreURL")}
-urls |= {g["url"] for g in d.get("guides", []) if g.get("url")}
-urls |= {r["url"] for r in d.get("reporting", []) if r.get("url")}
+urls = set()
+def walk(node):
+    # Recurse into every dict and list in the pack, rather than listing sections by
+    # name, so a future section (rights sources nested under a topic, a refuge note
+    # nested under its own key, ...) cannot ship an unchecked link just because this
+    # script was never updated for it.
+    # Every "url" and "learnMoreURL" anywhere is a link a person can open.
+    # "source" strings are the pages an entry was verified against, never shown,
+    # and are deliberately not collected.
+    if isinstance(node, dict):
+        for key, value in node.items():
+            if key in ("url", "learnMoreURL") and isinstance(value, str):
+                urls.add(value)
+            else:
+                walk(value)
+    elif isinstance(node, list):
+        for item in node:
+            walk(item)
+walk(d)
 for u in sorted(urls): print(u)
 ' "$CONTENT")
 

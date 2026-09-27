@@ -21,10 +21,8 @@ https://247sexualabusesupport.org.uk/ | Rape and Sexual Abuse Support Line
 https://999bsl.co.uk/ | 999 BSL
 https://dsahelpline.org/ | DSA Helpline
 https://mensadviceline.org.uk/ | Advice Line
-https://support.apple.com/en-gb/105072 | Medical ID
 https://support.apple.com/en-gb/guide/iphone/iph3c99374c/ios | SOS
 https://support.apple.com/en-gb/guide/personal-safety/ips2aad835e1/web | Safety Check
-https://support.apple.com/en-gb/guide/personal-safety/ips4f0cd709b/web | emergency call
 https://support.apple.com/en-gb/guide/personal-safety/ips56b5bc469/web | Check In
 https://therowan.hscni.net/ | The Rowan
 # victimsupport.scot answers 200 from a home connection but 403 to GitHub's runners
@@ -42,6 +40,109 @@ https://www.relayuk.bt.com/how-to-use-relay-uk/contact-999-using-relay-uk.html |
 https://www.samaritans.org/how-we-can-help/contact-samaritan/ | Samaritans
 https://www.sdafmh.org.uk/en/ | Forced Marriage Helpline
 https://www.victimsupport.org.uk/help-and-support/get-help/supportline/ | Victim Support
+
+# ── iPhone features ──────────────────────────────────────────────
+https://support.apple.com/en-gb/101573 | Emergency SOS via satellite
+https://support.apple.com/en-gb/104959 | Crash Detection
+https://support.apple.com/en-gb/105071 | Sensitive Content Warning
+https://support.apple.com/en-gb/120340 | Stolen Device Protection
+https://support.apple.com/en-gb/guide/iphone/iph08022b192/ios | Medical ID
+https://support.apple.com/en-gb/guide/iphone/iph7c3d96bab/ios | Change notification settings
+https://support.apple.com/en-gb/guide/personal-safety/ips05ede4573/web | Find My and location sharing
+https://support.apple.com/en-gb/guide/personal-safety/ips139b15fd9/web | Detect unwanted trackers
+https://support.apple.com/en-gb/guide/personal-safety/ipsd0be4c185/web | Lock or hide apps
+
+# ── Rights sources ──────────────────────────────────────────────
+https://www.acas.org.uk/employment-tribunal-time-limits | Employment tribunal time limits - Acas
+https://www.acas.org.uk/equal-pay | Equal pay
+https://www.acas.org.uk/sexual-harassment | What sexual harassment is - Sexual harassment - Acas
+https://www.cps.gov.uk/how-cps-charges-and-prosecutes-rape-cases | How the CPS charges and prosecutes rape cases
+https://www.cps.gov.uk/prosecution-guidance/stalking-or-harassment | Stalking or Harassment
+https://www.cps.gov.uk/rasso-guide/what-you-need-know-first-0 | What you need to know first - Rape and Serious Sexual Assault
+https://www.gov.uk/female-genital-mutilation-help-advice | Female genital mutilation: help and advice - GOV.UK
+https://www.gov.uk/female-genital-mutilation-protection-order | Get a female genital mutilation protection order - GOV.UK
+https://www.gov.uk/government/news/cracking-down-on-sex-based-harassment-in-public | Cracking down on sex-based harassment in public - GOV.UK
+https://www.gov.uk/government/publications/domestic-violence-disclosure-scheme-pilot-guidance/domestic-violence-disclosure-scheme-accessible | Domestic Violence Disclosure Scheme (accessible) - GOV.UK
+https://www.gov.uk/government/publications/the-code-of-practice-for-victims-of-crime/code-of-practice-for-victims-of-crime-in-england-and-wales-victims-code | Code of Practice for Victims of Crime in England and Wales
+https://www.gov.uk/guidance/apply-for-a-domestic-abuse-protection-order-in-a-family-court | Apply for a domestic abuse protection order in a family court - GOV.UK
+https://www.gov.uk/guidance/civil-legal-aid-means-testing | Civil legal aid: means testing - GOV.UK
+https://www.gov.uk/guidance/homelessness-code-of-guidance-for-local-authorities/chapter-21-domestic-abuse | Chapter 21: Domestic abuse - Guidance - GOV.UK
+https://www.gov.uk/injunction-domestic-violence | been the victim of domestic abuse: Overview - GOV.UK
+https://www.gov.uk/stop-forced-marriage | Forced marriage - GOV.UK
+https://www.gov.uk/working-when-pregnant-your-rights | Pregnant employees
+https://www.justice-ni.gov.uk/articles/applying-non-molestation-occupation-order | Applying for a Non Molestation / Occupation Order
+https://www.legislation.gov.uk/anaw/2014/7/section/70 | Housing (Wales) Act 2014
+https://www.legislation.gov.uk/asp/2005/8/section/6 | Prohibition of Female Genital Mutilation (Scotland) Act 2005
+https://www.legislation.gov.uk/asp/2009/9/section/15 | Sexual Offences (Scotland) Act 2009
+https://www.legislation.gov.uk/asp/2009/9/section/6 | Sexual Offences (Scotland) Act 2009
+https://www.legislation.gov.uk/asp/2009/9/section/7 | Sexual Offences (Scotland) Act 2009
+https://www.legislation.gov.uk/asp/2010/13/section/38 | Criminal Justice and Licensing (Scotland) Act 2010
+https://www.legislation.gov.uk/asp/2016/22/section/2 | Abusive Behaviour and Sexual Harm (Scotland) Act 2016
+https://www.legislation.gov.uk/asp/2018/5/section/2 | Domestic Abuse (Scotland) Act 2018
+https://www.legislation.gov.uk/nia/2015/2/section/16 | Human Trafficking and Exploitation (Criminal Justice and Support for Victims) Act (Northern Ireland) 2015
+https://www.legislation.gov.uk/nia/2016/21/section/51 | Justice Act (Northern Ireland) 2016
+https://www.legislation.gov.uk/nia/2022/17/section/2 | Protection from Stalking Act (Northern Ireland) 2022
+https://www.legislation.gov.uk/nisi/1981/1675/article/19 | Courts (Northern Ireland) Order 1981
+https://www.legislation.gov.uk/nisi/1998/1071/article/25 | Family Homes and Domestic Violence (Northern Ireland) Order 1998
+https://www.legislation.gov.uk/nisi/2008/1769/article/3 | The Sexual Offences (Northern Ireland) Order 2008
+https://www.legislation.gov.uk/nisi/2008/1769/article/72A | The Sexual Offences (Northern Ireland) Order 2008
+https://www.legislation.gov.uk/ssi/2026/150/made | (Characteristic of Sex) (Amendment and Transitional Provisions) Regulations 2026
+https://www.legislation.gov.uk/ukpga/1980/43/section/127 | Magistrates’ Courts Act 1980
+https://www.legislation.gov.uk/ukpga/1987/26/section/24 | Housing (Scotland) Act 1987
+https://www.legislation.gov.uk/ukpga/1995/46/section/234AZA | Criminal Procedure (Scotland) Act 1995
+https://www.legislation.gov.uk/ukpga/1996/27/section/42A | Family Law Act 1996
+https://www.legislation.gov.uk/ukpga/2003/31/section/6 | Female Genital Mutilation Act 2003
+https://www.legislation.gov.uk/ukpga/2003/42/section/66A | Sexual Offences Act 2003
+https://www.legislation.gov.uk/ukpga/2003/42/section/66B | Sexual Offences Act 2003
+https://www.legislation.gov.uk/ukpga/2003/42/section/66E | Sexual Offences Act 2003
+https://www.legislation.gov.uk/ukpga/2003/42/section/66H | Sexual Offences Act 2003
+https://www.legislation.gov.uk/ukpga/2010/17/section/24 | Crime and Security Act 2010
+https://www.legislation.gov.uk/ukpga/2014/12/section/121 | Anti-social Behaviour, Crime and Policing Act 2014
+https://www.legislation.gov.uk/ukpga/2014/12/section/122 | Anti-social Behaviour, Crime and Policing Act 2014
+https://www.legislation.gov.uk/ukpga/2015/9/section/76 | Serious Crime Act 2015
+https://www.legislation.gov.uk/ukpga/2021/17/section/1 | Domestic Abuse Act 2021
+https://www.legislation.gov.uk/ukpga/2023/50/section/10 | Online Safety Act 2023
+https://www.legislation.gov.uk/uksi/2025/319/made | The Domestic Abuse Act 2021 (Commencement No. 8 and Saving Provisions) Regulations 2025
+https://www.legislation.gov.uk/uksi/2026/342/made | The Domestic Abuse Act 2021 (Commencement No. 6, 8 and 9 and Saving Provisions) (Amendment) Regulations 2026
+https://www.legislation.gov.uk/uksi/2026/344/made | The Protection from Sex-based Harassment in Public Act 2023 (Commencement) Regulations 2026
+https://www.lra.org.uk/ | Labour Relations Agency - Official
+https://www.mygov.scot/domestic-abuse/what-is-domestic-abuse | What is domestic abuse - mygov.scot
+https://www.mygov.scot/if-youre-homeless | homeless or have nowhere safe to stay - mygov.scot
+https://www.mygov.scot/legal-protection-against-abuse-and-harassment/domestic-abuse-interdict | Domestic abuse interdict - mygov.scot
+https://www.mygov.scot/victim-witness-rights | After a crime: your rights - mygov.scot
+https://www.mygov.scot/victim-witness-rights/go-to-court | Going to court - mygov.scot
+https://www.nidirect.gov.uk/articles/checking-persons-history-abuse | history of abuse
+https://www.nidirect.gov.uk/articles/female-genital-mutilation | Female genital mutilation
+https://www.nidirect.gov.uk/articles/getting-help-after-sexual-violence | Getting help after sexual violence
+https://www.nidirect.gov.uk/articles/sex-discrimination-and-equal-pay | Sex discrimination and equal pay
+https://www.nidirect.gov.uk/articles/stalking-protection-orders | Stalking Protection Orders
+https://www.nidirect.gov.uk/articles/victim-charter | Victim Charter
+https://www.nidirect.gov.uk/articles/victim-personal-statements | Victim personal statements
+https://www.nidirect.gov.uk/domestic-abuse | Domestic abuse
+https://www.nidirect.gov.uk/stalking | Stalking
+https://www.nihe.gov.uk/DomesticAbuseSupport | Domestic Abuse Support - Northern Ireland Housing Executive
+https://www.scotland.police.uk/advice/domestic-abuse/disclosure-scheme-for-domestic-abuse-scotland/ | history of domestic abuse - Police Scotland
+https://www.scotland.police.uk/advice/forced-marriage/ | Forced marriage - Police Scotland
+https://www.scotland.police.uk/advice/rape-and-sexual-crime/ | Rape and sexual crime - Police Scotland
+https://www.scotland.police.uk/advice/stalking-and-harassment/ | Stalking and harassment - Police Scotland
+https://www.scotland.police.uk/what-s-happening/news/2025/october/more-than-19-500-disclosures-given-to-people-at-risk-of-domestic-abuse/ | abusive past in ten years - Police Scotland
+
+# ── Refuge routes ──────────────────────────────────────────────
+https://bawso.org.uk/en/ | Bawso
+https://dsahelpline.org/get-help/what-to-expect-when-you-contact-us | What to Expect When You Contact The DSA Helpline
+https://southallblacksisters.org.uk/our-services/domestic-abuse-helpline/ | Domestic Abuse Helpline - Southall Black Sisters
+https://welshwomensaid.org.uk/information-support/find-your-local-service/ | Find your local service : Welsh Women's Aid
+https://womensaid.org.uk/information-support/the-survivors-handbook/i-want-to-leave-my-relationship-safely/ | I want to leave my relationship safely - Women’s Aid
+https://womensaid.org.uk/information-support/womens-aid-directory/ | Women's Aid Directory - Women’s Aid
+https://womensaid.scot/find-nearest-wa-group/ | Find your nearest WA group
+https://www.gov.wales/live-fear-free/domestic-abuse-wales | Domestic abuse
+https://www.sdafmh.org.uk/en/information-support/your-rights-practical-information/refuge/ | Refuge - Scotland's Domestic Abuse and Forced Marriage Helpline
+https://www.womensaidni.org/get-help/local-groups/ | Local groups - Women’s Aid Federation Northern Ireland
+
+# The PPS NI policy PDF has no <title>, so its title cannot be checked. Verified by
+# hand on 2026-09-27 (HTTP 200, no redirect, Last-Modified 10 Nov 2023) — see
+# task-1-report.md.
+https://www.ppsni.gov.uk/files/ppsni/2023-11/PPS%20Policy%20for%20Prosecuting%20Sexual%20Offences.pdf | Policy for Prosecuting Sexual Offences - Public Prosecution Service for Northern Ireland (PDF) | manual 2026-09-27
 
 # ── Crime reporting ─────────────────────────────────────────────────────────────
 # police.uk and btp.police.uk sit behind Cloudflare and refuse every non-browser

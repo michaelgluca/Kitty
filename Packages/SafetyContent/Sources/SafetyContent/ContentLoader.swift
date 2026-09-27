@@ -29,14 +29,20 @@ public enum ContentLoader {
 
     /// Every URL a user can be sent to, for the CI allowlist check.
     ///
-    /// Sources are deliberately excluded: they are the pages an entry was verified
-    /// against, recorded for reviewers, and are never shown to a user.
+    /// `SupportService.source` is deliberately excluded: it is the page an entry was
+    /// verified against, recorded for reviewers, and never shown to a user. A rights
+    /// topic's `sources` and the refuge note's `source`, though, are shown to the user
+    /// on screen as citations, so — unlike `SupportService.source` — they are
+    /// user-facing links and belong here alongside the refuge routes themselves.
     public static func allURLs(in pack: ContentPack) -> [String] {
         Array(Set(
             pack.services.map(\.url)
                 + pack.reporting(for: .unitedKingdom).map(\.url)
                 + pack.emergencyRoutes.compactMap(\.learnMoreURL)
                 + pack.guides.map(\.url)
+                + pack.rights.flatMap { $0.sources.map(\.url) }
+                + pack.refuges.map(\.url)
+                + [pack.refugeNote.source.url]
         )).sorted()
     }
 }

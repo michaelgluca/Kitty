@@ -271,6 +271,14 @@ struct LinkTests {
             #expect(URL(string: url) != nil, "Unparseable: \(url)")
         }
     }
+
+    @Test("Every URL a person can open is in allURLs, including rights sources and refuge routes")
+    func allURLsIsComplete() throws {
+        let p = try pack()
+        let listed = Set(ContentLoader.allURLs(in: p))
+        let expected = Set(p.rights.flatMap { $0.sources.map(\.url) } + p.refuges.map(\.url) + [p.refugeNote.source.url])
+        #expect(expected.isSubset(of: listed), "Missing: \(expected.subtracting(listed))")
+    }
 }
 
 @Suite("Content pack: crime reporting")

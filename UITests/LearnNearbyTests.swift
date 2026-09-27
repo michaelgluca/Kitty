@@ -106,7 +106,7 @@ final class LearnNearbyTests: XCTestCase {
         XCTAssertTrue(app.buttons["nearby.directions.test-station"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["nearby.map"].exists)
         XCTAssertTrue(anything(containing: "front counters", in: app).exists)
-        XCTAssertTrue(app.staticTexts["nearby.counterNote"].label.contains("999"))
+        XCTAssertTrue(app.staticTexts["nearby.counterNote"].label.contains("call 999"))
     }
 
     /// Review Focus 4: the 999 line must be on screen when no station is shown, not
@@ -120,7 +120,7 @@ final class LearnNearbyTests: XCTestCase {
         XCTAssertFalse(app.descendants(matching: .any)["nearby.map"].exists, "No map without a result")
         let note = app.staticTexts["nearby.counterNote"]
         XCTAssertTrue(note.exists, "The front-counter note must show when no station is found")
-        XCTAssertTrue(note.label.contains("999"), "In the UK the note names 999")
+        XCTAssertTrue(note.label.contains("call 999"), "In the UK the note says to call 999")
     }
 
     @MainActor

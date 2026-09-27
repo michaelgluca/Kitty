@@ -33,11 +33,19 @@ struct KittyApp: App {
 
     init() {
         services = Services.live()
+        pack = Self.loadContent()
+    }
+
+    private static func loadContent() -> ContentPack? {
+        #if DEBUG
+        // UI tests only: stands in for a pack that failed to load.
+        if UITestSupport.withoutContent { return nil }
+        #endif
         do {
-            pack = try ContentLoader.loadUK()
+            return try ContentLoader.loadUK()
         } catch {
             contentLogger.error("Bundled content pack failed to load.")
-            pack = nil
+            return nil
         }
     }
 

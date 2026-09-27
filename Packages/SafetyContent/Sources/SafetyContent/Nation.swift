@@ -1,4 +1,5 @@
 import Foundation
+import SafetyDomain
 
 /// A UK nation.
 ///
@@ -25,6 +26,40 @@ public extension Coverage {
         case .wales: nation == .wales
         case .scotland: nation == .scotland
         case .northernIreland: nation == .northernIreland
+        }
+    }
+}
+
+public extension Nation {
+
+    /// The nation a geocoded area is in, or `nil` when it cannot be told for certain.
+    ///
+    /// Reads each name in turn — the whole name, then only its last comma-separated
+    /// part — and stops at the first that is exactly a nation's name. Nothing is
+    /// matched inside a name: "Princess of Wales Road" is not Wales. Outside the UK,
+    /// or with no country, the answer is `nil`, and the screen asks the person rather
+    /// than guessing, because the helplines and the law differ by nation.
+    init?(area: GeocodedArea) {
+        guard area.countryCode?.uppercased() == "GB" else { return nil }
+        for name in area.names {
+            let candidates = [name, name.split(separator: ",").last.map(String.init) ?? name]
+            for candidate in candidates {
+                if let nation = Self.named(candidate) {
+                    self = nation
+                    return
+                }
+            }
+        }
+        return nil
+    }
+
+    private static func named(_ text: String) -> Nation? {
+        switch text.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
+        case "england": .england
+        case "wales": .wales
+        case "scotland": .scotland
+        case "northern ireland": .northernIreland
+        default: nil
         }
     }
 }

@@ -22,7 +22,7 @@ public struct RootView: View {
 
     @Environment(\.scenePhase) private var scenePhase
 
-    public init(services: Services = .unavailable, pack: ContentPack? = try? ContentLoader.loadUK()) {
+    public init(services: Services = .unavailable, pack: ContentPack?) {
         self.services = services
         self.pack = pack
         // Loaded here, before the first frame, so an alert raised immediately after
@@ -71,7 +71,7 @@ struct PlaceholderScreen: View {
     }
 }
 
-#Preview("Alert") { RootView() }
+#Preview("Alert") { RootView(pack: nil) }
 #Preview("Alert — AX5") {
-    RootView().environment(\.dynamicTypeSize, .accessibility5)
+    RootView(pack: nil).environment(\.dynamicTypeSize, .accessibility5)
 }

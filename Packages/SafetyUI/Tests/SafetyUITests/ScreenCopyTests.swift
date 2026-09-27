@@ -116,10 +116,12 @@ struct ScreenCopyTests {
 
     @Test("Every key the screens use resolves", arguments: [
         "alert.contacts.title", "alert.contacts.none", "alert.contacts.unreadable", "alert.contacts.add",
+        "alert.contacts.open",
         "alert.result.dismiss", "alert.result.sent.combined", "alert.location.allow", "alert.location.openSettings", "alert.location.settingsFailed",
-        "emergency.call.hint",
+        "emergency.call.hint", "emergency.unavailable",
         "contacts.title", "contacts.explainer", "contacts.add", "contacts.empty",
         "contacts.remove.action", "contacts.remove.title", "contacts.remove.message", "contacts.remove.confirm",
+        "contacts.remove.row",
         "contacts.unreadable.title", "contacts.unreadable.body", "contacts.unreadable.startNew",
         "contacts.unreadable.confirmTitle", "contacts.unreadable.confirmMessage",
         "settings.testMode.toggle", "settings.testMode.footer",

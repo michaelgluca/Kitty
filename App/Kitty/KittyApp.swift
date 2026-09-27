@@ -1,7 +1,16 @@
+import SafetyContent
 import SafetyDomain
 import SafetyServices
 import SafetyUI
 import SwiftUI
+import os
+
+/// Failures loading the bundled content pack, worth knowing about without a device
+/// attached. Never carries the pack's content — only that loading it failed.
+private let contentLogger = Logger(
+    subsystem: Bundle.main.bundleIdentifier ?? "uk.co.example.safety",
+    category: "content"
+)
 
 /// The composition root.
 ///
@@ -15,11 +24,26 @@ import SwiftUI
 @main
 struct KittyApp: App {
 
-    private let services = Services.live()
+    private let services: Services
+    /// Loaded once, here, with the failure logged rather than swallowed by a `try?`
+    /// at every call site. `nil` only if the bundled resource is missing or
+    /// malformed; every screen that needs it is handed this same value, and the
+    /// Alert tab says so in place of the 999 button when it is `nil`.
+    private let pack: ContentPack?
+
+    init() {
+        services = Services.live()
+        do {
+            pack = try ContentLoader.loadUK()
+        } catch {
+            contentLogger.error("Bundled content pack failed to load.")
+            pack = nil
+        }
+    }
 
     var body: some Scene {
         WindowGroup {
-            RootView(services: services)
+            RootView(services: services, pack: pack)
                 .environment(\.regionStance, RegionDetection.current())
         }
     }

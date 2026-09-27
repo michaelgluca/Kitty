@@ -25,7 +25,7 @@ public struct HelpScreen: View {
 
     private let pack: ContentPack?
 
-    public init(pack: ContentPack? = try? ContentLoader.loadUK()) {
+    public init(pack: ContentPack?) {
         self.pack = pack
     }
 

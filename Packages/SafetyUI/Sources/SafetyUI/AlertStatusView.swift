@@ -49,7 +49,10 @@ struct AlertStatusView: View {
                 }
 
                 if outcome == .needsContacts || outcome == .contactsUnreadable {
-                    Button(Strings.localized("alert.contacts.add"), action: onAddContacts)
+                    let key: String.LocalizationValue = outcome == .contactsUnreadable
+                        ? "alert.contacts.open"
+                        : "alert.contacts.add"
+                    Button(Strings.localized(key), action: onAddContacts)
                         .buttonStyle(.borderedProminent)
                 }
 

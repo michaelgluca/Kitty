@@ -1236,6 +1236,42 @@
           }
         }
       }
+    },
+    "contacts.remove.row": {
+      "comment": "%@ is the contact's name. Accessibility label of the remove button on a row.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove %@"
+          }
+        }
+      }
+    },
+    "alert.contacts.open": {
+      "comment": "Opens the trusted-contact list.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Trusted contacts"
+          }
+        }
+      }
+    },
+    "emergency.unavailable": {
+      "comment": "Shown only if the bundled content failed to load.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The 999 button could not be loaded. You can still dial 999 from your phone app."
+          }
+        }
+      }
     }
   }
 }

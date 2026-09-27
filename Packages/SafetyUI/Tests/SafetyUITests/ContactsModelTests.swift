@@ -134,4 +134,15 @@ struct ContactsModelTests {
         #expect(store.saved.map(\.displayName) == ["Alice (test)"])
         #expect(m.contacts == store.saved)
     }
+
+    @Test("If starting a new list cannot be saved, the unreadable list stays unreadable and says so")
+    func startNewListFails() {
+        let store = InMemoryContactStore(loadFailure: Boom(), saveFailure: Boom())
+        let m = model(store)
+        m.startNewList()
+        #expect(m.loadState == .unreadable)
+        #expect(!m.canEdit)
+        #expect(m.contacts.isEmpty)
+        #expect(m.problem == .saveFailed)
+    }
 }

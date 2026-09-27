@@ -45,6 +45,23 @@ public struct PhoneNumber: Hashable, Sendable, Codable {
         self.raw = trimmed
         self.dialable = (hasPlus ? "+" : "") + digits
     }
+
+    /// Memberwise, for values that are valid by construction. Private, so everything
+    /// else still goes through the validating initialiser.
+    private init(raw: String, dialable: String) {
+        self.raw = raw
+        self.dialable = dialable
+    }
+
+    /// A number in Ofcom's reserved drama range, 07700 900000–900999.
+    ///
+    /// Total by construction: any suffix is clamped into the range, so Test Mode can
+    /// rely on it without a force unwrap, and it can never produce a real number.
+    public static func drama(_ suffix: Int) -> PhoneNumber {
+        let clamped = String(min(max(suffix, 0), 999))
+        let block = String(repeating: "0", count: 3 - clamped.count) + clamped
+        return PhoneNumber(raw: "07700 900\(block)", dialable: "07700900\(block)")
+    }
 }
 
 public extension PhoneNumber {

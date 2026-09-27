@@ -11,7 +11,12 @@ struct SystemMessageComposer: MessageComposing {
 
     func compose(recipients: [PhoneNumber], body: String) async -> MessageOutcome {
         guard MFMessageComposeViewController.canSendText() else { return .unavailable }
-        guard let presenter = Presenter.topViewController() else { return .failed }
+        // Checked before presenting, not after: some out-of-process controllers
+        // delay setting `presentingViewController` until their own presentation
+        // animation completes, so a check made right after `present` cannot tell
+        // a refused presentation from a normal, still-animating one. See
+        // `Presenter.presentable()`.
+        guard let presenter = await Presenter.presentable() else { return .failed }
 
         return await withCheckedContinuation { continuation in
             let controller = MFMessageComposeViewController()
@@ -19,17 +24,11 @@ struct SystemMessageComposer: MessageComposing {
             controller.recipients = recipients.map(\.dialable)
             controller.body = body
             controller.messageComposeDelegate = delegate
-            controller.presentationController?.delegate = delegate
             presenter.present(controller, animated: true)
-            // UIKit refuses a presentation silently — no delegate callback, only a
-            // console warning — when the presenter is mid-transition or not in the
-            // window hierarchy. It sets `presentingViewController` synchronously
-            // when it accepts the request, so its absence right after `present`
-            // means the sheet never appeared and the continuation must still
-            // resolve, rather than hang the alert forever.
-            if controller.presentingViewController == nil {
-                delegate.finish(.failed)
-            }
+            // Set only once `present` has returned: reading
+            // `controller.presentationController` beforehand can create it with
+            // the wrong presentation style.
+            controller.presentationController?.delegate = delegate
         }
     }
 }
@@ -64,8 +63,8 @@ private final class ComposeDelegate: NSObject, MFMessageComposeViewControllerDel
     }
 
     /// Resumes the continuation exactly once, however the sheet ended — a normal
-    /// finish, a swipe-down dismissal, or a presentation UIKit silently refused.
-    func finish(_ outcome: MessageOutcome) {
+    /// finish or a swipe-down dismissal.
+    private func finish(_ outcome: MessageOutcome) {
         continuation?.resume(returning: outcome)
         continuation = nil
         keepAlive = nil

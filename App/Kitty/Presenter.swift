@@ -21,4 +21,40 @@ enum Presenter {
         }
         return top
     }
+
+    /// The view controller to present a system sheet from right now, or `nil` if
+    /// none can currently accept one.
+    ///
+    /// `present(_:animated:)` fails silently — no delegate callback, only a
+    /// console warning — when the target is mid-transition, already presenting,
+    /// being presented itself, or being dismissed. Checking `presentingViewController`
+    /// after calling `present` cannot tell the difference: some out-of-process
+    /// controllers (`CNContactPickerViewController` among them) delay setting it
+    /// until their own presentation animation completes, sometimes by several
+    /// seconds, so that check fires on every normal presentation, not just a
+    /// refused one. Checking first, here, is what actually distinguishes the two.
+    ///
+    /// A transition already running is given one chance to finish — refusing a
+    /// presentation that would in fact succeed a moment later would be its own
+    /// kind of silent failure — and then the state is re-read and checked once
+    /// more before handing back a controller.
+    static func presentable() async -> UIViewController? {
+        guard var top = topViewController() else { return nil }
+        if let coordinator = top.transitionCoordinator {
+            await withCheckedContinuation { continuation in
+                coordinator.animate(alongsideTransition: nil) { _ in
+                    continuation.resume()
+                }
+            }
+            guard let refreshed = topViewController() else { return nil }
+            top = refreshed
+        }
+        guard top.viewIfLoaded?.window != nil,
+              top.presentedViewController == nil,
+              !top.isBeingPresented,
+              !top.isBeingDismissed,
+              top.transitionCoordinator == nil
+        else { return nil }
+        return top
+    }
 }

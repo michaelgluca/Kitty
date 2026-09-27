@@ -9,7 +9,12 @@ import UIKit
 struct SystemContactPicker: ContactPicking {
 
     func pickContact() async -> ContactPickOutcome {
-        guard let presenter = Presenter.topViewController() else { return .unavailable }
+        // Checked before presenting, not after: `CNContactPickerViewController`
+        // delays setting `presentingViewController` until its own presentation
+        // animation completes — sometimes by several seconds — so a check made
+        // right after `present` cannot tell a refused presentation from a normal,
+        // still-animating one. See `Presenter.presentable()`.
+        guard let presenter = await Presenter.presentable() else { return .unavailable }
 
         return await withCheckedContinuation { continuation in
             let picker = CNContactPickerViewController()
@@ -21,24 +26,14 @@ struct SystemContactPicker: ContactPicking {
             picker.predicateForSelectionOfProperty = NSPredicate(format: "key == 'phoneNumbers'")
             let delegate = PickerDelegate(continuation)
             picker.delegate = delegate
-            picker.presentationController?.delegate = delegate
             presenter.present(picker, animated: true)
-            // UIKit refuses a presentation silently — no delegate callback, only a
-            // console warning — when the presenter is mid-transition or not in the
-            // window hierarchy. It sets `presentingViewController` synchronously
-            // when it accepts the request, so its absence right after `present`
-            // means the picker never appeared and the continuation must still
-            // resolve, rather than leave the caller waiting for ever.
-            if picker.presentingViewController == nil {
-                delegate.finish(.unavailable)
-            }
         }
     }
 }
 
 /// Reports the choice once. Keeps itself alive until then, because the picker holds
 /// its delegate weakly. The picker dismisses itself.
-private final class PickerDelegate: NSObject, CNContactPickerDelegate, UIAdaptivePresentationControllerDelegate {
+private final class PickerDelegate: NSObject, CNContactPickerDelegate {
 
     private var continuation: CheckedContinuation<ContactPickOutcome, Never>?
     private var keepAlive: PickerDelegate?
@@ -76,15 +71,11 @@ private final class PickerDelegate: NSObject, CNContactPickerDelegate, UIAdaptiv
         return ""
     }
 
-    /// A swipe-down dismissal calls neither `contactPickerDidCancel` nor
-    /// `contactPicker(_:didSelect:)`.
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        finish(.cancelled)
-    }
-
-    /// Resumes the continuation exactly once, however the picker ended — a normal
-    /// finish, a swipe-down dismissal, or a presentation UIKit silently refused.
-    func finish(_ outcome: ContactPickOutcome) {
+    /// Resumes the continuation exactly once. `CNContactPickerViewController`
+    /// itself reports a swipe-down dismissal through `contactPickerDidCancel`, the
+    /// same as tapping Cancel, so no separate presentation-controller delegate is
+    /// needed here — adding one would only displace the picker's own.
+    private func finish(_ outcome: ContactPickOutcome) {
         continuation?.resume(returning: outcome)
         continuation = nil
         keepAlive = nil

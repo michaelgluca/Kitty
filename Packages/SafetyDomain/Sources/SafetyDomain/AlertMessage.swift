@@ -18,6 +18,9 @@ public struct AlertStrings: Sendable {
     /// One `%@`: the battery level as a percentage.
     public var battery: String
     public var disclaimer: String
+    /// The first line of a message composed in Test Mode, so nobody who receives one
+    /// mistakes it for a real alert.
+    public var testNotice: String
 
     public init(
         header: String,
@@ -26,7 +29,8 @@ public struct AlertStrings: Sendable {
         coordinates: String,
         locationUnavailable: String,
         battery: String,
-        disclaimer: String
+        disclaimer: String,
+        testNotice: String
     ) {
         self.header = header
         self.sentAt = sentAt
@@ -35,6 +39,7 @@ public struct AlertStrings: Sendable {
         self.locationUnavailable = locationUnavailable
         self.battery = battery
         self.disclaimer = disclaimer
+        self.testNotice = testNotice
     }
 }
 
@@ -45,11 +50,25 @@ public struct AlertContext: Sendable {
     public var location: LocationFix?
     /// 0…1, or `nil` when unknown.
     public var batteryFraction: Double?
+    /// Composed in Test Mode: the message says so on its first line.
+    public var isTest: Bool
 
-    public init(sentAt: Date, location: LocationFix?, batteryFraction: Double?) {
+    public init(sentAt: Date, location: LocationFix?, batteryFraction: Double?, isTest: Bool = false) {
         self.sentAt = sentAt
         self.location = location
         self.batteryFraction = batteryFraction
+        self.isTest = isTest
+    }
+
+    /// The fix to put in the message, or `nil`.
+    ///
+    /// A fix that is implausible, reduced-accuracy or stale is no location at all:
+    /// presenting any of them as "where I am" would send someone to the wrong place.
+    /// This is the one definition, used both to write the message and to tell the
+    /// person whether it included their location.
+    public var usableLocation: LocationFix? {
+        guard let fix = location, fix.isUsable, fix.isFresh(at: sentAt) else { return nil }
+        return fix
     }
 }
 
@@ -82,17 +101,17 @@ public enum AlertMessageRenderer {
         locale: Locale,
         timeZone: TimeZone
     ) -> String {
-        var lines: [String] = [strings.header]
+        var lines: [String] = []
+        if context.isTest { lines.append(strings.testNotice) }
+        lines.append(strings.header)
 
         var timeStyle = Date.FormatStyle(date: .abbreviated, time: .shortened)
         timeStyle.locale = locale
         timeStyle.timeZone = timeZone
         lines.append(String(format: strings.sentAt, context.sentAt.formatted(timeStyle)))
 
-        // A fix that is stale, implausible or reduced-accuracy is reported as no
-        // location at all. Presenting a 5 km reading as "where I am" would read as
-        // precise and send someone to the wrong place.
-        if let fix = context.location, fix.isUsable {
+        // See AlertContext.usableLocation for what counts as a location.
+        if let fix = context.usableLocation {
             let pair = "\(format(fix.coordinate.latitude)), \(format(fix.coordinate.longitude))"
             lines.append(String(format: strings.locationLink, mapsLink(for: fix.coordinate)))
             lines.append(String(format: strings.coordinates, pair))

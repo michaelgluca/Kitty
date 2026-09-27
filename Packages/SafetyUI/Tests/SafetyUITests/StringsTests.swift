@@ -15,7 +15,7 @@ struct StringsTests {
         let s = Strings.alert
         let values = [
             s.header, s.sentAt, s.locationLink, s.coordinates,
-            s.locationUnavailable, s.battery, s.disclaimer,
+            s.locationUnavailable, s.battery, s.disclaimer, s.testNotice,
         ]
         for value in values {
             #expect(!value.isEmpty)
@@ -32,7 +32,7 @@ struct StringsTests {
             #expect(format.components(separatedBy: "%@").count == 2, "Expected one %@ in: \(format)")
         }
         // These take none.
-        for plain in [s.header, s.locationUnavailable, s.disclaimer] {
+        for plain in [s.header, s.locationUnavailable, s.disclaimer, s.testNotice] {
             #expect(!plain.contains("%@"), "Unexpected placeholder in: \(plain)")
         }
     }
@@ -40,6 +40,11 @@ struct StringsTests {
     @Test("The disclaimer says the app does not contact emergency services")
     func disclaimerIsHonest() {
         #expect(Strings.alert.disclaimer.lowercased().contains("does not contact emergency services"))
+    }
+
+    @Test("The Test Mode line says TEST, so no recipient could mistake it for a real alert")
+    func testNoticeIsUnmistakable() {
+        #expect(Strings.alert.testNotice.contains("TEST"))
     }
 }
 

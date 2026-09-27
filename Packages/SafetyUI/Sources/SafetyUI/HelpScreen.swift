@@ -12,11 +12,16 @@ public struct HelpScreen: View {
 
     @Environment(\.services) private var services
     @Environment(\.regionStance) private var region
+    // Optional: returns nil rather than crashing when no session is supplied, such as
+    // in a preview. No session in the environment means Test Mode is off.
+    @Environment(TestModeSession.self) private var testMode: TestModeSession?
 
     /// The one call awaiting confirmation, captured at the moment of the tap.
     @State private var pendingCall: PendingCall?
     /// A call or text the system could not start, shown so the user can do it by hand.
     @State private var failure: ContactFailure?
+
+    private var isTestMode: Bool { testMode?.isOn == true }
 
     private let pack: ContentPack?
 
@@ -27,6 +32,10 @@ public struct HelpScreen: View {
     public var body: some View {
         NavigationStack {
             List {
+                if let testMode, testMode.isOn {
+                    Section { TestModeBanner(session: testMode) }
+                }
+
                 if !region.isUnitedKingdom {
                     Section { NonUKNotice() }
                 }
@@ -95,7 +104,7 @@ public struct HelpScreen: View {
                 Button(Strings.localized("help.callConfirm.confirm")) { place(call) }
                 Button(Strings.localized("help.callConfirm.cancel"), role: .cancel) {}
             } message: { call in
-                Text(String(format: Strings.localized("help.callConfirm.messageWithNumber"), call.number.raw))
+                Text(call.confirmationMessage)
             }
             .alert(
                 Text(failure.map(\.message) ?? ""),
@@ -110,34 +119,56 @@ public struct HelpScreen: View {
 extension HelpScreen {
 
     private func call(_ number: PhoneNumber, serviceName: String) {
-        pendingCall = PendingCall(serviceName: serviceName, number: number)
+        pendingCall = PendingCall.make(serviceName: serviceName, number: number, testMode: isTestMode)
     }
 
     private func text(_ number: PhoneNumber) {
+        // In Test Mode a text goes to a drama number, like every other flow.
+        let target = isTestMode ? TestModeNumbers.service : number
         let texter = services.texter
         Task { @MainActor in
-            if await texter.openText(to: number) == false {
-                failure = .text(number)
+            if await texter.openText(to: target) == false {
+                failure = .text(target)
             }
         }
     }
 
-    /// Dials exactly the number that was presented — never re-read from state.
+    /// Dials exactly the number that was confirmed — never re-read from state.
     private func place(_ call: PendingCall) {
         let dialler = services.dialler
         Task { @MainActor in
-            if await dialler.dial(call.number) == false {
-                failure = .call(call.number)
+            if await dialler.dial(call.dialled) == false {
+                failure = .call(call.dialled)
             }
         }
     }
 }
 
 /// A call awaiting confirmation. Captured whole at the moment of the tap, so the
-/// confirmation and the dial both read one value and cannot drift apart.
+/// confirmation and the dial both read one value and cannot drift apart — not even
+/// if Test Mode is switched off while the dialog is open.
 struct PendingCall: Equatable {
     let serviceName: String
+    /// The number on the service's card.
     let number: PhoneNumber
+    /// What will actually be dialled: `number`, or in Test Mode a drama number.
+    let dialled: PhoneNumber
+    let isTest: Bool
+
+    static func make(serviceName: String, number: PhoneNumber, testMode: Bool) -> PendingCall {
+        PendingCall(
+            serviceName: serviceName,
+            number: number,
+            dialled: testMode ? TestModeNumbers.service : number,
+            isTest: testMode
+        )
+    }
+
+    var confirmationMessage: String {
+        isTest
+            ? String(format: Strings.localized("help.callConfirm.messageTestMode"), dialled.raw, number.raw)
+            : String(format: Strings.localized("help.callConfirm.messageWithNumber"), number.raw)
+    }
 }
 
 /// A call or text the system could not start. Never silent: the number is shown so

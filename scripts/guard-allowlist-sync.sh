@@ -18,10 +18,11 @@ import json, sys
 d = json.load(open(sys.argv[1]))
 urls = {s["url"] for s in d.get("services", []) if s.get("url")}
 urls |= {r["learnMoreURL"] for r in d.get("emergencyRoutes", []) if r.get("learnMoreURL")}
+urls |= {g["url"] for g in d.get("guides", []) if g.get("url")}
 for u in sorted(urls): print(u)
 ' "$CONTENT")
 
-in_allowlist=$(grep -vE '^[[:space:]]*(#|$)' "$ALLOWLIST" | sort -u)
+in_allowlist=$(grep -vE '^[[:space:]]*(#|$)' "$ALLOWLIST" | sed 's/[[:space:]]*|.*$//' | sort -u)
 
 missing=$(comm -23 <(printf '%s\n' "$in_content") <(printf '%s\n' "$in_allowlist") || true)
 stale=$(comm -13 <(printf '%s\n' "$in_content") <(printf '%s\n' "$in_allowlist") || true)

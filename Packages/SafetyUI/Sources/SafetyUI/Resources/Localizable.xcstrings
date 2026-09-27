@@ -1224,6 +1224,18 @@
           }
         }
       }
+    },
+    "alert.result.sent.combined": {
+      "comment": "Joins the sent message (%1$@, alert.result.sent) and the location sentence (%2$@). Reorder or change the separator if your language needs it.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
+        }
+      }
     }
   }
 }

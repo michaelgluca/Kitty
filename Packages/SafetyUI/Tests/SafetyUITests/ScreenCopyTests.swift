@@ -106,12 +106,20 @@ struct ScreenCopyTests {
         #expect(ContactsModel.Problem.rejected(.duplicate(existingName: "Alice"), number: "x").message.contains("Alice"))
     }
 
+    @Test("The combined sent message format has exactly the two positional placeholders")
+    func sentCombinedFormat() {
+        let combined = Strings.localized("alert.result.sent.combined")
+        #expect(combined.contains("%1$@"))
+        #expect(combined.contains("%2$@"))
+        #expect(!combined.contains("%3$@"))
+    }
+
     @Test("Every key the screens use resolves", arguments: [
         "alert.contacts.title", "alert.contacts.none", "alert.contacts.unreadable", "alert.contacts.add",
-        "alert.result.dismiss", "alert.location.allow", "alert.location.openSettings", "alert.location.settingsFailed",
+        "alert.result.dismiss", "alert.result.sent.combined", "alert.location.allow", "alert.location.openSettings", "alert.location.settingsFailed",
         "emergency.call.hint",
         "contacts.title", "contacts.explainer", "contacts.add", "contacts.empty",
-        "contacts.remove.action", "contacts.remove.message", "contacts.remove.confirm",
+        "contacts.remove.action", "contacts.remove.title", "contacts.remove.message", "contacts.remove.confirm",
         "contacts.unreadable.title", "contacts.unreadable.body", "contacts.unreadable.startNew",
         "contacts.unreadable.confirmTitle", "contacts.unreadable.confirmMessage",
         "settings.testMode.toggle", "settings.testMode.footer",

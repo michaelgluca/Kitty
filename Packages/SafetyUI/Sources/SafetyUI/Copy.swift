@@ -22,7 +22,7 @@ enum AlertCopy {
             let location: String.LocalizationValue = includedLocation
                 ? "alert.result.sent.withLocation"
                 : "alert.result.sent.withoutLocation"
-            return Strings.localized("alert.result.sent") + " " + Strings.localized(location)
+            return String(format: Strings.localized("alert.result.sent.combined"), Strings.localized("alert.result.sent"), Strings.localized(location))
         case .cancelled: return Strings.localized("alert.result.cancelled")
         case .failed: return Strings.localized("alert.result.failed")
         case .cannotText: return Strings.localized("alert.result.cannotText")

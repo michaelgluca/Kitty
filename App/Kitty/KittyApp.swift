@@ -70,8 +70,13 @@ extension Services {
         services.texter = SystemTextOpener()
         services.contacts = KeychainContactStore(service: contactStoreService())
         services.battery = DeviceBattery()
+        services.places = MapKitPlaceSearch()
+        services.routes = MapKitRouteFinder()
+        services.maps = AppleMapsOpener()
+        services.areas = MapKitAreaNamer()
         #if DEBUG
         UITestSupport.prepare(services.contacts)
+        if UITestSupport.stubsNearby { UITestSupport.stubNearby(&services) }
         #endif
         return services
     }

@@ -21,6 +21,7 @@
 		AA00000000000000000068 /* SystemMessageComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000058 /* SystemMessageComposer.swift */; };
 		AA00000000000000000069 /* SystemContactPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000059 /* SystemContactPicker.swift */; };
 		AA0000000000000000006A /* UITestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000005A /* UITestSupport.swift */; };
+		AA0000000000000000006B /* MapKitAdapters.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000005B /* MapKitAdapters.swift */; };
 		AA00000000000000000099 /* HelpCallTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000098 /* HelpCallTests.swift */; };
 		AA0000000000000000009D /* AlertFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000009C /* AlertFlowTests.swift */; };
 		AA0000000000000000009F /* XCUIApplication+Kitty.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000009E /* XCUIApplication+Kitty.swift */; };
@@ -51,6 +52,7 @@
 		AA00000000000000000058 /* SystemMessageComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemMessageComposer.swift; sourceTree = "<group>"; };
 		AA00000000000000000059 /* SystemContactPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemContactPicker.swift; sourceTree = "<group>"; };
 		AA0000000000000000005A /* UITestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestSupport.swift; sourceTree = "<group>"; };
+		AA0000000000000000005B /* MapKitAdapters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitAdapters.swift; sourceTree = "<group>"; };
 		AA00000000000000000098 /* HelpCallTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpCallTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000009C /* AlertFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertFlowTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000009E /* XCUIApplication+Kitty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+Kitty.swift"; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 				AA00000000000000000058 /* SystemMessageComposer.swift */,
 				AA00000000000000000059 /* SystemContactPicker.swift */,
 				AA0000000000000000005A /* UITestSupport.swift */,
+				AA0000000000000000005B /* MapKitAdapters.swift */,
 				AA00000000000000000053 /* Assets.xcassets */,
 				AA00000000000000000054 /* PrivacyInfo.xcprivacy */,
 				AA00000000000000000042 /* Info.plist */,
@@ -236,6 +239,7 @@
 				AA00000000000000000068 /* SystemMessageComposer.swift in Sources */,
 				AA00000000000000000069 /* SystemContactPicker.swift in Sources */,
 				AA0000000000000000006A /* UITestSupport.swift in Sources */,
+				AA0000000000000000006B /* MapKitAdapters.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

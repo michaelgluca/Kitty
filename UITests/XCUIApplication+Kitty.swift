@@ -2,12 +2,21 @@ import XCTest
 
 extension XCUIApplication {
 
-    /// Scrolls until the element exists and can actually be tapped.
+    /// Scrolls until the element exists and can actually be tapped. Scrolls down the
+    /// page by default; `towardsTop` scrolls back up, for something above the
+    /// current scroll position.
     @MainActor
-    func reveal(_ element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
+    func reveal(
+        _ element: XCUIElement, towardsTop: Bool = false,
+        file: StaticString = #filePath, line: UInt = #line
+    ) {
         var attempts = 0
         while !(element.exists && element.isHittable) && attempts < 30 {
-            swipeUp(velocity: .slow)
+            if towardsTop {
+                swipeDown(velocity: .slow)
+            } else {
+                swipeUp(velocity: .slow)
+            }
             attempts += 1
         }
         XCTAssertTrue(element.isHittable, "Could not reach \(element)", file: file, line: line)

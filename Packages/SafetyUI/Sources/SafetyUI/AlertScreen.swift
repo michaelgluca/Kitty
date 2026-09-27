@@ -53,8 +53,12 @@ struct AlertScreen: View {
 
                         AlertStatusView(
                             phase: alert.phase,
-                            recipients: alert.recipients,
-                            onCall: { dial($0.number) },
+                            // Only people planned in the mode that is on now. The
+                            // result is also cleared when the mode changes (below);
+                            // this covers a mode change while an alert was still in
+                            // flight, which that reset cannot touch.
+                            recipients: alert.callableRecipients(testModeIsOn: testMode.isOn),
+                            onCall: call,
                             onAddContacts: { showContacts = true },
                             onDismiss: { alert.reset() }
                         )
@@ -105,6 +109,14 @@ struct AlertScreen: View {
                 .onChange(of: scenePhase) { _, phase in
                     // Back from Settings, the answer may have changed.
                     if phase == .active { refreshAuthorization() }
+                }
+                .onChange(of: testMode.isOn) { _, _ in
+                    // A result raised in the other mode is no longer true: its call
+                    // buttons would dial a real contact under the Test Mode banner, or
+                    // a drama number after Test Mode switched itself off. Covers the
+                    // Settings toggle, the banner's button and the switch-off on
+                    // leaving the app. Does nothing while an alert is in flight.
+                    alert.reset()
                 }
                 .onChange(of: alert.phase) { _, phase in
                     // Brings the status view on screen as soon as work starts, not only
@@ -158,6 +170,15 @@ struct AlertScreen: View {
                 proxy.scrollTo("alert.status", anchor: .center)
             }
         }
+    }
+
+    /// Calls someone the failed alert was for.
+    ///
+    /// Defence in depth: refuses a recipient planned in the other mode. The screen
+    /// already shows no such button, so this is never reached from a visible control.
+    private func call(_ recipient: AlertRecipient) {
+        guard alert.raisedInTestMode == testMode.isOn else { return }
+        dial(recipient.number)
     }
 
     private func dial(_ number: PhoneNumber) {

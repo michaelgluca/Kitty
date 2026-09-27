@@ -58,6 +58,28 @@ final class AlertFlowTests: XCTestCase {
         app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", fragment)).firstMatch
     }
 
+    /// Raises an alert to the seeded contacts and waits for the simulator's "cannot
+    /// send text messages" card, which offers a call per contact. Skips if this
+    /// simulator can text: Messages opens instead, and it is closed without sending.
+    @MainActor
+    private func raiseToCannotText(in app: XCUIApplication) throws -> XCUIElement {
+        app.buttons["alert.button"].tap()
+
+        let result = app.staticTexts["alert.result"]
+        let closeComposer = app.buttons.matching(NSPredicate(format: "label IN %@", ["Cancel", "Close"])).firstMatch
+        let deadline = Date().addingTimeInterval(10)
+        while Date() < deadline && !result.exists && !closeComposer.exists {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.2))
+        }
+        if !result.exists {
+            XCTAssertTrue(closeComposer.exists, "Neither a result nor the Messages sheet appeared")
+            closeComposer.tap()
+            throw XCTSkip("This simulator can send texts, so the cannot-text card is not reachable here.")
+        }
+        XCTAssertTrue(result.label.contains("cannot send text messages"), result.label)
+        return result
+    }
+
     // MARK: - US-1: alert my people
 
     @MainActor
@@ -116,6 +138,75 @@ final class AlertFlowTests: XCTestCase {
         XCTAssertTrue(result.label.contains("cannot send text messages"), result.label)
         XCTAssertTrue(app.buttons["Call Alice (07700 900001)"].exists, "The person must be offered a call instead")
         XCTAssertTrue(app.buttons["Call Bob (07700 900002)"].exists)
+    }
+
+    /// A real alert's "Call Alice" must not survive Test Mode being turned on: under
+    /// the banner that promises nobody will be contacted, it would call a real person.
+    @MainActor
+    func testTurningTestModeOnClearsARealAlertsCallButtons() throws {
+        try XCTSkipUnless(Self.onSimulator, "Relies on the simulator's Messages behaviour.")
+        let app = launch(["-kitty.resetContacts", "-kitty.seedContacts"])
+        let result = try raiseToCannotText(in: app)
+        let callAlice = app.buttons["Call Alice (07700 900001)"]
+        XCTAssertTrue(callAlice.exists, "The real alert must first offer a call")
+
+        turnOnTestMode(in: app)
+        XCTAssertTrue(app.staticTexts["Test Mode is on"].waitForExistence(timeout: 3))
+
+        XCTAssertTrue(result.waitForNonExistence(timeout: 3),
+                      "A result raised outside Test Mode must be cleared when Test Mode is turned on")
+        XCTAssertFalse(callAlice.exists, "Test Mode must never offer a call to a contact from a real alert")
+        XCTAssertFalse(app.buttons["Call Bob (07700 900002)"].exists)
+    }
+
+    /// And the reverse: a rehearsal's drama-number "Call Alice" must not survive Test
+    /// Mode being turned off, or a real emergency would be offered a number that
+    /// reaches nobody.
+    @MainActor
+    func testTurningTestModeOffClearsARehearsalsCallButtons() throws {
+        try XCTSkipUnless(Self.onSimulator, "Relies on the simulator's Messages behaviour.")
+        let app = launch(["-kitty.resetContacts", "-kitty.seedContacts"])
+        turnOnTestMode(in: app)
+        XCTAssertTrue(app.staticTexts["Test Mode is on"].waitForExistence(timeout: 3))
+
+        let result = try raiseToCannotText(in: app)
+        let callAlice = app.buttons["Call Alice (07700 900001)"]
+        XCTAssertTrue(callAlice.exists, "The rehearsal must first offer a call")
+
+        let turnOff = app.buttons["testMode.turnOff"]
+        app.reveal(turnOff, towardsTop: true)
+        turnOff.tap()
+        XCTAssertTrue(app.staticTexts["Test Mode is on"].waitForNonExistence(timeout: 3))
+
+        XCTAssertTrue(result.waitForNonExistence(timeout: 3),
+                      "A rehearsal's result must be cleared when Test Mode is turned off")
+        XCTAssertFalse(callAlice.exists, "Outside Test Mode, a rehearsal's drama number must never be offered")
+        XCTAssertFalse(app.buttons["Call Bob (07700 900002)"].exists)
+    }
+
+    /// Removing a contact clears a result that offered to call them.
+    @MainActor
+    func testRemovingAContactClearsAResultOfferingToCallThem() throws {
+        try XCTSkipUnless(Self.onSimulator, "Relies on the simulator's Messages behaviour.")
+        let app = launch(["-kitty.resetContacts", "-kitty.seedContacts"])
+        let result = try raiseToCannotText(in: app)
+        XCTAssertTrue(app.buttons["Call Alice (07700 900001)"].exists)
+
+        let contacts = app.buttons["alert.contacts"]
+        app.reveal(contacts, towardsTop: true)
+        contacts.tap()
+        let removeAlice = app.buttons["contact.remove.Alice"]
+        XCTAssertTrue(removeAlice.waitForExistence(timeout: 3))
+        app.reveal(removeAlice)
+        removeAlice.tap()
+        XCTAssertTrue(app.staticTexts["Remove Alice?"].waitForExistence(timeout: 3))
+        app.buttons["Remove from trusted contacts"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["contact.Alice"].waitForNonExistence(timeout: 3))
+
+        app.navigationBars["Trusted contacts"].buttons.firstMatch.tap()
+        XCTAssertTrue(app.buttons["alert.button"].waitForExistence(timeout: 5))
+        XCTAssertFalse(result.exists, "A result offering to call a removed contact must be cleared")
+        XCTAssertFalse(app.buttons["Call Alice (07700 900001)"].exists)
     }
 
     // MARK: - US-3: call for help

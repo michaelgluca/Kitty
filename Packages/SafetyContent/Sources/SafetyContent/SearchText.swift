@@ -21,9 +21,8 @@ public enum SearchText {
     }
 
     /// The words to search for: normalised, split on whitespace, with the punctuation
-    /// around each word trimmed (""stalking"," becomes "stalking"). Empty when nothing
-    /// searchable was typed, which is then no search at all rather than a search for
-    /// nothing.
+    /// around each word trimmed (curly quotes like "\u{201C}stalking\u{201D}," become "stalking").
+    /// Empty when nothing searchable was typed, which is then no search at all rather than a search for nothing.
     public static func words(in query: String) -> [String] {
         normalise(query)
             .split(whereSeparator: { $0.isWhitespace })

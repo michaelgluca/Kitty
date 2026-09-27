@@ -162,11 +162,13 @@ struct SearchFilterTests {
     @Test("A curly apostrophe from iOS smart punctuation finds a straight one, and the reverse")
     func curlyApostrophe() throws {
         let straight = try service("s", name: "Women's Aid")
-        let curly = try service("t", name: "Women's Aid")
+        let curly = try service("t", name: "Women\u{2019}s Aid")
+        #expect(curly.name.unicodeScalars.contains(where: { $0.value == 0x2019 }), "Curly fixture must contain U+2019")
         #expect(finds("women's aid", straight))
         #expect(finds("women's aid", curly))
+        #expect(finds("women\u{2019}s aid", curly), "Curly query finds curly fixture")
         #expect(finds("womens", straight))
-        #expect(finds("women", curly))
+        #expect(finds("womens", curly), "Folded query finds both variants")
     }
 
     @Test("Who a service is for is searched")
@@ -185,7 +187,7 @@ struct SearchFilterTests {
     @Test("Spaces or punctuation alone are no search at all")
     func nothingSearchable() throws {
         let item = try service("s")
-        for query in ["", "   ", " & ", "\"", "…"] {
+        for query in ["", "   ", " & ", "\u{201C}\u{201D}", "…"] {
             #expect(FilterCriteria(query: query).words.isEmpty, "\(query)")
             #expect(finds(query, item), "\(query)")
         }

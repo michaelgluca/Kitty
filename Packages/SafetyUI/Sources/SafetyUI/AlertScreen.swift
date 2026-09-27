@@ -48,9 +48,6 @@ struct AlertScreen: View {
 
                         LocationStatusRow(authorization: authorization, onAllow: allowLocation, onOpenSettings: openSettings)
 
-                        PrimaryAlertButton { raise(scrollProxy: proxy) }
-                            .disabled(alert.isBusy)
-
                         AlertStatusView(
                             phase: alert.phase,
                             // Only people planned in the mode that is on now. The
@@ -81,6 +78,18 @@ struct AlertScreen: View {
                     .padding(.horizontal, Design.Space.gutter)
                     .padding(.bottom, Design.Space.loose)
                     .frame(maxWidth: .infinity)
+                }
+                .safeAreaInset(edge: .bottom) {
+                    // Pinned above the tab bar, outside the scroll content, so it is
+                    // always on screen, in thumb reach and one tap from launch —
+                    // whatever the text size, the scroll position, or how much the
+                    // Test Mode banner and the location row take up (spec §7, US-1).
+                    // Opaque, so scrolled content never shows through it.
+                    PrimaryAlertButton { raise(scrollProxy: proxy) }
+                        .disabled(alert.isBusy)
+                        .padding(.horizontal, Design.Space.gutter)
+                        .padding(.vertical, Design.Space.base)
+                        .background(.background)
                 }
                 .navigationTitle(Text("tab.alert", bundle: .module))
                 .navigationDestination(isPresented: $showContacts) { ContactsScreen() }

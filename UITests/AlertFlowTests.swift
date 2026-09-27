@@ -140,6 +140,27 @@ final class AlertFlowTests: XCTestCase {
         XCTAssertTrue(app.buttons["Call Bob (07700 900002)"].exists)
     }
 
+    /// Spec §7: the alert control is in thumb reach and one tap from launch at every
+    /// text size — never below the fold, and never pushed down by the Test Mode
+    /// banner.
+    @MainActor
+    func testAlertButtonIsInReachWithoutScrollingAtTheLargestTextSize() {
+        let app = launch([
+            "-kitty.resetContacts",
+            "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL",
+        ])
+        let button = app.buttons["alert.button"]
+        XCTAssertTrue(button.waitForExistence(timeout: 5))
+        let window = app.windows.firstMatch.frame
+        XCTAssertTrue(button.isHittable, "The alert button must be on screen at launch, without scrolling")
+        XCTAssertGreaterThan(button.frame.midY, window.midY, "The alert button must sit in the lower half, in thumb reach")
+
+        turnOnTestMode(in: app)
+        XCTAssertTrue(app.staticTexts["Test Mode is on"].waitForExistence(timeout: 3))
+        XCTAssertTrue(button.isHittable, "The Test Mode banner must not push the alert button off screen")
+        XCTAssertGreaterThan(button.frame.midY, window.midY, "The alert button must stay in thumb reach in Test Mode")
+    }
+
     /// A real alert's "Call Alice" must not survive Test Mode being turned on: under
     /// the banner that promises nobody will be contacted, it would call a real person.
     @MainActor

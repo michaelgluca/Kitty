@@ -14,7 +14,8 @@ private let strings = AlertStrings(
     coordinates: "Coordinates: %@",
     locationUnavailable: "My location is not available.",
     battery: "Phone battery: %@",
-    disclaimer: "Sent by hand from Kitty G. This app does not contact emergency services."
+    disclaimer: "Sent by hand from Kitty G. This app does not contact emergency services.",
+    testNotice: "TEST — please ignore."
 )
 
 private let fixedDate = Date(timeIntervalSince1970: 1_758_900_000)
@@ -138,6 +139,67 @@ struct AlertMessageTests {
             timeZone: TimeZone(identifier: "Europe/London")!
         )
         #expect(!body.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+    }
+
+    private func render(_ context: AlertContext) -> String {
+        AlertMessageRenderer.render(
+            context,
+            strings: strings,
+            locale: Locale(identifier: "en_GB"),
+            timeZone: TimeZone(identifier: "Europe/London")!
+        )
+    }
+
+    private func fix(ageInSeconds age: TimeInterval) -> LocationFix {
+        LocationFix(
+            coordinate: Coordinate(latitude: 51.50853, longitude: -0.12574),
+            horizontalAccuracy: 12,
+            timestamp: fixedDate.addingTimeInterval(-age)
+        )
+    }
+
+    @Test("Treats a fix more than two minutes old as no location")
+    func staleFixIsNotALocation() {
+        // iOS often hands back a cached reading first. An old position sent as
+        // "where I am" reads as current, and sends someone to the wrong place.
+        let body = render(AlertContext(sentAt: fixedDate, location: fix(ageInSeconds: 121), batteryFraction: nil))
+        #expect(body.contains("My location is not available."))
+        #expect(!body.contains("maps.apple.com"))
+    }
+
+    @Test("A fix exactly two minutes old is still used")
+    func twoMinuteBoundary() {
+        let body = render(AlertContext(sentAt: fixedDate, location: fix(ageInSeconds: 120), batteryFraction: nil))
+        #expect(body.contains("maps.apple.com"))
+    }
+
+    @Test("A fix timestamped slightly after sending counts as fresh")
+    func clockSkewIsFresh() {
+        let body = render(AlertContext(sentAt: fixedDate, location: fix(ageInSeconds: -5), batteryFraction: nil))
+        #expect(body.contains("maps.apple.com"))
+    }
+
+    @Test("usableLocation agrees with what the message says")
+    func usableLocationMatchesMessage() {
+        let fresh = AlertContext(sentAt: fixedDate, location: fix(ageInSeconds: 10), batteryFraction: nil)
+        let stale = AlertContext(sentAt: fixedDate, location: fix(ageInSeconds: 600), batteryFraction: nil)
+        let coarse = AlertContext(sentAt: fixedDate, location: london(accuracy: 5_000), batteryFraction: nil)
+        #expect(fresh.usableLocation != nil)
+        #expect(stale.usableLocation == nil)
+        #expect(coarse.usableLocation == nil)
+    }
+
+    @Test("A Test Mode message says so on its first line")
+    func testNoticeComesFirst() {
+        let body = render(AlertContext(sentAt: fixedDate, location: nil, batteryFraction: nil, isTest: true))
+        #expect(body.components(separatedBy: "\n").first == "TEST — please ignore.")
+    }
+
+    @Test("A real message carries no test notice")
+    func realMessageHasNoTestNotice() {
+        let body = render(AlertContext(sentAt: fixedDate, location: london(), batteryFraction: 0.5))
+        #expect(!body.contains("TEST"))
+        #expect(body.components(separatedBy: "\n").first == "I need help.")
     }
 }
 

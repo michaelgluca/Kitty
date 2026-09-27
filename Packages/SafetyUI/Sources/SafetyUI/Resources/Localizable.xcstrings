@@ -588,6 +588,18 @@
           }
         }
       }
+    },
+    "alert.body.testNotice": {
+      "comment": "First line of a message composed in Test Mode, so the recipient knows it is not real.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TEST from Kitty G's Test Mode. Please ignore: nobody needs help."
+          }
+        }
+      }
     }
   }
 }

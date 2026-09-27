@@ -19,7 +19,8 @@ public enum Strings {
             coordinates: localized("alert.body.coordinates"),
             locationUnavailable: localized("alert.body.locationUnavailable"),
             battery: localized("alert.body.battery"),
-            disclaimer: localized("alert.body.disclaimer")
+            disclaimer: localized("alert.body.disclaimer"),
+            testNotice: localized("alert.body.testNotice")
         )
     }
 }

@@ -54,4 +54,14 @@ public struct LocationFix: Hashable, Sendable {
     public var isUsable: Bool {
         coordinate.isPlausible && horizontalAccuracy >= 0 && horizontalAccuracy <= Self.usableAccuracyThreshold
     }
+
+    /// iOS often hands back a cached reading first, and it can be minutes old. An old
+    /// position sent as "where I am" is worse than none, because it reads as current.
+    public static let maximumAge: TimeInterval = 120
+
+    /// Whether this reading is recent enough to send at `now`. A reading timestamped
+    /// slightly after `now` — the clocks disagree by a moment — counts as fresh.
+    public func isFresh(at now: Date) -> Bool {
+        now.timeIntervalSince(timestamp) <= Self.maximumAge
+    }
 }

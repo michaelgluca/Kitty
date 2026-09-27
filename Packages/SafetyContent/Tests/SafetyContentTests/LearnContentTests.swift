@@ -170,16 +170,23 @@ struct ContentValidationTests {
     ]
 
     private func refuge(id: String, coverage: String) -> String {
-        #"{"id":"\#(id)","name":"R","kind":"helpline","coverage":\#(coverage),"summary":"S","phone":"0808 2000 247","url":"https://example.org/","availability":"allHours","source":"https://example.org/"}"#
+        #"{"id":"\#(id)","name":"R","kind":"helpline","coverage":\#(coverage),"summary":"S","phone":"0808 2000 247","url":"https://example.org/","availability":"allHours","source":"https://example.org/","topics":[]}"#
+    }
+
+    private func supportService(id: String, topics: String) -> String {
+        #"{"id":"\#(id)","name":"S","kind":"helpline","coverage":"unitedKingdom","summary":"S","url":"https://example.org/","availability":"allHours","source":"https://example.org/","topics":\#(topics)}"#
     }
 
     private func packJSON(
         rightsPoint: String = #"{"text":"A fact.","nations":["england"]}"#,
+        rightsTopics: String = #"["domesticAbuse"]"#,
+        services: [String] = [],
+        reporting: [String] = [],
         refuges: [String]
     ) -> String {
         """
-        {"version":5,"reviewedOn":"2026-09-27","emergencyNumber":"999","emergencyRoutes":[],"services":[],"reporting":[],"guides":[],
-         "rights":[{"id":"t","title":"T","summary":"S","points":[\(rightsPoint)],"whatYouCanDo":"W","sources":[{"title":"GOV.UK","url":"https://www.gov.uk/"}]}],
+        {"version":6,"reviewedOn":"2026-09-27","emergencyNumber":"999","emergencyRoutes":[],"services":[\(services.joined(separator: ","))],"reporting":[\(reporting.joined(separator: ","))],"guides":[],
+         "rights":[{"id":"t","title":"T","summary":"S","points":[\(rightsPoint)],"whatYouCanDo":"W","sources":[{"title":"GOV.UK","url":"https://www.gov.uk/"}],"topics":\(rightsTopics)}],
          "refuges":[\(refuges.joined(separator: ","))],
          "refugeNote":{"text":"No addresses.","source":{"title":"X","url":"https://example.org/"}}}
         """

@@ -152,6 +152,10 @@ public struct SupportService: Codable, Sendable, Identifiable, Equatable {
     /// The operator's own page this entry was verified against.
     public let source: String
     public let attribution: String?
+    /// What this is about, for the topic chips. Never empty for a service or a reporting
+    /// route, and always empty for a refuge route, which the Refuges screen lists by
+    /// nation alone (both checked at load).
+    public let topics: [Topic]
 }
 
 /// One of the ways to reach 999 in the UK.
@@ -211,6 +215,9 @@ public struct RightsTopic: Codable, Sendable, Identifiable, Equatable {
     /// How the nations differ, where they do.
     public let nationDifferences: String?
     public let sources: [ContentSource]
+    /// What this is about, for the topic chips on Learn. Never empty and never `general`
+    /// (checked at load).
+    public let topics: [Topic]
 }
 
 /// Why the refuges list shows services and never addresses.

@@ -193,9 +193,17 @@ private struct StationRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Design.Space.tight) {
+            // The row's own identifier lives here, on a plain label, rather than on
+            // the enclosing VStack: a List row whose CONTAINER carries an
+            // accessibilityIdentifier has that identifier bleed onto every
+            // descendant XCUITest reports — including the Directions button below,
+            // which then loses its own more specific identifier. Keeping it on a
+            // single non-interactive leaf still lets a UI test find "this station's
+            // row" without swallowing the button's identity.
             Text(station.name ?? Strings.localized("nearby.station.unnamed"))
                 .font(.headline)
                 .fixedSize(horizontal: false, vertical: true)
+                .accessibilityIdentifier("nearby.station.\(station.id)")
             Text(String(format: Strings.localized("nearby.station.distance"), NearbyCopy.distance(metres)))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -219,6 +227,5 @@ private struct StationRow: View {
             .accessibilityIdentifier("nearby.directions.\(station.id)")
         }
         .padding(.vertical, 2)
-        .accessibilityIdentifier("nearby.station.\(station.id)")
     }
 }

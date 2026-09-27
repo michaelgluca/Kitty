@@ -25,6 +25,7 @@
 		AA00000000000000000099 /* HelpCallTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000098 /* HelpCallTests.swift */; };
 		AA0000000000000000009D /* AlertFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000009C /* AlertFlowTests.swift */; };
 		AA0000000000000000009F /* XCUIApplication+Kitty.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000009E /* XCUIApplication+Kitty.swift */; };
+		AA000000000000000000A1 /* LearnNearbyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000A0 /* LearnNearbyTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		AA0000000000000000009C /* AlertFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertFlowTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000009E /* XCUIApplication+Kitty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+Kitty.swift"; sourceTree = "<group>"; };
 		AA00000000000000000091 /* KittyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KittyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA000000000000000000A0 /* LearnNearbyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnNearbyTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +136,7 @@
 				AA00000000000000000098 /* HelpCallTests.swift */,
 				AA0000000000000000009C /* AlertFlowTests.swift */,
 				AA0000000000000000009E /* XCUIApplication+Kitty.swift */,
+				AA000000000000000000A0 /* LearnNearbyTests.swift */,
 			);
 			path = UITests;
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 				AA00000000000000000099 /* HelpCallTests.swift in Sources */,
 				AA0000000000000000009D /* AlertFlowTests.swift in Sources */,
 				AA0000000000000000009F /* XCUIApplication+Kitty.swift in Sources */,
+				AA000000000000000000A1 /* LearnNearbyTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

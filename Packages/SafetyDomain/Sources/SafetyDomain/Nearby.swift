@@ -38,7 +38,10 @@ public struct WalkingRoute: Hashable, Sendable {
 public struct GeocodedArea: Hashable, Sendable {
     /// ISO 3166-1 alpha-2, such as "GB". `nil` when unknown.
     public let countryCode: String?
-    /// Names for the area, most specific first — the region name, then fuller forms.
+    /// Names for the area, most specific first — a locality with context (e.g. "Glasgow, Scotland"),
+    /// then the full address (e.g. "1 Main St, Glasgow, G2, Scotland"). The nation is the last
+    /// comma-separated part of these strings. MapKit's `regionName` is the country ("United Kingdom"),
+    /// not the nation, and must not be placed here.
     public let names: [String]
 
     public init(countryCode: String?, names: [String]) {

@@ -42,7 +42,7 @@ public extension Nation {
     init?(area: GeocodedArea) {
         guard area.countryCode?.uppercased() == "GB" else { return nil }
         for name in area.names {
-            let candidates = [name, name.split(separator: ",").last.map(String.init) ?? name]
+            let candidates = name.contains(",") ? [name, name.split(separator: ",").last.map(String.init) ?? name] : [name]
             for candidate in candidates {
                 if let nation = Self.named(candidate) {
                     self = nation

@@ -476,28 +476,6 @@
         }
       }
     },
-    "help.section.guides": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Set up before you need it"
-          }
-        }
-      }
-    },
-    "help.guides.footer": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "These are Apple features, built into your iPhone. Kitty G only links to Apple's own instructions."
-          }
-        }
-      }
-    },
     "help.audience": {
       "extractionState": "manual",
       "localizations": {
@@ -1269,6 +1247,294 @@
           "stringUnit": {
             "state": "translated",
             "value": "The 999 button could not be loaded. You can still dial 999 from your phone app."
+          }
+        }
+      }
+    },
+    "tab.learn": {
+      "comment": "Tab title for rights and iPhone safety features.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Learn"
+          }
+        }
+      }
+    },
+    "learn.rights.header": {
+      "comment": "Section heading.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your rights"
+          }
+        }
+      }
+    },
+    "learn.rights.footer": {
+      "comment": "Footer under the rights list.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General information, not legal advice. The law is different in England, Wales, Scotland and Northern Ireland, so each point says where it applies."
+          }
+        }
+      }
+    },
+    "learn.features.header": {
+      "comment": "Section heading.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone safety features"
+          }
+        }
+      }
+    },
+    "learn.features.footer": {
+      "comment": "Footer under the iPhone safety features list, on both the Learn tab and the Help tab's link. Not the same claim as the old help.guides.footer, which said Kitty G only links out — no longer true once steps are shown in-app.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These are Apple's own iPhone features, built into your iPhone. Steps are shown here, and each links to Apple's own instructions for more detail."
+          }
+        }
+      }
+    },
+    "nation.england": {
+      "comment": "Nation name.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "England"
+          }
+        }
+      }
+    },
+    "nation.wales": {
+      "comment": "Nation name.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wales"
+          }
+        }
+      }
+    },
+    "nation.scotland": {
+      "comment": "Nation name.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scotland"
+          }
+        }
+      }
+    },
+    "nation.northernIreland": {
+      "comment": "Nation name.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Northern Ireland"
+          }
+        }
+      }
+    },
+    "rights.appliesIn": {
+      "comment": "%@ is a list of nations, such as 'England and Wales'.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applies in %@"
+          }
+        }
+      }
+    },
+    "rights.appliesEverywhere": {
+      "comment": "Shown when a point is true in all four nations.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Applies across the UK"
+          }
+        }
+      }
+    },
+    "rights.whatTheLawSays": {
+      "comment": "Heading on a rights topic.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What the law says"
+          }
+        }
+      }
+    },
+    "rights.whatYouCanDo": {
+      "comment": "Heading on a rights topic.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What you can do"
+          }
+        }
+      }
+    },
+    "rights.differences": {
+      "comment": "Heading for how the nations differ.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Across the UK"
+          }
+        }
+      }
+    },
+    "rights.sources": {
+      "comment": "Heading above links to the government or legislation pages.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Official sources"
+          }
+        }
+      }
+    },
+    "rights.disclaimer": {
+      "comment": "Shown at the end of every rights topic.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This is general information, not legal advice. For help with your own situation, contact one of the services on the Get help tab."
+          }
+        }
+      }
+    },
+    "feature.setUp": {
+      "comment": "Heading above numbered setup steps.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set it up"
+          }
+        }
+      }
+    },
+    "feature.step": {
+      "comment": "%1$d is the step number (starting at 1); %2$@ is the step's own text. VoiceOver accessibility label for a setup step — the step number shown as a plain numeral icon is not read out on its own.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Step %1$d: %2$@"
+          }
+        }
+      }
+    },
+    "feature.use": {
+      "comment": "Heading above how to use the feature.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When you need it"
+          }
+        }
+      }
+    },
+    "feature.caution": {
+      "comment": "Heading above a trade-off or risk.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Be aware"
+          }
+        }
+      }
+    },
+    "feature.requirements": {
+      "comment": "Heading above model and iOS requirements.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What you need"
+          }
+        }
+      }
+    },
+    "help.features.link": {
+      "comment": "Link on the Help tab to the iPhone features list.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPhone safety features"
+          }
+        }
+      }
+    },
+    "learn.unavailable.title": {
+      "comment": "Shown only if the bundled content failed to load.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Information could not be loaded"
+          }
+        }
+      }
+    },
+    "learn.unavailable.body": {
+      "comment": "Shown only if the bundled content failed to load.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please reinstall Kitty G."
           }
         }
       }

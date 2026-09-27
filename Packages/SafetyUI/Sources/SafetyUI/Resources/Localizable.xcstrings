@@ -1683,6 +1683,18 @@
         }
       }
     },
+    "nearby.state.updating": {
+      "comment": "Shown above the previous results while they are refreshed for where the person is now.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updating for where you are now. Until it finishes, these are the results of your last search."
+          }
+        }
+      }
+    },
     "nearby.retry": {
       "comment": "Retries the location and search.",
       "extractionState": "manual",

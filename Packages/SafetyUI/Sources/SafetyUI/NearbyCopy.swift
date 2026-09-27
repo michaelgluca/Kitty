@@ -18,6 +18,10 @@ enum NearbyCopy {
         }
     }
 
+    /// Shown above an earlier result while a refresh replaces it, so it is never
+    /// read as current.
+    static var updating: String { Strings.localized("nearby.state.updating") }
+
     /// Whether the "front counters keep limited hours / 999 in an emergency" note is
     /// shown. It belongs wherever a station was looked for — found or not — because
     /// the person with no station, no signal or no fix is the one who most needs the

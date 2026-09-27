@@ -335,6 +335,200 @@ struct NearbyModelTests {
     }
 }
 
+// MARK: - Staying current
+
+private let fixedAtStart = Date(timeIntervalSinceReferenceDate: 812_000_000)
+
+/// A result that is stale at `now`, or not, by the model's own rule.
+private func found(fixedAt: Date) -> NearbyModel.Found {
+    NearbyModel.Found(origin: here, fixedAt: fixedAt, stations: [station("a", north: 400)], route: nil)
+}
+
+@MainActor
+@Suite("Nearby model: staying current")
+struct NearbyModelCurrencyTests {
+
+    private func services(
+        location: any LocationProviding = StubLocationProvider(fix: fix),
+        places: any PlaceSearching = StubPlaceSearch([.found([station("a", north: 400)]), .found([station("b", north: 300)])]),
+        time: AdvancingTime = AdvancingTime(fixedAtStart)
+    ) -> Services {
+        var s = Services.unavailable
+        s.location = location
+        s.places = places
+        s.routes = StubRouteFinder(.found(route))
+        s.maps = SpyMapsOpener()
+        s.areas = StubAreaNamer(GeocodedArea(countryCode: "GB", names: ["England"]))
+        s.time = time
+        return s
+    }
+
+    @Test("A result records when its location was read, from the injected time source")
+    func recordsFixedAt() async {
+        let m = NearbyModel(services: services())
+        await m.refresh()
+        guard case let .found(result) = m.state else { Issue.record("Expected found, got \(m.state)"); return }
+        #expect(result.fixedAt == fixedAtStart)
+    }
+
+    @Test(
+        "A result is current until it reaches the maximum age, then stale; one from the future is stale too, since its age cannot be told",
+        arguments: [
+            (0.0, false),
+            (60.0, false),
+            (NearbyModel.resultMaximumAge - 1, false),
+            (NearbyModel.resultMaximumAge, true),
+            (NearbyModel.resultMaximumAge + 1, true),
+            (3 * 60 * 60.0, true),
+            (-60.0, true),
+        ]
+    )
+    func stalenessRule(age: TimeInterval, isStale: Bool) {
+        #expect(found(fixedAt: fixedAtStart).isStale(at: fixedAtStart + age) == isStale)
+    }
+
+    @Test("The maximum age is five minutes")
+    func maximumAge() {
+        #expect(NearbyModel.resultMaximumAge == 5 * 60)
+    }
+
+    @Test("Before anything has run, returning to the tab starts a refresh")
+    func idleRefreshes() {
+        #expect(NearbyModel(services: services()).shouldRefreshOnReturn)
+    }
+
+    @Test("Every state with no result refreshes on return, so a fixed permission or a new signal is picked up", arguments: [
+        LocationAuthorization.notDetermined, .denied, .restricted, .authorizedReducedAccuracy,
+    ])
+    func permissionStatesRefresh(authorization: LocationAuthorization) async {
+        let m = NearbyModel(services: services(location: StubLocationProvider(authorization: authorization, fix: fix)))
+        await m.refresh()
+        #expect(!m.isBusy)
+        #expect(m.shouldRefreshOnReturn, "\(m.state) must refresh on return")
+    }
+
+    @Test("No fix, nothing found and a failed search all refresh on return")
+    func failureStatesRefresh() async {
+        let noFix = NearbyModel(services: services(location: StubLocationProvider(fix: nil)))
+        await noFix.refresh()
+        #expect(noFix.state == .noLocation)
+        #expect(noFix.shouldRefreshOnReturn)
+
+        let none = NearbyModel(services: services(places: StubPlaceSearch([])))
+        await none.refresh()
+        #expect(none.state == .noneFound(searchedMetres: NearbyModel.widestRadius))
+        #expect(none.shouldRefreshOnReturn)
+
+        let failed = NearbyModel(services: services(places: StubPlaceSearch([.failed])))
+        await failed.refresh()
+        #expect(failed.state == .searchFailed)
+        #expect(failed.shouldRefreshOnReturn)
+    }
+
+    @Test("A current result does not re-search on return; once stale it does, and the new result is timed afresh")
+    func staleResultRefreshesOnReturn() async {
+        let time = AdvancingTime(fixedAtStart)
+        let places = StubPlaceSearch([.found([station("a", north: 400)]), .found([station("b", north: 300)])])
+        let m = NearbyModel(services: services(places: places, time: time))
+        await m.refresh()
+        #expect(places.requestedRadii.count == 1)
+
+        time.advance(by: NearbyModel.resultMaximumAge - 1)
+        #expect(!m.shouldRefreshOnReturn)
+        await m.refreshIfNeeded()
+        #expect(places.requestedRadii.count == 1, "A current result must not re-search every time the tab appears")
+
+        time.advance(by: 1)
+        #expect(m.shouldRefreshOnReturn)
+        await m.refreshIfNeeded()
+        #expect(places.requestedRadii.count == 2, "A stale result must be searched again")
+        guard case let .found(result) = m.state else { Issue.record("Expected found, got \(m.state)"); return }
+        #expect(result.stations.map(\.id) == ["b"])
+        #expect(result.fixedAt == fixedAtStart + NearbyModel.resultMaximumAge)
+        #expect(!m.shouldRefreshOnReturn)
+    }
+
+    @Test("A failed or empty result is searched again on return", arguments: [PlaceSearchOutcome.failed, .noneFound])
+    func failedResultRefreshesOnReturn(first: PlaceSearchOutcome) async {
+        let places = StubPlaceSearch([first, .noneFound, .noneFound, .found([station("a", north: 400)])])
+        let m = NearbyModel(services: services(places: places))
+        await m.refresh()
+        let before = places.requestedRadii.count
+        await m.refreshIfNeeded()
+        #expect(places.requestedRadii.count > before)
+    }
+
+    @Test(
+        "While a refresh runs, the old result stays on screen marked as updating, never as current, and it goes when the refresh ends",
+        .timeLimit(.minutes(1))
+    )
+    func previousResultWhileUpdating() async {
+        let time = AdvancingTime(fixedAtStart)
+        let places = HangingPlaceSearch(answeringFirstWith: .found([station("a", north: 400)]))
+        let m = NearbyModel(services: services(places: places, time: time))
+        await m.refresh()
+        guard case let .found(old) = m.state else { Issue.record("Expected found, got \(m.state)"); return }
+        #expect(m.previousResult == nil)
+        #expect(m.detectedNation == .england)
+
+        time.advance(by: NearbyModel.resultMaximumAge)
+        let second = Task { await m.refreshIfNeeded() }
+        for _ in 0..<10_000 where places.requestedRadii.count < 2 { await Task.yield() }
+        #expect(m.isBusy)
+        #expect(m.previousResult == old, "The old result stays visible while updating")
+        #expect(m.detectedNation == nil, "A nation from the old reading is not offered as from your location while it is replaced")
+        #expect(!m.shouldRefreshOnReturn, "No second refresh while one is running")
+
+        places.release(with: .found([station("b", north: 300)]))
+        await second.value
+        #expect(m.previousResult == nil)
+        guard case let .found(new) = m.state else { Issue.record("Expected found, got \(m.state)"); return }
+        #expect(new.stations.map(\.id) == ["b"])
+        #expect(m.detectedNation == .england)
+    }
+
+    @Test("A refresh that fails replaces the old result with the failure: an old result is never left looking current")
+    func failedRefreshDropsOldResult() async {
+        let time = AdvancingTime(fixedAtStart)
+        let m = NearbyModel(services: services(places: StubPlaceSearch([.found([station("a", north: 400)]), .failed]), time: time))
+        await m.refresh()
+        guard case .found = m.state else { Issue.record("Expected found, got \(m.state)"); return }
+
+        time.advance(by: NearbyModel.resultMaximumAge)
+        await m.refreshIfNeeded()
+        #expect(m.state == .searchFailed)
+        #expect(m.previousResult == nil)
+    }
+
+    @Test("A refresh with no fix replaces the old result too")
+    func noFixRefreshDropsOldResult() async {
+        let location = MutableAuthorizationLocationProvider(fix: fix)
+        let m = NearbyModel(services: services(location: location))
+        await m.refresh()
+        guard case .found = m.state else { Issue.record("Expected found, got \(m.state)"); return }
+
+        location.fix = nil
+        await m.refresh()
+        #expect(m.state == .noLocation)
+        #expect(m.previousResult == nil)
+        #expect(m.detectedNation == nil)
+    }
+}
+
+/// A time source a test can move forward, to age a result without waiting. Guarded
+/// by a lock because `TimeSource` is read from wherever the model runs.
+private final class AdvancingTime: TimeSource, @unchecked Sendable {
+    private let lock = NSLock()
+    private var _now: Date
+
+    init(_ now: Date) { _now = now }
+
+    var now: Date { lock.withLock { _now } }
+    var timeZone: TimeZone { TimeZone(identifier: "Europe/London") ?? .gmt }
+
+    func advance(by seconds: TimeInterval) { lock.withLock { _now += seconds } }
+}
+
 /// A location provider whose authorization can change between calls, so a test can
 /// show a person losing location access between two refreshes. `StubLocationProvider`
 /// deliberately has no such setter — its authorization models what CoreLocation
@@ -347,7 +541,7 @@ struct NearbyModelTests {
 /// continuation and an arbitrary `release()` caller — this needs no lock of its own.
 private final class MutableAuthorizationLocationProvider: LocationProviding, @unchecked Sendable {
     @MainActor var authorization: LocationAuthorization
-    private let fix: LocationFix?
+    @MainActor var fix: LocationFix?
 
     init(authorization: LocationAuthorization = .authorizedWhenInUse, fix: LocationFix?) {
         self.authorization = authorization
@@ -387,12 +581,24 @@ private final class HangingPlaceSearch: PlaceSearching, @unchecked Sendable {
     private var released: PlaceSearchOutcome?
     private var waiters: [CheckedContinuation<PlaceSearchOutcome, Never>] = []
     private var _requestedRadii: [Double] = []
+    /// Answered straight away to the first call only, so a test can reach a result
+    /// before the search that replaces it hangs.
+    private var firstAnswer: PlaceSearchOutcome?
+
+    init(answeringFirstWith firstAnswer: PlaceSearchOutcome? = nil) {
+        self.firstAnswer = firstAnswer
+    }
 
     var requestedRadii: [Double] { lock.withLock { _requestedRadii } }
 
     @MainActor
     func policeStations(near centre: Coordinate, radiusMetres: Double) async -> PlaceSearchOutcome {
-        lock.withLock { _requestedRadii.append(radiusMetres) }
+        let immediate = lock.withLock { () -> PlaceSearchOutcome? in
+            _requestedRadii.append(radiusMetres)
+            defer { firstAnswer = nil }
+            return firstAnswer
+        }
+        if let immediate { return immediate }
         return await withCheckedContinuation { continuation in
             let answerNow = lock.withLock { () -> PlaceSearchOutcome? in
                 if let released { return released }

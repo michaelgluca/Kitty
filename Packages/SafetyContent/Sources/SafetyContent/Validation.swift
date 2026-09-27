@@ -26,6 +26,19 @@ public extension ContentPack {
         for route in refuges where route.coverage == nil {
             throw fail("refuge route \(route.id) names no nation")
         }
+        // A repeated tag would pass the pinned test's `Set` comparison unnoticed, and it
+        // is never intentional: rule (b) says add a missing tag, not double one already
+        // there. Refuges are excluded: they must carry none, which the check below rejects
+        // whether or not any of those are repeated.
+        for service in services where Set(service.topics).count != service.topics.count {
+            throw fail("service \(service.id) has a duplicate topic")
+        }
+        for route in reporting where Set(route.topics).count != route.topics.count {
+            throw fail("reporting route \(route.id) has a duplicate topic")
+        }
+        for topic in rights where Set(topic.topics).count != topic.topics.count {
+            throw fail("rights topic \(topic.id) has a duplicate topic")
+        }
         // Topic tags decide what a person sees under a chip, so an untagged item would
         // vanish the moment any chip is chosen. `general` means "for anyone in distress",
         // which only a service can be. Refuge routes are listed by nation alone.

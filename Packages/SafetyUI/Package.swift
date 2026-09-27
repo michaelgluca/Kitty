@@ -10,6 +10,7 @@ let package = Package(
         .package(path: "../SafetyDomain"),
         .package(path: "../SafetyContent"),
         .package(path: "../SafetyServices"),
+        .package(path: "../SafetyTesting"),
     ],
     targets: [
         .target(
@@ -20,7 +21,7 @@ let package = Package(
         ),
         .testTarget(
             name: "SafetyUITests",
-            dependencies: ["SafetyUI"],
+            dependencies: ["SafetyUI", .product(name: "SafetyTesting", package: "SafetyTesting")],
             swiftSettings: [.swiftLanguageMode(.v6)]
         ),
     ]

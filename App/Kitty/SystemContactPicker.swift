@@ -1,6 +1,7 @@
 import Contacts
 import ContactsUI
 import SafetyServices
+import UIKit
 
 /// The system contact picker. It runs out of process and needs no Contacts
 /// permission: the app sees only the one contact and number the person picks.
@@ -20,14 +21,24 @@ struct SystemContactPicker: ContactPicking {
             picker.predicateForSelectionOfProperty = NSPredicate(format: "key == 'phoneNumbers'")
             let delegate = PickerDelegate(continuation)
             picker.delegate = delegate
+            picker.presentationController?.delegate = delegate
             presenter.present(picker, animated: true)
+            // UIKit refuses a presentation silently — no delegate callback, only a
+            // console warning — when the presenter is mid-transition or not in the
+            // window hierarchy. It sets `presentingViewController` synchronously
+            // when it accepts the request, so its absence right after `present`
+            // means the picker never appeared and the continuation must still
+            // resolve, rather than leave the caller waiting for ever.
+            if picker.presentingViewController == nil {
+                delegate.finish(.unavailable)
+            }
         }
     }
 }
 
 /// Reports the choice once. Keeps itself alive until then, because the picker holds
 /// its delegate weakly. The picker dismisses itself.
-private final class PickerDelegate: NSObject, CNContactPickerDelegate {
+private final class PickerDelegate: NSObject, CNContactPickerDelegate, UIAdaptivePresentationControllerDelegate {
 
     private var continuation: CheckedContinuation<ContactPickOutcome, Never>?
     private var keepAlive: PickerDelegate?
@@ -65,7 +76,15 @@ private final class PickerDelegate: NSObject, CNContactPickerDelegate {
         return ""
     }
 
-    private func finish(_ outcome: ContactPickOutcome) {
+    /// A swipe-down dismissal calls neither `contactPickerDidCancel` nor
+    /// `contactPicker(_:didSelect:)`.
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        finish(.cancelled)
+    }
+
+    /// Resumes the continuation exactly once, however the picker ended — a normal
+    /// finish, a swipe-down dismissal, or a presentation UIKit silently refused.
+    func finish(_ outcome: ContactPickOutcome) {
         continuation?.resume(returning: outcome)
         continuation = nil
         keepAlive = nil

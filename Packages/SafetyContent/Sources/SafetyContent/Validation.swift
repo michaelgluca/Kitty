@@ -5,7 +5,7 @@ public extension ContentPack {
     /// Checks the decoder cannot express. A failure is a content bug caught at load
     /// time and in CI, rather than a blank row, or a rule shown to the wrong nation.
     ///
-    /// Points and coverage are checked before per-nation completeness, so a defect is
+    /// Points, coverage and topic tags are checked before per-nation completeness, so a defect is
     /// reported by name rather than as a nation that merely looks empty because of it.
     ///
     /// Ids must be unique across rights, guides, refuges and services. A refuge route is
@@ -25,6 +25,23 @@ public extension ContentPack {
         }
         for route in refuges where route.coverage == nil {
             throw fail("refuge route \(route.id) names no nation")
+        }
+        // Topic tags decide what a person sees under a chip, so an untagged item would
+        // vanish the moment any chip is chosen. `general` means "for anyone in distress",
+        // which only a service can be. Refuge routes are listed by nation alone.
+        for service in services where service.topics.isEmpty {
+            throw fail("service \(service.id) has no topics")
+        }
+        for route in reporting {
+            if route.topics.isEmpty { throw fail("reporting route \(route.id) has no topics") }
+            if route.topics.contains(.general) { throw fail("reporting route \(route.id) is tagged general") }
+        }
+        for topic in rights {
+            if topic.topics.isEmpty { throw fail("rights topic \(topic.id) has no topics") }
+            if topic.topics.contains(.general) { throw fail("rights topic \(topic.id) is tagged general") }
+        }
+        for route in refuges where !route.topics.isEmpty {
+            throw fail("refuge route \(route.id) has topics; refuges are listed by nation only")
         }
         for nation in Nation.allCases where refuges(for: nation).isEmpty {
             throw fail("no refuge route for \(nation.rawValue)")

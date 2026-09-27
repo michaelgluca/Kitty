@@ -46,3 +46,44 @@ struct NearestPlacesTests {
         #expect([ghost, place("real", 51.51, -0.12)].nearestFirst(from: origin).map(\.id) == ["real"])
     }
 }
+
+@Suite("Reads as a police station")
+struct ReadsAsPoliceStationTests {
+
+    @Test(
+        "Real police stations are kept",
+        arguments: [
+            "Charing Cross Police Station",
+            "Police Scotland Glasgow City Centre Police Office",
+            "PSNI Musgrave Station",
+        ]
+    )
+    func keepsRealStations(name: String) {
+        #expect(readsAsPoliceStation(name: name))
+    }
+
+    @Test(
+        "Places that merely share the .police category are rejected",
+        arguments: [
+            "Crime Museum",
+            "Telephone Box",
+            "Police Box",
+            "Police Federation",
+        ]
+    )
+    func rejectsNonStations(name: String) {
+        #expect(!readsAsPoliceStation(name: name))
+    }
+
+    @Test("An empty or missing name is rejected, not treated as a match")
+    func rejectsEmptyOrMissingName() {
+        #expect(!readsAsPoliceStation(name: ""))
+        #expect(!readsAsPoliceStation(name: nil))
+    }
+
+    @Test("Matching is case-insensitive")
+    func caseInsensitive() {
+        #expect(readsAsPoliceStation(name: "CHARING CROSS POLICE STATION"))
+        #expect(readsAsPoliceStation(name: "psni musgrave station"))
+    }
+}

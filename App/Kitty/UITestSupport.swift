@@ -58,6 +58,10 @@ enum UITestSupport {
         services.places = FixedPlaces(result: .found([station]))
         services.routes = FixedRoute(result: .found(WalkingRoute(distanceMetres: 450, expectedSeconds: 360, path: [here, station.coordinate])))
         services.areas = FixedArea(result: GeocodedArea(countryCode: "GB", names: ["England"]))
+        // Without this, a UI test tapping Directions would leave the app and open
+        // real Apple Maps. Reports success without doing so, so `directionsFailed`
+        // stays testable too — see `FixedMaps`.
+        services.maps = FixedMaps(result: true)
     }
 }
 
@@ -83,5 +87,10 @@ private struct FixedRoute: RouteFinding {
 private struct FixedArea: AreaNaming {
     let result: GeocodedArea?
     func area(at coordinate: Coordinate) async -> GeocodedArea? { result }
+}
+
+private struct FixedMaps: MapsOpening {
+    let result: Bool
+    func openWalkingDirections(to place: NearbyPlace) async -> Bool { result }
 }
 #endif

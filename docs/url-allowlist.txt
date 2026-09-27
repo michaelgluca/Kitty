@@ -27,7 +27,10 @@ https://support.apple.com/en-gb/guide/personal-safety/ips2aad835e1/web | Safety 
 https://support.apple.com/en-gb/guide/personal-safety/ips4f0cd709b/web | emergency call
 https://support.apple.com/en-gb/guide/personal-safety/ips56b5bc469/web | Check In
 https://therowan.hscni.net/ | The Rowan
-https://victimsupport.scot/contact/ | Victim Support Scotland
+# victimsupport.scot answers 200 from a home connection but 403 to GitHub's runners
+# (bot protection on datacentre addresses). Verified in a browser on 2026-09-27: no
+# redirect, title "Contact us | Victim Support Scotland", 0800 160 1985 on the page.
+https://victimsupport.scot/contact/ | Victim Support Scotland | manual 2026-09-27
 https://womensaid.org.uk/information-support/ | domestic abuse
 https://www.galop.org.uk/helpline | Galop
 https://www.gov.uk/guidance/999-and-112-the-uks-national-emergency-numbers | 999 and 112

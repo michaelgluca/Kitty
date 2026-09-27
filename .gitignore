@@ -3,6 +3,8 @@ CLAUDE.md
 .claude/
 # The engineer's own to-do list (workspace rule)
 HUMAN-TASKS.md
+# The high-level project plan for switching between projects (workspace rule)
+PROJECT-PLAN.md
 
 # ── Working notes (local only) ────────────────────────────────────────────────
 # Implementation plans, the subagent workspace and session handover notes carry

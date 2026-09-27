@@ -37,6 +37,19 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Apple's built-in safety features — Emergency SOS, emergency contacts, Medical ID,
   Check In and Safety Check — with the trade-offs a user must know first.
 
+- UK crime reporting: GOV.UK's reporting page, 101, Crimestoppers, British Transport
+  Police and StreetSafe. The app never collects a report itself, and the section is
+  withheld entirely outside the UK, as App Store Guideline 1.7 requires.
+- Call and Text buttons that work. Text numbers, such as British Transport Police's
+  61016, are held apart from voice numbers so they can never be dialled by mistake.
+- The call confirmation shows the exact number that will be dialled.
+- UI tests for the call confirmation and for the UK-only reporting rule.
+
+### Fixed
+- Call buttons on the help screen did not place calls: the real dialler had not
+  been wired in, so every tap reported that the call could not start.
+- 101 could not be called: phone numbers required at least five digits.
+
 ### Notes
 - This is a rebuild. The 2023 MSc dissertation proof of concept is preserved on the
   `archive/dissertation-2023` branch and is not the basis of this history. See ADR-0001.

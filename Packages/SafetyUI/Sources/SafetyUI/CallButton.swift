@@ -1,33 +1,24 @@
 import SafetyDomain
-import SafetyServices
 import SwiftUI
 
-/// Places a call, but only after the user confirms.
+/// A call button. It only reports the tap; it presents nothing itself.
 ///
-/// Three rules, all deliberate:
-/// - **Never dial automatically.** Every call needs an explicit action, and the
-///   confirmation states plainly that the app is not making the call for you.
-/// - **`tel:`, never `telprompt:`**, so the system's own call confirmation is also
-///   shown. `telprompt:` skips it.
-/// - **A failed dial is visible.** If the dialler cannot open, the number is shown so
-///   it can be dialled by hand, rather than the button appearing to do nothing.
+/// It used to own its confirmation dialog, one per row. Found on device: with a
+/// dialog attached to every row of a List, SwiftUI presented stale state — tapping
+/// The Rowan's button produced "Call Rape Crisis Scotland Helpline?", anchored to
+/// the wrong row, and each dialog belonged to the PREVIOUS tap. Confirming would
+/// have called the wrong service. Presentation now lives in one place, in the
+/// screen, driven by data captured at the moment of the tap. See `HelpScreen`.
 struct CallButton: View {
 
     let number: PhoneNumber
     let serviceName: String
-
-    @Environment(\.services) private var services
-    @State private var confirming = false
-    @State private var failed = false
-
-    private var displayNumber: String { number.raw }
+    let action: () -> Void
 
     var body: some View {
-        Button {
-            confirming = true
-        } label: {
+        Button(action: action) {
             Label {
-                Text(String(format: Strings.localized("help.call"), displayNumber))
+                Text(String(format: Strings.localized("help.call"), number.raw))
             } icon: {
                 Image(systemName: "phone.fill")
             }
@@ -35,32 +26,8 @@ struct CallButton: View {
             .frame(minHeight: Design.minimumTapTarget, alignment: .leading)
         }
         .buttonStyle(.borderless)
-        .accessibilityLabel(Text(String(format: Strings.localized("help.call"), displayNumber)))
+        .accessibilityLabel(Text(String(format: Strings.localized("help.call"), number.raw)))
         .accessibilityHint(Text(verbatim: serviceName))
-        .confirmationDialog(
-            Text(String(format: Strings.localized("help.callConfirm.title"), serviceName)),
-            isPresented: $confirming,
-            titleVisibility: .visible
-        ) {
-            Button(Strings.localized("help.callConfirm.confirm")) { placeCall() }
-            Button(Strings.localized("help.callConfirm.cancel"), role: .cancel) {}
-        } message: {
-            Text("help.callConfirm.message", bundle: .module)
-        }
-        .alert(
-            Text(String(format: Strings.localized("help.callFailed"), displayNumber)),
-            isPresented: $failed
-        ) {
-            Button(Strings.localized("help.callConfirm.cancel"), role: .cancel) {}
-        }
-    }
-
-    private func placeCall() {
-        let dialler = services.dialler
-        Task { @MainActor in
-            let opened = await dialler.dial(number)
-            if !opened { failed = true }
-        }
     }
 }
 
@@ -70,8 +37,6 @@ struct CallButton: View {
 /// so blocking the app would remove working functionality to make a point about
 /// content that is merely not applicable.
 struct NonUKNotice: View {
-    @Environment(\.regionStance) private var region
-
     var body: some View {
         VStack(alignment: .leading, spacing: Design.Space.tight) {
             Label {

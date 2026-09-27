@@ -520,6 +520,74 @@
           }
         }
       }
+    },
+    "help.section.reporting": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Report a crime"
+          }
+        }
+      }
+    },
+    "help.reporting.footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kitty G never collects a report. These go straight to the police or to the charity, and are for when nobody is in danger. If someone is, call 999."
+          }
+        }
+      }
+    },
+    "help.text": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text %@"
+          }
+        }
+      },
+      "comment": "%@ is a number to send a text message to. Never a call."
+    },
+    "help.textFailed": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Messages could not open. You can text %@ yourself."
+          }
+        }
+      }
+    },
+    "help.ok": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
+    "help.callConfirm.messageWithNumber": {
+      "comment": "%@ is the exact number that will be dialled — taken from the same value the Call button uses.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This will open your phone app to call %@. Kitty G does not make the call for you."
+          }
+        }
+      }
     }
   }
 }

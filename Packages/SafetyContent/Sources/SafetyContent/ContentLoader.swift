@@ -1,4 +1,5 @@
 import Foundation
+import SafetyDomain
 
 public enum ContentLoader {
     public enum Failure: Error, Equatable {
@@ -29,6 +30,7 @@ public enum ContentLoader {
     public static func allURLs(in pack: ContentPack) -> [String] {
         Array(Set(
             pack.services.map(\.url)
+                + pack.reporting(for: .unitedKingdom).map(\.url)
                 + pack.emergencyRoutes.compactMap(\.learnMoreURL)
                 + pack.guides.map(\.url)
         )).sorted()

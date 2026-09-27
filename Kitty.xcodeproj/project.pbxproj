@@ -15,7 +15,19 @@
 		AA000000000000000000811 /* SafetyContent in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000081 /* SafetyContent */; };
 		AA000000000000000000821 /* SafetyServices in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000082 /* SafetyServices */; };
 		AA000000000000000000831 /* SafetyUI in Frameworks */ = {isa = PBXBuildFile; productRef = AA00000000000000000083 /* SafetyUI */; };
+		AA00000000000000000066 /* SystemContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000056 /* SystemContact.swift */; };
+		AA00000000000000000099 /* HelpCallTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000098 /* HelpCallTests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AA0000000000000000009B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA00000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA00000000000000000010;
+			remoteInfo = Kitty;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		AA00000000000000000011 /* Kitty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kitty.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -26,6 +38,9 @@
 		AA00000000000000000052 /* DeviceBattery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceBattery.swift; sourceTree = "<group>"; };
 		AA00000000000000000053 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AA00000000000000000054 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		AA00000000000000000056 /* SystemContact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemContact.swift; sourceTree = "<group>"; };
+		AA00000000000000000098 /* HelpCallTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpCallTests.swift; sourceTree = "<group>"; };
+		AA00000000000000000091 /* KittyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KittyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +55,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		AA00000000000000000093 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -48,6 +70,7 @@
 			children = (
 				AA00000000000000000005 /* Config */,
 				AA00000000000000000004 /* Kitty */,
+				AA00000000000000000097 /* UITests */,
 				AA00000000000000000003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -66,6 +89,7 @@
 				AA00000000000000000050 /* KittyApp.swift */,
 				AA00000000000000000051 /* RegionDetection.swift */,
 				AA00000000000000000052 /* DeviceBattery.swift */,
+				AA00000000000000000056 /* SystemContact.swift */,
 				AA00000000000000000053 /* Assets.xcassets */,
 				AA00000000000000000054 /* PrivacyInfo.xcprivacy */,
 				AA00000000000000000042 /* Info.plist */,
@@ -77,8 +101,17 @@
 			isa = PBXGroup;
 			children = (
 				AA00000000000000000011 /* Kitty.app */,
+				AA00000000000000000091 /* KittyUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		AA00000000000000000097 /* UITests */ = {
+			isa = PBXGroup;
+			children = (
+				AA00000000000000000098 /* HelpCallTests.swift */,
+			);
+			path = UITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -104,6 +137,22 @@
 			productName = Kitty;
 			productReference = AA00000000000000000011 /* Kitty.app */;
 			productType = "com.apple.product-type.application";
+		};
+		AA00000000000000000090 /* KittyUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA00000000000000000094;
+			buildPhases = (
+				AA00000000000000000092,
+				AA00000000000000000093,
+			);
+			buildRules = ();
+			dependencies = (
+				AA0000000000000000009A,
+			);
+			name = KittyUITests;
+			productName = KittyUITests;
+			productReference = AA00000000000000000091 /* KittyUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -135,6 +184,7 @@
 			projectRoot = "";
 			targets = (
 				AA00000000000000000010 /* Kitty */,
+				AA00000000000000000090 /* KittyUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -159,10 +209,27 @@
 				AA00000000000000000060 /* KittyApp.swift in Sources */,
 				AA00000000000000000061 /* RegionDetection.swift in Sources */,
 				AA00000000000000000062 /* DeviceBattery.swift in Sources */,
+				AA00000000000000000066 /* SystemContact.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA00000000000000000092 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA00000000000000000099 /* HelpCallTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AA0000000000000000009A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA00000000000000000010 /* Kitty */;
+			targetProxy = AA0000000000000000009B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		AA00000000000000000032 /* Debug */ = {
@@ -213,6 +280,38 @@
 			};
 			name = Release;
 		};
+		AA00000000000000000095 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = uk.co.example.safety.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Kitty;
+			};
+			name = Debug;
+		};
+		AA00000000000000000096 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				PRODUCT_BUNDLE_IDENTIFIER = uk.co.example.safety.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Kitty;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -230,6 +329,15 @@
 			buildConfigurations = (
 				AA00000000000000000034 /* Debug */,
 				AA00000000000000000035 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA00000000000000000094 /* Build configuration list for PBXNativeTarget "KittyUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA00000000000000000095 /* Debug */,
+				AA00000000000000000096 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

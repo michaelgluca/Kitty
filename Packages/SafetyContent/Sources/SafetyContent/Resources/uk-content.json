@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "reviewedOn": "2026-09-27",
   "emergencyRoutes": [
     {
@@ -248,6 +248,88 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://womensaid.org.uk/information-support/",
+      "attribution": null
+    }
+  ],
+  "reporting": [
+    {
+      "id": "report-a-crime",
+      "name": "Report a crime",
+      "kind": "reporting",
+      "coverage": "unitedKingdom",
+      "audience": null,
+      "summary": "Every way to report a crime, sent to the right police force for where you are — including Scotland, which is separate. Use it when nobody is in danger right now.",
+      "phone": null,
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://www.gov.uk/report-crime",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://www.gov.uk/report-crime",
+      "attribution": null
+    },
+    {
+      "id": "police-101",
+      "name": "101 — police, not an emergency",
+      "kind": "reporting",
+      "coverage": "unitedKingdom",
+      "audience": null,
+      "summary": "For police matters when nobody is in danger and nothing is happening right now. It only works from within the UK. If you use a textphone, dial 18001 101.",
+      "phone": "101",
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://www.police.uk/pu/contact-us/",
+      "availability": "seeWebsite",
+      "billingNote": "Free from any phone.",
+      "source": "https://www.police.uk/pu/contact-us/",
+      "attribution": null
+    },
+    {
+      "id": "crimestoppers",
+      "name": "Crimestoppers",
+      "kind": "reporting",
+      "coverage": "unitedKingdom",
+      "audience": null,
+      "summary": "An independent charity, not the police. Tell them what you know about a crime completely anonymously — they do not take your name. Open at any hour.",
+      "phone": "0800 555 111",
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://crimestoppers-uk.org/",
+      "availability": "allHours",
+      "billingNote": null,
+      "source": "https://crimestoppers-uk.org/about-us",
+      "attribution": null
+    },
+    {
+      "id": "british-transport-police",
+      "name": "British Transport Police",
+      "kind": "reporting",
+      "coverage": "greatBritain",
+      "audience": null,
+      "summary": "For something on a train, the Tube or a tram that does not need an emergency response. You can text discreetly or call. If anyone is in danger, call 999 instead.",
+      "phone": "0800 40 50 40",
+      "textNumber": "61016",
+      "textNote": "Texting may cost a small amount, and won't work if premium numbers are blocked or you have no credit.",
+      "url": "https://www.btp.police.uk/police-forces/british-transport-police/areas/campaigns/61016-text-service/",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://www.btp.police.uk/police-forces/british-transport-police/areas/campaigns/61016-text-service/",
+      "attribution": null
+    },
+    {
+      "id": "streetsafe",
+      "name": "StreetSafe",
+      "kind": "reporting",
+      "coverage": null,
+      "audience": null,
+      "summary": "Tell the police anonymously about a public place where you feel unsafe — a dark alleyway, somewhere you were followed. It is not for reporting a crime, and because it is anonymous nobody can come back to you.",
+      "phone": null,
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://www.police.uk/pu/notices/streetsafe/street-safe/",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://www.police.uk/pu/notices/streetsafe/street-safe/",
       "attribution": null
     }
   ],

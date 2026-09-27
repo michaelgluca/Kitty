@@ -219,10 +219,12 @@ struct ServiceRow: View {
 
             if let phone = service.phone, let number = PhoneNumber(phone) {
                 CallButton(number: number, serviceName: service.name) { onCall(number, service.name) }
-            } else if service.kind != .reporting {
+            } else if service.kind != .reporting, service.kind != .information {
                 // Only where someone might go looking for a number that does not
                 // exist — Women's Aid. A web-only reporting route such as GOV.UK
-                // does not need telling.
+                // does not need telling, and nor does an `.information` entry such
+                // as a refuge directory or a council homelessness route: those are
+                // never phone lines in the first place, so the line would be false.
                 // Stated explicitly. Women's Aid runs no telephone line, and leaving
                 // that blank invites someone to go looking for a number that does
                 // not exist.

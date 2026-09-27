@@ -1538,6 +1538,366 @@
           }
         }
       }
+    },
+    "nearby.police.header": {
+      "comment": "Section heading on the Nearby tab.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nearest police stations"
+          }
+        }
+      }
+    },
+    "nearby.police.footer.uk": {
+      "comment": "Footer under the police stations, UK.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Police station front counters keep limited hours and may be closed. In an emergency, call 999."
+          }
+        }
+      }
+    },
+    "nearby.police.footer.elsewhere": {
+      "comment": "Footer under the police stations, outside the UK.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Police station front counters keep limited hours and may be closed. In an emergency, call your local emergency number."
+          }
+        }
+      }
+    },
+    "nearby.state.needsPermission": {
+      "comment": "Before location is allowed.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow location to find the police stations nearest to you. Kitty G reads it only while you are using the app. The search is done by Apple Maps, and Kitty G never sends your location anywhere itself."
+          }
+        }
+      }
+    },
+    "nearby.state.locationOff": {
+      "comment": "Location refused or off.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location is off for Kitty G, so it cannot find the police stations near you."
+          }
+        }
+      }
+    },
+    "nearby.state.restricted": {
+      "comment": "Location restricted, for example by Screen Time.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location is restricted on this iPhone, so Kitty G cannot find the police stations near you."
+          }
+        }
+      }
+    },
+    "nearby.state.approximate": {
+      "comment": "Reduced accuracy.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precise Location is off. An approximate location cannot tell which police station is nearest."
+          }
+        }
+      }
+    },
+    "nearby.state.locating": {
+      "comment": "While reading the location.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finding where you are…"
+          }
+        }
+      }
+    },
+    "nearby.state.noLocation": {
+      "comment": "No location fix arrived.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your location could not be found. Try again, ideally outdoors or near a window."
+          }
+        }
+      }
+    },
+    "nearby.state.searching": {
+      "comment": "While searching.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Looking for police stations near you…"
+          }
+        }
+      }
+    },
+    "nearby.state.noneFound": {
+      "comment": "%@ is a distance, such as 16 mi.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No police stations were found within %@."
+          }
+        }
+      }
+    },
+    "nearby.state.searchFailed": {
+      "comment": "The search could not run.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kitty G could not search for police stations. You may have no signal. Try again when you are connected."
+          }
+        }
+      }
+    },
+    "nearby.retry": {
+      "comment": "Retries the location and search.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try again"
+          }
+        }
+      }
+    },
+    "nearby.station.unnamed": {
+      "comment": "Shown when the map data has no name.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Police station"
+          }
+        }
+      }
+    },
+    "nearby.station.distance": {
+      "comment": "%@ is a distance, such as 0.4 mi.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ away"
+          }
+        }
+      }
+    },
+    "nearby.route.walk": {
+      "comment": "%@ is a duration, such as 6 minutes.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About %@ on foot"
+          }
+        }
+      }
+    },
+    "nearby.route.unavailable": {
+      "comment": "The route request failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A walking route could not be planned. Directions will open Apple Maps."
+          }
+        }
+      }
+    },
+    "nearby.directions": {
+      "comment": "Opens walking directions in Apple Maps.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Directions"
+          }
+        }
+      }
+    },
+    "nearby.directions.hint": {
+      "comment": "Accessibility hint.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens walking directions in Apple Maps."
+          }
+        }
+      }
+    },
+    "nearby.directionsFailed": {
+      "comment": "Opening Maps failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Maps could not be opened."
+          }
+        }
+      }
+    },
+    "nearby.map.label": {
+      "comment": "Accessibility label for the map.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Map of your location and the nearest police stations"
+          }
+        }
+      }
+    },
+    "nearby.refuges.link": {
+      "comment": "Link to the refuges list.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Women's refuges"
+          }
+        }
+      }
+    },
+    "nearby.refuges.detail": {
+      "comment": "Subtitle of the refuges link.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Services that can find you a safe place to stay"
+          }
+        }
+      }
+    },
+    "refuges.title": {
+      "comment": "Screen title.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Women's refuges"
+          }
+        }
+      }
+    },
+    "refuges.why.header": {
+      "comment": "Heading above the confidentiality note.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Why there are no addresses"
+          }
+        }
+      }
+    },
+    "refuges.nation.header": {
+      "comment": "Heading above the nation picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Where are you?"
+          }
+        }
+      }
+    },
+    "refuges.nation.choose": {
+      "comment": "Picker placeholder when no nation is chosen.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose"
+          }
+        }
+      }
+    },
+    "refuges.nation.fromLocation": {
+      "comment": "Shown when the nation came from the location.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chosen from your location. You can change it."
+          }
+        }
+      }
+    },
+    "refuges.nation.prompt": {
+      "comment": "Shown before a nation is chosen.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose where you are to see the services that can help you there."
+          }
+        }
+      }
+    },
+    "refuges.list.header": {
+      "comment": "%@ is a nation, such as Scotland.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In %@"
+          }
+        }
+      }
     }
   }
 }

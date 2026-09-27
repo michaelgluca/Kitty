@@ -17,6 +17,10 @@ public struct Services: Sendable {
     public var contacts: any TrustedContactStoring
     public var battery: any BatteryReading
     public var time: any TimeSource
+    public var places: any PlaceSearching
+    public var routes: any RouteFinding
+    public var maps: any MapsOpening
+    public var areas: any AreaNaming
 
     public init(
         location: any LocationProviding,
@@ -27,7 +31,11 @@ public struct Services: Sendable {
         settings: any SettingsOpening,
         contacts: any TrustedContactStoring,
         battery: any BatteryReading,
-        time: any TimeSource
+        time: any TimeSource,
+        places: any PlaceSearching,
+        routes: any RouteFinding,
+        maps: any MapsOpening,
+        areas: any AreaNaming
     ) {
         self.location = location
         self.messages = messages
@@ -38,6 +46,10 @@ public struct Services: Sendable {
         self.contacts = contacts
         self.battery = battery
         self.time = time
+        self.places = places
+        self.routes = routes
+        self.maps = maps
+        self.areas = areas
     }
 
     /// Everything reports its own unavailability.
@@ -56,7 +68,11 @@ public struct Services: Sendable {
             settings: UnavailableSettingsOpener(),
             contacts: EphemeralContactStore(),
             battery: UnknownBattery(),
-            time: SystemTimeSource()
+            time: SystemTimeSource(),
+            places: UnavailablePlaceSearch(),
+            routes: UnavailableRouteFinder(),
+            maps: UnavailableMapsOpener(),
+            areas: UnavailableAreaNamer()
         )
     }
 }
@@ -100,6 +116,26 @@ public struct UnavailableTextOpener: TextOpening {
 public struct UnknownBattery: BatteryReading {
     public init() {}
     public var fraction: Double? { nil }
+}
+
+public struct UnavailablePlaceSearch: PlaceSearching {
+    public init() {}
+    @MainActor public func policeStations(near centre: Coordinate, radiusMetres: Double) async -> PlaceSearchOutcome { .failed }
+}
+
+public struct UnavailableRouteFinder: RouteFinding {
+    public init() {}
+    @MainActor public func walkingRoute(from origin: Coordinate, to place: NearbyPlace) async -> RouteOutcome { .failed }
+}
+
+public struct UnavailableMapsOpener: MapsOpening {
+    public init() {}
+    @MainActor public func openWalkingDirections(to place: NearbyPlace) async -> Bool { false }
+}
+
+public struct UnavailableAreaNamer: AreaNaming {
+    public init() {}
+    @MainActor public func area(at coordinate: Coordinate) async -> GeocodedArea? { nil }
 }
 
 /// Holds nothing across launches. Used only as a safe default.

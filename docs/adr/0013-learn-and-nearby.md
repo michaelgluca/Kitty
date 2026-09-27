@@ -17,16 +17,37 @@ reverse-engineer, and one of them is a deliberate refusal.
   women in refuge — national helplines, official local-service directories, and the council or
   Housing Executive route — for the person's nation, with the reason addresses are withheld on
   screen.
-- **The police-station finder is MapKit only** (plan §3.5, option (b)): a points-of-interest search
-  within 2 km (MapKit's limit), widening through a police-only region search to 25 km. Coordinates go
-  only to Apple. There is no crime map; ADR-0011 stays open.
+- **The police-station finder is MapKit only** (plan §3.5, option (b)): an `MKLocalSearch` for
+  "police station", limited to points of interest in the police category, within 2 km, then 8 km,
+  then 25 km. Every step uses the same query and category, and every result must then pass the name
+  rule below and fall inside that step's radius. Coordinates go only to Apple. There is no crime
+  map; ADR-0011 stays open.
 - **The station search asks for "police station" within the police category, then keeps only
   results that read as a police station.** Apple's `.police` points-of-interest category also
   returned a police telephone box and a crime museum as the "nearest station" in testing, and
   directing someone in danger there is a safety failure. A pure, tested rule filters the raw MapKit
-  results by name before anything reaches the screen. The cost is that a real station with an
-  unusual name may be filtered out; the Apple Maps hand-off and the 999 note on screen mitigate a
-  missed real station, which is recoverable in a way that a wrong destination is not.
+  results by name before anything reaches the screen. It checks a reject list first, by whole word:
+  "museum" (and the Welsh "amgueddfa"), "former", "closed", "telephone", "old police station",
+  "police box" and "phone box", because those places also read as a station by name. It then accepts
+  the wording of all four nations: "police station" (or "police" and "station" anywhere in the
+  name), "police office", "PSNI", "Police Service of Northern Ireland", and the Welsh "gorsaf" together with "heddlu" ("Gorsaf Heddlu", "Gorsaf yr
+  Heddlu"). A nation's wording left out hides its nearer stations and shows a farther one as nearest,
+  so it is a defect, not a nicety. The cost is that a real station with an unusual name may be
+  filtered out; the Apple Maps hand-off and the 999 note mitigate a missed real station, which is
+  recoverable in a way that a wrong destination is not. The note shows whenever a station was looked
+  for: beside a station found, and when none was found, the search could not run or there was no
+  fix.
+- **A Nearby result is never shown as current once it may not be.** A found result records when its
+  location was read, from the injected time source, and is stale after 5 minutes. When the tab
+  appears, or the app becomes active with the tab open, the model searches again unless a search is
+  already running: always when there is no result, and for a result once it is stale. A current
+  result is not searched again on every tab switch. While a search replaces a result, the old one
+  stays on screen under a line saying it is from the last search, and its detected nation is
+  withdrawn, so the refuge list asks. Any state the search ends in drops the old result, so a failed
+  search shows its failure and never leaves an old result looking current.
+- **A station's distance is in a straight line, and says so.** Only the walking route to the nearest
+  station is measured along paths; the other rows show the straight-line distance, which reads
+  "away in a straight line" so it is not taken for the walk.
 - **Every Nearby network wait is time-limited**, so a hung MapKit call can never leave the screen
   spinning forever: the nation lookup 5 seconds, each search step 10 seconds, the walking route 10
   seconds. A route that times out still shows the station and its distance — orientation without a
@@ -66,8 +87,16 @@ reverse-engineer, and one of them is a deliberate refusal.
   serve no page title at all; those carry dated manual entries on the allowlist rather than being
   dropped, because dropping them would remove a verified source, not a broken one.
 - **Content that describes a law change on a future date is written as future**, not as already in
-  force. The dates to recheck before release are 29 Sep, 1 Oct, 30 Oct, 16 Nov and 24 Nov 2026, since
-  each is a date something in the pack's rights content changes.
+  force. The dates to recheck before release are the dates something in the pack's rights content
+  changes. Each is listed with the rights topic id or ids in `uk-content.json` it affects:
+  - 29 Sep 2026: the England and Wales exposure offence commences (`harassment-in-public`; the pack
+    makes no exposure claim today).
+  - 1 Oct 2026: Police Scotland must refer victims to victim support (`victims-rights`). The same
+    day, the employment tribunal limit changes in `rights-at-work`, already written as future.
+  - 30 Oct 2026: the employer "all reasonable steps" duty to prevent sexual harassment
+    (`rights-at-work`; not in the pack until a commencement order is made).
+  - 16 Nov 2026: Scottish victim statements in solemn cases (`victims-rights`).
+  - 24 Nov 2026: the domestic abuse protection order pilot ends (`protection-orders`).
 
 ## Consequences
 

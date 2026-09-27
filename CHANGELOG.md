@@ -61,8 +61,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - A Learn tab: what the law says about women's rights, topic by topic, with every point marked with
   the UK nations it applies in and links to the official sources; and step-by-step guides to the
   iPhone's built-in safety features, with the trade-offs to know before switching each on.
-- A Nearby tab: the nearest police stations on a map, with distances, a walking route to the nearest
-  and walking directions in Apple Maps. Every location and search problem is shown with a way forward.
+- A Nearby tab: the nearest police stations on a map, with straight-line distances, a walking route
+  to the nearest and walking directions in Apple Maps. Every location and search problem is shown with
+  a way forward, and the note that front counters keep limited hours, with 999 in the UK, shows
+  whether or not a station is found. Results are searched again when they are more than 5 minutes
+  old and the tab is opened or the app is reopened; an old result is marked as updating and is never
+  shown as current. Welsh-named and PSNI-named stations are found; museums, former or closed stations
+  and police boxes are not shown as stations.
 - Women's refuges: the services that can place you in a refuge in England, Wales, Scotland or Northern
   Ireland. Refuge addresses are never shown, because they are kept confidential for residents' safety.
 - ADR-0013.

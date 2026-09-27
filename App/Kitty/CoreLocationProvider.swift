@@ -64,6 +64,10 @@ final class CoreLocationProvider: NSObject, LocationProviding, CLLocationManager
                     // one is good enough to send, or the timeout ends the wait.
                     if fix.isUsable && fix.isFresh(at: Date()) { return fix }
                 }
+            } catch is CancellationError {
+                // `firstResult` cancels this task once the timeout elapses. That is
+                // the normal, expected way this loop ends when no fix arrives in
+                // time — not a failure worth logging.
             } catch {
                 // The alert still goes, saying location is unavailable — the person
                 // sees that on screen. This line is for diagnosis only.

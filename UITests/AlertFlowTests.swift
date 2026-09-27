@@ -251,6 +251,19 @@ final class AlertFlowTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Call 999?"].waitForNonExistence(timeout: 3))
     }
 
+    /// If the bundled content ever failed to load, the UK Alert tab has no 999 button
+    /// and must say so, rather than leave a gap with no explanation.
+    @MainActor
+    func testMissingContentSaysThe999ButtonCouldNotBeLoaded() {
+        let app = launch(["-kitty.resetContacts", "-kitty.withoutContent"])
+        XCTAssertTrue(app.buttons["alert.button"].waitForExistence(timeout: 5))
+
+        let line = text(containing: "The 999 button could not be loaded", in: app)
+        XCTAssertTrue(line.waitForExistence(timeout: 3), "The missing 999 button must be explained")
+        app.reveal(line)
+        XCTAssertFalse(app.buttons["emergency.call"].exists, "With no content there is no number to dial, so no 999 button")
+    }
+
     @MainActor
     func testNoEmergencyCallButtonOutsideTheUK() {
         let app = launch(["-kitty.resetContacts"], locale: "en_US")

@@ -10,11 +10,16 @@ import SafetyServices
 ///   the tests never touches a developer's real list.
 /// - `-kitty.resetContacts`: start with no trusted contacts.
 /// - `-kitty.seedContacts`: start with two contacts on Ofcom drama numbers.
+/// - `-kitty.withoutContent`: behave as if the bundled content pack failed to load,
+///   so the screens' missing-content states can be tested. Honoured only together
+///   with `-kitty.uiTest`.
 enum UITestSupport {
 
     private static var arguments: [String] { ProcessInfo.processInfo.arguments }
 
     static var isActive: Bool { arguments.contains("-kitty.uiTest") }
+
+    static var withoutContent: Bool { isActive && arguments.contains("-kitty.withoutContent") }
 
     static func prepare(_ store: any TrustedContactStoring) {
         guard isActive else { return }

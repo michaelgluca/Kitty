@@ -154,10 +154,24 @@ struct ServiceRow: View {
     let now: Date
     let onCall: (PhoneNumber, String) -> Void
     let onText: (PhoneNumber) -> Void
+    /// Whether "This service has no phone line." may render when there is no number.
+    /// `true` on Get help, where it exists so nobody goes looking for a number
+    /// Women's Aid does not have. `false` in the refuge list (`RefugesScreen`):
+    /// there every phoneless entry is an `.information` directory or council route
+    /// that was never a phone line to begin with, so the same sentence would be
+    /// stating a fact about the wrong kind of entry.
+    var showsNoPhoneLine = true
 
     @Environment(\.dynamicTypeSize) private var typeSize
 
     private var status: OpeningStatus { service.availability.status(at: now) }
+
+    /// Whether the no-phone line should render for this kind, given whether this list
+    /// allows it at all. Extracted from `body` so the rule is testable without
+    /// rendering a view.
+    static func shouldShowNoPhoneLine(kind: ServiceKind, showsNoPhoneLine: Bool) -> Bool {
+        showsNoPhoneLine && kind != .reporting
+    }
 
     /// Side by side at normal sizes; stacked at accessibility sizes.
     ///
@@ -219,12 +233,14 @@ struct ServiceRow: View {
 
             if let phone = service.phone, let number = PhoneNumber(phone) {
                 CallButton(number: number, serviceName: service.name) { onCall(number, service.name) }
-            } else if service.kind != .reporting, service.kind != .information {
+            } else if Self.shouldShowNoPhoneLine(kind: service.kind, showsNoPhoneLine: showsNoPhoneLine) {
                 // Only where someone might go looking for a number that does not
-                // exist — Women's Aid. A web-only reporting route such as GOV.UK
-                // does not need telling, and nor does an `.information` entry such
-                // as a refuge directory or a council homelessness route: those are
-                // never phone lines in the first place, so the line would be false.
+                // exist — Women's Aid, on Get help. A web-only reporting route such
+                // as GOV.UK does not need telling, and `showsNoPhoneLine` is false in
+                // the refuge list, where a phoneless `.information` entry is a
+                // directory or council route that was never a phone line to begin
+                // with — the same sentence there would be stating a fact about the
+                // wrong kind of entry.
                 // Stated explicitly. Women's Aid runs no telephone line, and leaving
                 // that blank invites someone to go looking for a number that does
                 // not exist.

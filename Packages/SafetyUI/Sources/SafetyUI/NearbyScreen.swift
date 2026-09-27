@@ -25,8 +25,6 @@ struct NearbyScreen: View {
                     stationContent
                 } header: {
                     Text("nearby.police.header", bundle: .module)
-                } footer: {
-                    Text(region.isUnitedKingdom ? "nearby.police.footer.uk" : "nearby.police.footer.elsewhere", bundle: .module)
                 }
 
                 if region.isUnitedKingdom {
@@ -84,15 +82,28 @@ struct NearbyScreen: View {
                 ) {
                     Task { await model.openDirections(to: station) }
                 }
+                if index == 0 {
+                    // Directly after the nearest station, not as a footer below the
+                    // map and up to five rows: it must stay on screen, without
+                    // scrolling, whenever a station is shown.
+                    PoliceCounterNote(isUnitedKingdom: region.isUnitedKingdom)
+                }
             }
         case .locating, .searching, .idle:
             HStack(spacing: Design.Space.tight) {
                 ProgressView()
-                Text(NearbyCopy.message(for: model.state) ?? "")
+                if let message = NearbyCopy.message(for: model.state) {
+                    Text(message)
+                }
             }
         default:
             VStack(alignment: .leading, spacing: Design.Space.tight) {
-                Text(NearbyCopy.message(for: model.state) ?? "").fixedSize(horizontal: false, vertical: true)
+                // Every state reaching `default` has real copy — `.idle` and
+                // `.found` are handled above — but this renders nothing rather than
+                // an empty label if that were ever not true, instead of forcing it.
+                if let message = NearbyCopy.message(for: model.state) {
+                    Text(message).fixedSize(horizontal: false, vertical: true)
+                }
                 action
             }
             .padding(.vertical, 2)
@@ -154,6 +165,21 @@ private struct StationMap: View {
         .listRowInsets(EdgeInsets())
         .accessibilityLabel(Text("nearby.map.label", bundle: .module))
         .accessibilityIdentifier("nearby.map")
+    }
+}
+
+/// Front counters keep limited hours, and 999 is the number in an emergency (UK).
+/// Kept as its own row, directly after the nearest station, rather than a section
+/// footer — see `stationContent`.
+private struct PoliceCounterNote: View {
+    let isUnitedKingdom: Bool
+
+    var body: some View {
+        Text(isUnitedKingdom ? "nearby.police.footer.uk" : "nearby.police.footer.elsewhere", bundle: .module)
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.vertical, 2)
     }
 }
 

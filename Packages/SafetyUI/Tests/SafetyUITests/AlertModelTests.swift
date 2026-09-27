@@ -1,0 +1,173 @@
+import Foundation
+import SafetyDomain
+import SafetyServices
+import SafetyTesting
+import Testing
+
+@testable import SafetyUI
+
+private let now = Date(timeIntervalSince1970: 1_758_900_000)
+
+private func london(age: TimeInterval = 5) -> LocationFix {
+    LocationFix(
+        coordinate: Coordinate(latitude: 51.50853, longitude: -0.12574),
+        horizontalAccuracy: 12,
+        timestamp: now.addingTimeInterval(-age)
+    )
+}
+
+@MainActor
+@Suite("Alert model")
+struct AlertModelTests {
+
+    private func services(
+        location: any LocationProviding = StubLocationProvider(fix: london()),
+        messages: SpyMessageComposer = SpyMessageComposer()
+    ) -> Services {
+        var services = Services.unavailable
+        services.location = location
+        services.messages = messages
+        services.battery = FixedBattery(fraction: 0.5)
+        services.time = FixedTime(now: now)
+        return services
+    }
+
+    private func model(_ services: Services, timeout: Duration = .milliseconds(300)) -> AlertModel {
+        AlertModel(services: services, strings: Strings.alert, locale: Locale(identifier: "en_GB"), locationTimeout: timeout)
+    }
+
+    @Test("No contacts routes to setup and composes nothing")
+    func noContacts() async {
+        let spy = SpyMessageComposer()
+        let m = model(services(messages: spy))
+        await m.raise(contacts: [], contactsReadable: true, testMode: false)
+        #expect(m.phase == .finished(.needsContacts))
+        #expect(spy.composed.isEmpty)
+    }
+
+    @Test("Unreadable contacts are reported, never treated as having none")
+    func unreadable() async {
+        let spy = SpyMessageComposer()
+        let m = model(services(messages: spy))
+        await m.raise(contacts: [], contactsReadable: false, testMode: false)
+        #expect(m.phase == .finished(.contactsUnreadable))
+        #expect(spy.composed.isEmpty)
+    }
+
+    @Test("A phone that cannot text is told at once, and offered calls, without waiting for a location")
+    func cannotText() async {
+        let location = StubLocationProvider(fix: london())
+        let m = model(services(location: location, messages: SpyMessageComposer(canSendText: false)))
+        await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: false)
+        #expect(m.phase == .finished(.cannotText))
+        #expect(m.recipients.map(\.number) == [SafeTestNumbers.alice, SafeTestNumbers.bob])
+        #expect(location.fixRequestCount == 0)
+    }
+
+    @Test("Sends one message to every contact, with where they are")
+    func sendsWithLocation() async throws {
+        let spy = SpyMessageComposer()
+        let m = model(services(messages: spy))
+        await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: false)
+
+        let composed = try #require(spy.composed.first)
+        #expect(spy.composed.count == 1)
+        #expect(composed.recipients == [SafeTestNumbers.alice, SafeTestNumbers.bob])
+        #expect(composed.body.contains("maps.apple.com"))
+        #expect(m.phase == .finished(.handedToMessages(includedLocation: true)))
+    }
+
+    @Test("Never asks for location permission from the alert, and sends without it", arguments: [
+        LocationAuthorization.notDetermined, .denied, .restricted, .authorizedReducedAccuracy,
+    ])
+    func neverPrompts(authorization: LocationAuthorization) async throws {
+        let location = StubLocationProvider(authorization: authorization, authorizationAfterRequest: .authorizedWhenInUse, fix: london())
+        let spy = SpyMessageComposer()
+        let m = model(services(location: location, messages: spy))
+        await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: false)
+
+        #expect(location.authorizationRequestCount == 0)
+        #expect(location.fixRequestCount == 0)
+        let composed = try #require(spy.composed.first)
+        #expect(composed.body.contains("My location is not available."))
+        #expect(m.phase == .finished(.handedToMessages(includedLocation: false)))
+    }
+
+    @Test("A provider that never answers does not hold the alert")
+    func hungProvider() async throws {
+        let hanging = HangingLocationProvider()
+        let spy = SpyMessageComposer()
+        let m = model(services(location: hanging, messages: spy), timeout: .milliseconds(200))
+
+        let clock = ContinuousClock()
+        let start = clock.now
+        await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: false)
+        #expect(clock.now - start < .seconds(3))
+
+        let composed = try #require(spy.composed.first)
+        #expect(composed.body.contains("My location is not available."))
+        hanging.release()
+    }
+
+    @Test("A stale cached fix is not sent as where they are now")
+    func staleFix() async throws {
+        let spy = SpyMessageComposer()
+        let m = model(services(location: StubLocationProvider(fix: london(age: 600)), messages: spy))
+        await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: false)
+        let composed = try #require(spy.composed.first)
+        #expect(!composed.body.contains("maps.apple.com"))
+        #expect(m.phase == .finished(.handedToMessages(includedLocation: false)))
+    }
+
+    @Test("Reports exactly what the person did in Messages", arguments: [
+        (MessageOutcome.cancelled, AlertModel.Outcome.cancelled),
+        (MessageOutcome.failed, AlertModel.Outcome.failed),
+        (MessageOutcome.unavailable, AlertModel.Outcome.cannotText),
+    ])
+    func outcomes(messages: MessageOutcome, expected: AlertModel.Outcome) async {
+        let m = model(services(messages: SpyMessageComposer(outcome: messages)))
+        await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: false)
+        #expect(m.phase == .finished(expected))
+    }
+
+    @Test("In Test Mode no real number is ever composed, and the message says TEST first")
+    func testModeNeverReachesARealNumber() async throws {
+        // These are not recognised as drama numbers, so SpyMessageComposer would stop
+        // the test outright if one reached it. Test Mode must replace them.
+        let realLooking = [
+            TrustedContact(displayName: "Alice", phoneNumber: try #require(PhoneNumber("020 7946 0018"))),
+            TrustedContact(displayName: "Bob", phoneNumber: try #require(PhoneNumber("0113 496 0001"))),
+        ]
+        let spy = SpyMessageComposer()
+        let m = model(services(messages: spy))
+        await m.raise(contacts: realLooking, contactsReadable: true, testMode: true)
+
+        let composed = try #require(spy.composed.first)
+        #expect(composed.recipients == [TestModeNumbers.contact(at: 0), TestModeNumbers.contact(at: 1)])
+        #expect(composed.body.components(separatedBy: "\n").first == Strings.alert.testNotice)
+        #expect(m.recipients.map(\.name) == ["Alice", "Bob"])
+    }
+
+    @Test("A second tap while the first is still working does nothing")
+    func doubleTap() async throws {
+        let hanging = HangingLocationProvider()
+        let spy = SpyMessageComposer()
+        let m = model(services(location: hanging, messages: spy), timeout: .seconds(5))
+
+        let first = Task { await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: false) }
+        for _ in 0..<10_000 where m.phase != .locating { await Task.yield() }
+        try #require(m.phase == .locating)
+        #expect(m.isBusy)
+
+        await m.raise(contacts: SafeTestNumbers.contacts, contactsReadable: true, testMode: false)
+        m.reset()
+        #expect(m.phase == .locating)
+
+        hanging.release()
+        await first.value
+        #expect(spy.composed.count == 1)
+
+        m.reset()
+        #expect(m.phase == .idle)
+    }
+}

@@ -56,6 +56,7 @@ public struct PrimaryAlertButton: View {
         .accessibilityLabel(Text("alert.button.title", bundle: .module))
         .accessibilityHint(Text("alert.button.accessibilityHint", bundle: .module))
         .accessibilityAddTraits(.isButton)
+        .accessibilityIdentifier("alert.button")
         .onLongPressGesture(minimumDuration: 0, pressing: { pressing in
             // No animation under Reduce Motion; the state change still happens, so
             // the press is still visible.

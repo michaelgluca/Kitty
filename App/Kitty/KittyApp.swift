@@ -50,17 +50,31 @@ struct KittyApp: App {
 }
 
 extension Services {
-    /// The real wiring. Location and the alert composer land in later milestones;
-    /// until then those capabilities report themselves unavailable rather than
-    /// silently doing nothing.
+    /// The real wiring. Every capability is live; nothing is left reporting itself
+    /// unavailable.
     static func live() -> Services {
         var services = Services.unavailable
+        services.location = CoreLocationProvider()
+        services.messages = SystemMessageComposer()
+        services.picker = SystemContactPicker()
+        services.settings = SystemSettingsOpener()
         services.dialler = SystemDialler()
         services.texter = SystemTextOpener()
-        services.contacts = KeychainContactStore(
-            service: Bundle.main.bundleIdentifier ?? "uk.co.example.safety"
-        )
+        services.contacts = KeychainContactStore(service: contactStoreService())
         services.battery = DeviceBattery()
+        #if DEBUG
+        UITestSupport.prepare(services.contacts)
+        #endif
         return services
+    }
+
+    private static func contactStoreService() -> String {
+        let base = Bundle.main.bundleIdentifier ?? "uk.co.example.safety"
+        #if DEBUG
+        // UI tests get their own Keychain item, so running them can never touch a
+        // developer's real trusted contacts.
+        if UITestSupport.isActive { return base + ".uitest" }
+        #endif
+        return base
     }
 }

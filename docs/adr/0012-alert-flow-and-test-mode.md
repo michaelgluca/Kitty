@@ -18,9 +18,15 @@ deliberate.
   honouring its own timeout. A fix more than two minutes old is treated as no location.
 - **"Sent" means handed to Messages.** iOS reports that the person tapped Send, nothing about
   delivery, so the app says it cannot confirm delivery.
-- **A trusted contact needs at least seven digits after any international prefix.** That refuses
-  999, 112, 101, 18000, 61016 and every other short code worldwide. The alert texts every trusted
-  contact, so a short code on the list would send it to 999 or a service without the person realising.
+- **A trusted contact needs at least seven digits after any international prefix, and a UK number
+  written with +44 or 0044 needs at least nine digits in its national significant number** (the
+  digits after 44 and any trunk 0). The country code does not count towards the length, so
+  "+44 18000", "0044 61016" and "+44 116 123" are refused like 18000, 61016 and 116 123. Together
+  that refuses 999, 112, 101, 18000, 61016 and every other short code worldwide. The alert texts
+  every trusted contact, so a short code on the list would send it to 999 or a service without the
+  person realising. Before validating, the number the picker hands over is cut at a pause (`,`), a
+  wait (`;`), `#`, `*` or an extension ("ext", "x", "p", "w"), and a "(0)" after the country code
+  is dropped; the cleaned number is what is stored, texted and called.
 - **The 999 button exists only in the UK stance**, dials the number from the content pack, and always
   asks first. Elsewhere the disclaimer tells the person to call their local emergency number; the app
   does not guess 112 or 911.

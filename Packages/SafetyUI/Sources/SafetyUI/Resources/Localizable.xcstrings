@@ -1606,7 +1606,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Location is restricted on this iPhone, so Kitty G cannot find the police stations near you."
+            "value": "Location is restricted by a setting on this iPhone, such as Screen Time or a device management profile, so Kitty G cannot find the police stations near you."
           }
         }
       }

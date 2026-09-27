@@ -15,11 +15,20 @@ struct RefugesScreen: View {
 
     @State private var chosen: Nation?
     @State private var contact = ServiceContactActions()
+    /// The nation `chosen` was seeded from, frozen at the moment this screen was
+    /// first created — unlike `detected`, a plain `let` that is refreshed with
+    /// whatever `NearbyModel.detectedNation` holds each time the parent redraws.
+    /// Without this, a person who opens Refuges before the area lookup lands (so
+    /// `chosen` starts `nil`), then has the lookup resolve afterwards and happens to
+    /// pick that same nation by hand, would be told it was "chosen from your
+    /// location" when they chose it themselves.
+    @State private var seededNation: Nation?
 
     init(pack: ContentPack?, detected: Nation?) {
         self.pack = pack
         self.detected = detected
         _chosen = State(initialValue: detected)
+        _seededNation = State(initialValue: detected)
     }
 
     private var isTestMode: Bool { testMode?.isOn == true }
@@ -50,7 +59,7 @@ struct RefugesScreen: View {
                     }
                     .accessibilityIdentifier("refuges.nation")
                 } footer: {
-                    if chosen != nil, chosen == detected {
+                    if chosen != nil, chosen == seededNation {
                         Text("refuges.nation.fromLocation", bundle: .module)
                     }
                 }
@@ -66,7 +75,8 @@ struct RefugesScreen: View {
                                     let texter = services.texter
                                     let testMode = isTestMode
                                     Task { await contact.text(number, testMode: testMode, using: texter) }
-                                }
+                                },
+                                showsNoPhoneLine: false
                             )
                         }
                     } header: {

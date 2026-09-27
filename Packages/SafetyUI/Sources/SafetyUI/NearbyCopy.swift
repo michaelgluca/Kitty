@@ -24,7 +24,9 @@ enum NearbyCopy {
             .formatted(.measurement(width: .abbreviated, usage: .road).locale(locale))
     }
 
+    /// Rounded up to at least a minute: a real walking route of, say, 20 seconds
+    /// read as "About 0 minutes on foot" — true to the number, but not to the walk.
     static func walk(_ seconds: Double) -> String {
-        Duration.seconds(seconds).formatted(.units(allowed: [.hours, .minutes], width: .wide))
+        Duration.seconds(max(seconds, 60)).formatted(.units(allowed: [.hours, .minutes], width: .wide))
     }
 }

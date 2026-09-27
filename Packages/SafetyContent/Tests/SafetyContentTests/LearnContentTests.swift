@@ -239,4 +239,51 @@ struct ContentValidationTests {
     func valid() throws {
         try validate(packJSON(refuges: allNations()))
     }
+
+    @Test("A service with no topics is rejected at load")
+    func serviceWithoutTopics() {
+        #expect(throws: ContentLoader.Failure.malformed("service s has no topics")) {
+            try validate(packJSON(services: [supportService(id: "s", topics: "[]")], refuges: allNations()))
+        }
+    }
+
+    @Test("A reporting route with no topics, or tagged general, is rejected at load")
+    func reportingTopics() {
+        #expect(throws: ContentLoader.Failure.malformed("reporting route p has no topics")) {
+            try validate(packJSON(reporting: [supportService(id: "p", topics: "[]")], refuges: allNations()))
+        }
+        #expect(throws: ContentLoader.Failure.malformed("reporting route p is tagged general")) {
+            try validate(packJSON(reporting: [supportService(id: "p", topics: #"["general","reportingAndVictimsRights"]"#)], refuges: allNations()))
+        }
+    }
+
+    @Test("A rights topic with no topics, or tagged general, is rejected at load")
+    func rightsTopicTags() {
+        #expect(throws: ContentLoader.Failure.malformed("rights topic t has no topics")) {
+            try validate(packJSON(rightsTopics: "[]", refuges: allNations()))
+        }
+        #expect(throws: ContentLoader.Failure.malformed("rights topic t is tagged general")) {
+            try validate(packJSON(rightsTopics: #"["general"]"#, refuges: allNations()))
+        }
+    }
+
+    @Test("A refuge route with topics is rejected: refuges are listed by nation only")
+    func refugeWithTopics() {
+        let tagged = allNations().map { $0.replacingOccurrences(of: #""topics":[]"#, with: #""topics":["domesticAbuse"]"#) }
+        #expect(throws: ContentLoader.Failure.malformed("refuge route r-england has topics; refuges are listed by nation only")) {
+            try validate(packJSON(refuges: tagged))
+        }
+    }
+
+    @Test("An unknown topic fails to decode, so a typo never becomes a topic nobody can choose")
+    func unknownTopic() {
+        #expect(throws: DecodingError.self) {
+            try validate(packJSON(rightsTopics: #"["pets"]"#, refuges: allNations()))
+        }
+    }
+
+    @Test("General on a service is valid")
+    func generalOnAService() throws {
+        try validate(packJSON(services: [supportService(id: "s", topics: #"["general"]"#)], refuges: allNations()))
+    }
 }

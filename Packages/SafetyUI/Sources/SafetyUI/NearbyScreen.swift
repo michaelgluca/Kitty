@@ -16,6 +16,10 @@ struct NearbyScreen: View {
     let pack: ContentPack?
 
     @State private var settingsFailed = false
+    /// Whether this tab is on screen. The scene becoming active refreshes only a
+    /// tab someone is looking at: Nearby searches while it is open, not in the
+    /// background of another tab (ADR-0013).
+    @State private var isShown = false
 
     var body: some View {
         @Bindable var model = model
@@ -48,16 +52,16 @@ struct NearbyScreen: View {
             }
             .navigationTitle(Text("tab.nearby", bundle: .module))
             .refreshable { await model.refresh() }
-            .task { if model.state == .idle { await model.refresh() } }
+            // Each time the tab appears, and each time the app comes back with it
+            // open, the model decides whether to look again: always without a
+            // result (a permission changed in Settings, a signal came back), and for
+            // a result once it is stale. A current result is not searched again.
+            .task { await model.refreshIfNeeded() }
+            .onAppear { isShown = true }
+            .onDisappear { isShown = false }
             .onChange(of: scenePhase) { _, phase in
-                // Back from Settings, permission may have changed.
-                guard phase == .active else { return }
-                switch model.state {
-                case .needsPermission, .locationOff, .locationApproximate, .locationRestricted:
-                    Task { await model.refresh() }
-                default:
-                    break
-                }
+                guard phase == .active, isShown else { return }
+                Task { await model.refreshIfNeeded() }
             }
             .alert(Text("nearby.directionsFailed", bundle: .module), isPresented: $model.directionsFailed) {
                 Button(Strings.localized("help.ok"), role: .cancel) {}
@@ -72,28 +76,26 @@ struct NearbyScreen: View {
     private var stationContent: some View {
         switch model.state {
         case let .found(found):
-            StationMap(found: found)
-            ForEach(Array(found.stations.enumerated()), id: \.element.id) { index, station in
-                StationRow(
-                    station: station,
-                    metres: Distance.metres(from: found.origin, to: station.coordinate),
-                    route: index == 0 ? found.route : nil,
-                    isNearest: index == 0
-                ) {
-                    Task { await model.openDirections(to: station) }
-                }
-                if index == 0 {
-                    // Directly after the nearest station, not as a footer below the
-                    // map and up to five rows: it must stay on screen, without
-                    // scrolling, whenever a station is shown.
-                    PoliceCounterNote(isUnitedKingdom: region.isUnitedKingdom)
-                }
-            }
+            results(found)
         case .locating, .searching, .idle:
-            HStack(spacing: Design.Space.tight) {
-                ProgressView()
-                if let message = NearbyCopy.message(for: model.state) {
-                    Text(message)
+            if let previous = model.previousResult {
+                // A refresh is replacing a result: keep it on screen rather than
+                // blanking, but say plainly, above it, that it is from the last
+                // search. The model drops it the moment the refresh ends, so a
+                // failure replaces it rather than leaving it looking current.
+                HStack(spacing: Design.Space.tight) {
+                    ProgressView()
+                    Text(NearbyCopy.updating).fixedSize(horizontal: false, vertical: true)
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityIdentifier("nearby.updating")
+                results(previous)
+            } else {
+                HStack(spacing: Design.Space.tight) {
+                    ProgressView()
+                    if let message = NearbyCopy.message(for: model.state) {
+                        Text(message)
+                    }
                 }
             }
         default:
@@ -108,6 +110,27 @@ struct NearbyScreen: View {
             }
             .padding(.vertical, 2)
             if NearbyCopy.showsCounterNote(in: model.state) {
+                PoliceCounterNote(isUnitedKingdom: region.isUnitedKingdom)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func results(_ found: NearbyModel.Found) -> some View {
+        StationMap(found: found)
+        ForEach(Array(found.stations.enumerated()), id: \.element.id) { index, station in
+            StationRow(
+                station: station,
+                metres: Distance.metres(from: found.origin, to: station.coordinate),
+                route: index == 0 ? found.route : nil,
+                isNearest: index == 0
+            ) {
+                Task { await model.openDirections(to: station) }
+            }
+            if index == 0 {
+                // Directly after the nearest station, not as a footer below the
+                // map and up to five rows: it must stay on screen, without
+                // scrolling, whenever a station is shown.
                 PoliceCounterNote(isUnitedKingdom: region.isUnitedKingdom)
             }
         }

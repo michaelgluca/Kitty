@@ -16,6 +16,11 @@ struct NearbyCopyTests {
         #expect(text.contains(" "), "Unresolved copy for \(state): \(text)")
     }
 
+    @Test("Updating says the results on screen are from the last search, not where you are now")
+    func updating() {
+        #expect(NearbyCopy.updating.contains("last search"))
+    }
+
     @Test("Approximate location is called out as not precise enough")
     func approximate() throws {
         #expect(try #require(NearbyCopy.message(for: .locationApproximate)).contains("Precise Location"))
@@ -46,7 +51,7 @@ struct NearbyCopyTests {
 
     @Test("Every Nearby key resolves", arguments: [
         "nearby.police.header", "nearby.police.footer.uk", "nearby.police.footer.elsewhere",
-        "nearby.retry", "nearby.station.unnamed", "nearby.station.distance", "nearby.route.walk",
+        "nearby.retry", "nearby.state.updating", "nearby.station.unnamed", "nearby.station.distance", "nearby.route.walk",
         "nearby.route.unavailable", "nearby.directions", "nearby.directions.hint", "nearby.directionsFailed",
         "nearby.map.label", "nearby.refuges.link", "nearby.refuges.detail",
         "refuges.title", "refuges.why.header", "refuges.nation.header", "refuges.nation.choose",
@@ -76,6 +81,7 @@ struct NearbyCopyTests {
     @Test("The front-counter and 999 note shows whenever a station was looked for, found or not", arguments: [
         NearbyModel.State.found(NearbyModel.Found(
             origin: Coordinate(latitude: 51.5, longitude: -0.12),
+            fixedAt: Date(timeIntervalSinceReferenceDate: 0),
             stations: [NearbyPlace(id: "a", name: "A Police Station", coordinate: Coordinate(latitude: 51.51, longitude: -0.12), phone: nil)],
             route: nil
         )),

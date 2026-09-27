@@ -16,10 +16,21 @@ public final class NearbyModel {
 
     public struct Found: Equatable, Sendable {
         public let origin: Coordinate
+        /// When `origin` was read, by `Services.time`. Every distance and the nation
+        /// are measured from it, so this is how old the whole result is.
+        public let fixedAt: Date
         /// Nearest first, at most `maximumStations`.
         public let stations: [NearbyPlace]
         /// A walking route to `stations[0]`, or `nil` if one could not be planned.
         public let route: WalkingRoute?
+
+        /// Whether this result is too old to stand for where the person is at `now`:
+        /// at or past `resultMaximumAge`, or timed after `now` — the clock has moved
+        /// back, so its age cannot be told, and it is not trusted.
+        public func isStale(at now: Date) -> Bool {
+            let age = now.timeIntervalSince(fixedAt)
+            return age < 0 || age >= NearbyModel.resultMaximumAge
+        }
     }
 
     public enum State: Equatable, Sendable {
@@ -45,6 +56,13 @@ public final class NearbyModel {
     public static let searchRadii: [Double] = [2_000, 8_000, widestRadius]
     public static let maximumStations = 5
 
+    /// How long a found result stands for where the person is. Past it, the tab
+    /// appearing or the app becoming active searches again, so stations, distances
+    /// and the nation from another place, or from hours ago, are never shown as
+    /// current. Long enough that switching tabs does not search every time; the alert
+    /// path's `LocationFix.maximumAge` is the same idea for a single reading.
+    nonisolated public static let resultMaximumAge: TimeInterval = 5 * 60
+
     /// None of `PlaceSearching`, `RouteFinding` or `AreaNaming` promise to return
     /// (unlike `MessageComposing`): their Task 9 implementations are plain network
     /// calls with no timeout of their own. Every await on them is bounded by
@@ -63,7 +81,26 @@ public final class NearbyModel {
     public private(set) var detectedNation: Nation?
     public var directionsFailed = false
 
+    /// The result a running refresh is replacing, kept so the screen can go on
+    /// showing it — marked as updating — instead of blanking. Set only while
+    /// `isBusy`; cleared the moment the refresh reaches any other state, so a failed
+    /// refresh shows its failure and never leaves the old result looking current.
+    public private(set) var previousResult: Found?
+
     public var isBusy: Bool { state == .locating || state == .searching }
+
+    /// Whether the tab appearing, or the app becoming active, should start a
+    /// refresh: never while one is running; for a found result only once it is stale
+    /// (`resultMaximumAge`); and always otherwise, so a permission fixed in Settings,
+    /// a signal that came back or a first visit is picked up without a tap.
+    public var shouldRefreshOnReturn: Bool {
+        switch state {
+        case .locating, .searching: false
+        case let .found(found): found.isStale(at: services.time.now)
+        case .idle, .needsPermission, .locationOff, .locationRestricted, .locationApproximate,
+             .noLocation, .noneFound, .searchFailed: true
+        }
+    }
 
     private let services: Services
     private let locationTimeout: Duration
@@ -94,6 +131,12 @@ public final class NearbyModel {
         self.routeTimeout = routeTimeout
     }
 
+    /// The tab appeared or the app became active: refresh if `shouldRefreshOnReturn`.
+    public func refreshIfNeeded() async {
+        guard shouldRefreshOnReturn else { return }
+        await refresh()
+    }
+
     public func refresh() async {
         guard !isBusy else { return }
         refreshGeneration += 1
@@ -102,27 +145,33 @@ public final class NearbyModel {
         switch services.location.authorization {
         case .notDetermined:
             detectedNation = nil
-            return state = .needsPermission
+            return finish(.needsPermission)
         case .denied:
             detectedNation = nil
-            return state = .locationOff
+            return finish(.locationOff)
         case .restricted:
             detectedNation = nil
-            return state = .locationRestricted
+            return finish(.locationRestricted)
         case .authorizedReducedAccuracy:
             detectedNation = nil
-            return state = .locationApproximate
+            return finish(.locationApproximate)
         case .authorizedWhenInUse: break
         }
 
+        // The old result stays on screen, marked as updating, until this refresh
+        // lands or fails. Its nation does not: it came from the reading being
+        // replaced, so the refuge list asks rather than label it "from your location".
+        if case let .found(found) = state { previousResult = found }
+        detectedNation = nil
         state = .locating
         let location = services.location
         let fixTimeout = locationTimeout
         guard let fix = await firstResult(within: fixTimeout, { await location.currentFix(timeout: fixTimeout) }) else {
             detectedNation = nil
-            return state = .noLocation
+            return finish(.noLocation)
         }
         let origin = fix.coordinate
+        let fixedAt = services.time.now
 
         // Moves past "locating" the moment the fix arrives. The nation lookup never
         // gates the station search — it runs alongside it — and it is only folded
@@ -142,7 +191,7 @@ public final class NearbyModel {
             case nil, .failed:
                 // A timed-out search is reported exactly like one that could not run:
                 // a visible failure with a retry, never "nothing nearby".
-                state = .searchFailed
+                finish(.searchFailed)
                 applyNation(await areaLookup, generation: myGeneration)
                 return
             case .noneFound:
@@ -156,12 +205,12 @@ public final class NearbyModel {
                 // without one.
                 case .failed?, nil: nil
                 }
-                state = .found(Found(origin: origin, stations: nearest, route: route))
+                finish(.found(Found(origin: origin, fixedAt: fixedAt, stations: nearest, route: route)))
                 applyNation(await areaLookup, generation: myGeneration)
                 return
             }
         }
-        state = .noneFound(searchedMetres: Self.widestRadius)
+        finish(.noneFound(searchedMetres: Self.widestRadius))
         applyNation(await areaLookup, generation: myGeneration)
     }
 
@@ -175,6 +224,13 @@ public final class NearbyModel {
         // Self-correcting: a later success clears a previous failure, so the flag
         // never outlives the attempt that set it.
         directionsFailed = await services.maps.openWalkingDirections(to: place) == false
+    }
+
+    /// Every state a refresh ends in goes through here, so the result it replaced
+    /// never outlives it.
+    private func finish(_ newState: State) {
+        previousResult = nil
+        state = newState
     }
 
     /// Resolves an awaited area lookup to `detectedNation`, unless a newer `refresh()`

@@ -2,6 +2,13 @@
 CLAUDE.md
 .claude/
 
+# ── Working notes (local only) ────────────────────────────────────────────────
+# Implementation plans, the subagent workspace and session handover notes carry
+# internal reasoning and context that is not meant for the public repository.
+docs/superpowers/
+.superpowers/
+HANDOVER.md
+
 # ── Project source material (not ours to redistribute) ─────────────────────────
 Dissertation.pdf
 docs/dissertation/

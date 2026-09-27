@@ -101,7 +101,8 @@ final class LearnNearbyTests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["nearby.station.test-station"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Test Police Station"].exists)
         XCTAssertTrue(anything(containing: "on foot", in: app).exists)
-        XCTAssertTrue(anything(containing: "away", in: app).exists)
+        XCTAssertTrue(anything(containing: "away in a straight line", in: app).exists,
+                      "A station's distance is a straight line and must say so")
         XCTAssertTrue(app.buttons["nearby.directions.test-station"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["nearby.map"].exists)
         XCTAssertTrue(anything(containing: "front counters", in: app).exists)

@@ -38,7 +38,9 @@ enum NearbyCopy {
         isUnitedKingdom ? Strings.localized("nearby.police.footer.uk") : Strings.localized("nearby.police.footer.elsewhere")
     }
 
-    /// A road distance in the person's units — miles in the UK.
+    /// A distance in the person's road units — miles in the UK. A station's
+    /// distance is measured in a straight line, and its copy says so
+    /// ("nearby.station.distance"); only the walking route is along roads.
     static func distance(_ metres: Double, locale: Locale = .autoupdatingCurrent) -> String {
         Measurement(value: metres, unit: UnitLength.meters)
             .formatted(.measurement(width: .abbreviated, usage: .road).locale(locale))

@@ -44,6 +44,15 @@ struct NearbyCopyTests {
         #expect(NearbyCopy.distance(1_000, locale: Locale(identifier: "fr_FR")).contains("km"))
     }
 
+    /// Rows after the nearest have no route, so this is the only distance they
+    /// show; read as a road distance it would understate the walk.
+    @Test("A station's distance says it is in a straight line, not along roads")
+    func straightLine() {
+        let text = String(format: Strings.localized("nearby.station.distance"), NearbyCopy.distance(640))
+        #expect(text.contains("in a straight line"))
+        #expect(text.contains(NearbyCopy.distance(640)))
+    }
+
     @Test("Walking time is in minutes")
     func walk() {
         #expect(NearbyCopy.walk(360).contains("6"))

@@ -1720,13 +1720,13 @@
       }
     },
     "nearby.station.distance": {
-      "comment": "%@ is a distance, such as 0.4 mi.",
+      "comment": "%@ is a distance, such as 0.4 mi. It is measured in a straight line, not along roads, and must say so.",
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ away"
+            "value": "%@ away in a straight line"
           }
         }
       }

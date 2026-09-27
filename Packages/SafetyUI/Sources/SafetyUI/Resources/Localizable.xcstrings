@@ -648,6 +648,582 @@
           }
         }
       }
+    },
+    "alert.contacts.title": {
+      "comment": "Heading of the row that opens the trusted-contact list.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trusted contacts"
+          }
+        }
+      }
+    },
+    "alert.contacts.none": {
+      "comment": "Shown when there are no trusted contacts.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No one yet. Add the people your alert should go to."
+          }
+        }
+      }
+    },
+    "alert.contacts.unreadable": {
+      "comment": "Shown when the stored list cannot be read.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your saved contacts could not be read. Tap to fix this."
+          }
+        }
+      }
+    },
+    "alert.contacts.add": {
+      "comment": "Button that opens the trusted-contact list.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add a trusted contact"
+          }
+        }
+      }
+    },
+    "alert.phase.locating": {
+      "comment": "Shown for up to three seconds while a location is read.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finding where you are…"
+          }
+        }
+      }
+    },
+    "alert.phase.composing": {
+      "comment": "Shown while the Messages sheet is open.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Check the message, then tap Send."
+          }
+        }
+      }
+    },
+    "alert.result.sent": {
+      "comment": "After the person tapped Send. iOS reports nothing about delivery.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your message was passed to Messages. Kitty G cannot confirm it was delivered."
+          }
+        }
+      }
+    },
+    "alert.result.sent.withLocation": {
+      "comment": "Follows alert.result.sent when a location was included.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It included where you are."
+          }
+        }
+      }
+    },
+    "alert.result.sent.withoutLocation": {
+      "comment": "Follows alert.result.sent when no usable location was available.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It did not include your location."
+          }
+        }
+      }
+    },
+    "alert.result.cancelled": {
+      "comment": "After the person closed Messages without sending.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not sent. The message was closed without sending."
+          }
+        }
+      }
+    },
+    "alert.result.failed": {
+      "comment": "Followed by a button per trusted contact.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your message could not be sent. Try again, or call someone:"
+          }
+        }
+      }
+    },
+    "alert.result.cannotText": {
+      "comment": "Followed by a button per trusted contact.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This iPhone cannot send text messages right now. There may be no SIM, or messaging may be restricted. Call someone instead:"
+          }
+        }
+      }
+    },
+    "alert.result.needsContacts": {
+      "comment": "Shown when the alert is raised with no trusted contacts.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add at least one trusted contact first. Your alert goes only to people you choose."
+          }
+        }
+      }
+    },
+    "alert.result.contactsUnreadable": {
+      "comment": "Shown when the stored list cannot be read.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your trusted contacts could not be read, so no message was prepared. Open Trusted contacts to fix this."
+          }
+        }
+      }
+    },
+    "alert.result.dismiss": {
+      "comment": "Clears the result message.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "alert.callContact": {
+      "comment": "%1$@ is a trusted contact's name; %2$@ is their number.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Call %1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "alert.location.on": {
+      "comment": "Location is allowed.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your alert will include where you are."
+          }
+        }
+      }
+    },
+    "alert.location.notDetermined": {
+      "comment": "Location has not been asked for yet.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow location so your alert can say where you are. Kitty G reads it only while you are using the app, and never sends it anywhere itself."
+          }
+        }
+      }
+    },
+    "alert.location.allow": {
+      "comment": "Button that shows the system location prompt.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allow location"
+          }
+        }
+      }
+    },
+    "alert.location.denied": {
+      "comment": "Location was refused, or is off for the whole phone.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location is off for Kitty G, so your alert will not say where you are."
+          }
+        }
+      }
+    },
+    "alert.location.restricted": {
+      "comment": "Location is blocked, for example by Screen Time.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location is restricted on this iPhone, so your alert will not say where you are."
+          }
+        }
+      }
+    },
+    "alert.location.reduced": {
+      "comment": "Only approximate location is allowed.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precise Location is off, so your alert cannot say exactly where you are."
+          }
+        }
+      }
+    },
+    "alert.location.openSettings": {
+      "comment": "Opens this app's page in Settings.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Settings"
+          }
+        }
+      }
+    },
+    "alert.location.settingsFailed": {
+      "comment": "Shown if the Settings app did not open.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings could not be opened. Go to Settings, then Apps, then Kitty G, then Location."
+          }
+        }
+      }
+    },
+    "emergency.call.buttonTestMode": {
+      "comment": "%@ is the emergency number. In Test Mode the call goes to a drama number instead.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Call %@ (Test Mode)"
+          }
+        }
+      }
+    },
+    "emergency.call.hint": {
+      "comment": "Accessibility hint on the 999 button.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asks you to confirm before your phone app opens."
+          }
+        }
+      }
+    },
+    "emergency.confirm.message": {
+      "comment": "%@ is the emergency number. Describes Advanced Mobile Location, which iOS does itself.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This will open your phone app to call %@. Kitty G does not make the call for you. During the call, your iPhone automatically shares its location with the emergency services."
+          }
+        }
+      }
+    },
+    "emergency.confirm.messageTestMode": {
+      "comment": "%1$@ is the stand-in number; %2$@ is the emergency number.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test Mode: this will call %1$@, a number reserved for TV and film, instead of %2$@. Nobody will answer, and %2$@ will not be called."
+          }
+        }
+      }
+    },
+    "contacts.title": {
+      "comment": "Title of the trusted-contact list.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trusted contacts"
+          }
+        }
+      }
+    },
+    "contacts.explainer": {
+      "comment": "Explains where contacts are stored.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your alert goes to these people. They are kept on this iPhone only: not in iCloud, and never sent to Kitty G's developer, because there is no server."
+          }
+        }
+      }
+    },
+    "contacts.add": {
+      "comment": "Opens the system contact picker.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add from Contacts"
+          }
+        }
+      }
+    },
+    "contacts.empty": {
+      "comment": "Shown when the list is empty.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No trusted contacts yet."
+          }
+        }
+      }
+    },
+    "contacts.remove.action": {
+      "comment": "Swipe action on a contact row.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove"
+          }
+        }
+      }
+    },
+    "contacts.remove.title": {
+      "comment": "%@ is the contact's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove %@?"
+          }
+        }
+      }
+    },
+    "contacts.remove.message": {
+      "comment": "Explains what removing does.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "They will no longer be sent your alerts. This does not change your Contacts app."
+          }
+        }
+      }
+    },
+    "contacts.remove.confirm": {
+      "comment": "Confirms removal.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove from trusted contacts"
+          }
+        }
+      }
+    },
+    "contacts.problem.notAPhoneNumber": {
+      "comment": "The chosen number could not be read.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That contact has no phone number Kitty G can use."
+          }
+        }
+      }
+    },
+    "contacts.problem.serviceNumber": {
+      "comment": "%@ is the refused number.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is an emergency or service number, not a person. Your alert goes only to people you know."
+          }
+        }
+      }
+    },
+    "contacts.problem.duplicate": {
+      "comment": "%@ is the existing contact's name.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That number is already on your list, as %@."
+          }
+        }
+      }
+    },
+    "contacts.problem.saveFailed": {
+      "comment": "A Keychain write failed.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That change could not be saved, so your list is as it was. Please try again."
+          }
+        }
+      }
+    },
+    "contacts.problem.pickerUnavailable": {
+      "comment": "The system picker could not be shown.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contacts could not be opened. Please try again."
+          }
+        }
+      }
+    },
+    "contacts.unreadable.title": {
+      "comment": "Heading when the stored list cannot be read.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your trusted contacts could not be read"
+          }
+        }
+      }
+    },
+    "contacts.unreadable.body": {
+      "comment": "Explains the unreadable state.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "They may have been saved by a newer version of Kitty G. Updating the app may bring them back. Or start a new list."
+          }
+        }
+      }
+    },
+    "contacts.unreadable.startNew": {
+      "comment": "Replaces the unreadable list, after confirmation.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start a new list"
+          }
+        }
+      }
+    },
+    "contacts.unreadable.confirmTitle": {
+      "comment": "Confirmation title.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start a new list?"
+          }
+        }
+      }
+    },
+    "contacts.unreadable.confirmMessage": {
+      "comment": "Confirmation message.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This replaces the contacts that could not be read. It cannot be undone."
+          }
+        }
+      }
+    },
+    "settings.testMode.toggle": {
+      "comment": "Switch label.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test Mode"
+          }
+        }
+      }
+    },
+    "settings.testMode.footer": {
+      "comment": "Explains Test Mode.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try every part of Kitty G safely. While Test Mode is on, alerts, calls and texts go to numbers reserved for TV and film, which cannot reach anyone. It switches itself off when you leave the app."
+          }
+        }
+      }
     }
   }
 }

@@ -19,6 +19,7 @@ d = json.load(open(sys.argv[1]))
 urls = {s["url"] for s in d.get("services", []) if s.get("url")}
 urls |= {r["learnMoreURL"] for r in d.get("emergencyRoutes", []) if r.get("learnMoreURL")}
 urls |= {g["url"] for g in d.get("guides", []) if g.get("url")}
+urls |= {r["url"] for r in d.get("reporting", []) if r.get("url")}
 for u in sorted(urls): print(u)
 ' "$CONTENT")
 

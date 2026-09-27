@@ -17,7 +17,11 @@ public enum ContentLoader {
         }
         do {
             let data = try Data(contentsOf: url)
-            return try JSONDecoder().decode(ContentPack.self, from: data)
+            let pack = try JSONDecoder().decode(ContentPack.self, from: data)
+            try pack.validate()
+            return pack
+        } catch let failure as Failure {
+            throw failure
         } catch let error as DecodingError {
             throw Failure.malformed(String(describing: error))
         }

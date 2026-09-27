@@ -166,6 +166,11 @@ public final class SpyTextOpener: TextOpening, @unchecked Sendable {
 
     @MainActor
     public func openText(to number: PhoneNumber) async -> Bool {
+        // A double that could open Messages to a real service would defeat the point.
+        precondition(
+            number.isReservedForDrama,
+            "SpyTextOpener was asked to text \(number.dialable), which is not in the reserved drama range."
+        )
         lock.withLock { _opened.append(number) }
         return succeeds
     }

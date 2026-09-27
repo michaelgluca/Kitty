@@ -303,3 +303,34 @@ public struct StubAreaNamer: AreaNaming {
     public init(_ result: GeocodedArea?) { self.result = result }
     @MainActor public func area(at coordinate: Coordinate) async -> GeocodedArea? { result }
 }
+
+/// A saved nation id held in memory, with failures on demand.
+public final class InMemoryNationStore: NationStoring, @unchecked Sendable {
+    private let lock = NSLock()
+    private var stored: String?
+    private var _saveCount = 0
+    private let loadFailure: (any Error)?
+    private let saveFailure: (any Error)?
+
+    public init(saved: String? = nil, loadFailure: (any Error)? = nil, saveFailure: (any Error)? = nil) {
+        self.stored = saved
+        self.loadFailure = loadFailure
+        self.saveFailure = saveFailure
+    }
+
+    /// What is stored now.
+    public var saved: String? { lock.withLock { stored } }
+    /// Every call to `save`, whether or not it succeeded.
+    public var saveCount: Int { lock.withLock { _saveCount } }
+
+    public func load() throws -> String? {
+        if let loadFailure { throw loadFailure }
+        return lock.withLock { stored }
+    }
+
+    public func save(_ nationID: String?) throws {
+        lock.withLock { _saveCount += 1 }
+        if let saveFailure { throw saveFailure }
+        lock.withLock { stored = nationID }
+    }
+}

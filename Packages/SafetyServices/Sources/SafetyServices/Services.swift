@@ -21,6 +21,7 @@ public struct Services: Sendable {
     public var routes: any RouteFinding
     public var maps: any MapsOpening
     public var areas: any AreaNaming
+    public var nations: any NationStoring
 
     public init(
         location: any LocationProviding,
@@ -35,7 +36,8 @@ public struct Services: Sendable {
         places: any PlaceSearching,
         routes: any RouteFinding,
         maps: any MapsOpening,
-        areas: any AreaNaming
+        areas: any AreaNaming,
+        nations: any NationStoring
     ) {
         self.location = location
         self.messages = messages
@@ -50,6 +52,7 @@ public struct Services: Sendable {
         self.routes = routes
         self.maps = maps
         self.areas = areas
+        self.nations = nations
     }
 
     /// Everything reports its own unavailability.
@@ -72,7 +75,8 @@ public struct Services: Sendable {
             places: UnavailablePlaceSearch(),
             routes: UnavailableRouteFinder(),
             maps: UnavailableMapsOpener(),
-            areas: UnavailableAreaNamer()
+            areas: UnavailableAreaNamer(),
+            nations: UnavailableNationStore()
         )
     }
 }
@@ -136,6 +140,14 @@ public struct UnavailableMapsOpener: MapsOpening {
 public struct UnavailableAreaNamer: AreaNaming {
     public init() {}
     @MainActor public func area(at coordinate: Coordinate) async -> GeocodedArea? { nil }
+}
+
+/// Reports that nothing can be read or saved, so a screen given no real store says so
+/// rather than quietly forgetting the person's choice.
+public struct UnavailableNationStore: NationStoring {
+    public init() {}
+    public func load() throws -> String? { throw NationStoreFailure.unavailable }
+    public func save(_ nationID: String?) throws { throw NationStoreFailure.unavailable }
 }
 
 /// Holds nothing across launches. Used only as a safe default.

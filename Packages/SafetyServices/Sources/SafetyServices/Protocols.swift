@@ -171,3 +171,26 @@ public protocol AreaNaming: Sendable {
     /// Where a coordinate is, or `nil` if that cannot be found (for example, offline).
     @MainActor func area(at coordinate: Coordinate) async -> GeocodedArea?
 }
+
+// MARK: - Preferences
+
+public enum NationStoreFailure: Error, Equatable, Sendable {
+    /// Something is stored, but it is not a nation id.
+    case unreadable
+    /// The write did not stick: reading it back gave a different answer.
+    case notSaved
+    /// No store was provided. The default in `Services.unavailable`.
+    case unavailable
+}
+
+/// The UK nation the person chose for Get help, Learn and Refuges.
+///
+/// Holds the nation's id (`Nation.rawValue`) rather than a `Nation`: `Nation` belongs to
+/// SafetyContent, which this package does not depend on (ADR-0003). The caller maps the
+/// id, and treats one it does not know as unreadable. Reports failure; never swallows it.
+public protocol NationStoring: Sendable {
+    /// The saved id, or `nil` when none has been chosen, meaning all of the UK.
+    func load() throws -> String?
+    /// Saves an id, or clears it with `nil`. Throws when the value did not stick.
+    func save(_ nationID: String?) throws
+}

@@ -12,7 +12,7 @@ final class LearnNearbyTests: XCTestCase {
         continueAfterFailure = false
         let app = XCUIApplication()
         if resetLocation { app.resetAuthorizationStatus(for: .location) }
-        app.launchArguments += ["-AppleLocale", locale, "-AppleLanguages", "(en)", "-kitty.uiTest"] + switches
+        app.launchArguments += ["-AppleLocale", locale, "-AppleLanguages", "(en)", "-kitty.uiTest", "-kitty.resetNation"] + switches
         app.launch()
         return app
     }

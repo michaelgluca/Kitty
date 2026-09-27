@@ -452,6 +452,74 @@
           }
         }
       }
+    },
+    "help.coverage.greatBritain": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "England, Scotland and Wales"
+          }
+        }
+      },
+      "comment": "Great Britain. Deliberately spelled out: users may not know Northern Ireland is excluded."
+    },
+    "help.coverage.london": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "London"
+          }
+        }
+      }
+    },
+    "help.section.guides": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set up before you need it"
+          }
+        }
+      }
+    },
+    "help.guides.footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These are Apple features, built into your iPhone. Kitty G only links to Apple's own instructions."
+          }
+        }
+      }
+    },
+    "help.audience": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For: %@"
+          }
+        }
+      },
+      "comment": "%@ is who the service is for, e.g. 'Women' or 'Aged 18 and over'."
+    },
+    "help.openInstructions": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Apple's instructions"
+          }
+        }
+      }
     }
   }
 }

@@ -22,8 +22,15 @@ public enum ContentLoader {
         }
     }
 
-    /// Every outbound URL in the pack, for the CI allowlist check.
+    /// Every URL a user can be sent to, for the CI allowlist check.
+    ///
+    /// Sources are deliberately excluded: they are the pages an entry was verified
+    /// against, recorded for reviewers, and are never shown to a user.
     public static func allURLs(in pack: ContentPack) -> [String] {
-        (pack.services.map(\.url) + pack.emergencyRoutes.compactMap(\.learnMoreURL)).sorted()
+        Array(Set(
+            pack.services.map(\.url)
+                + pack.emergencyRoutes.compactMap(\.learnMoreURL)
+                + pack.guides.map(\.url)
+        )).sorted()
     }
 }

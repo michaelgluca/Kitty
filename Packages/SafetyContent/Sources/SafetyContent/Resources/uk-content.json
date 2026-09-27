@@ -1,49 +1,189 @@
 {
-  "version": 1,
-  "reviewedOn": "2026-09-26",
+  "version": 2,
+  "reviewedOn": "2026-09-27",
+  "emergencyRoutes": [
+    {
+      "id": "voice-999",
+      "name": "Call 999 or 112",
+      "detail": "Police, ambulance, fire or coastguard. 112 reaches exactly the same service. When you call from an iPhone, it tries to send your location to the emergency services automatically — you do not need an app to do that.",
+      "prerequisite": null,
+      "learnMoreURL": "https://www.gov.uk/guidance/999-and-112-the-uks-national-emergency-numbers"
+    },
+    {
+      "id": "silent-solution-55",
+      "name": "Call 999 when you cannot speak",
+      "detail": "A silent 999 call does not automatically bring police. From a mobile, stay on the line and listen: an automated message will ask you to press 55. If you press 55, your call is put through to the police. If you don't, the call ends. Pressing 55 does not let the police find where you are. If you can, cough or tap the phone so they know someone is there.",
+      "prerequisite": null,
+      "learnMoreURL": "https://www.policeconduct.gov.uk/our-work/key-areas-of-work/silent-solution"
+    },
+    {
+      "id": "text-999",
+      "name": "Text 999",
+      "detail": "Text 999 saying which service you need, what is happening and where you are. It is slower than a voice call, and a delivery report does not mean your message has been received.",
+      "prerequisite": "You must register your phone first. Text the word 'register' to 999 and reply 'yes' to the message you get back. This app cannot register you and cannot tell whether you are registered.",
+      "learnMoreURL": "https://www.relayuk.bt.com/how-to-use-relay-uk/contact-999-using-relay-uk.html"
+    },
+    {
+      "id": "999-bsl",
+      "name": "999 BSL",
+      "detail": "A free, 24-hour British Sign Language interpreter service for contacting 999.",
+      "prerequisite": null,
+      "learnMoreURL": "https://999bsl.co.uk/"
+    },
+    {
+      "id": "relay-uk-18000",
+      "name": "Relay UK — dial 18000",
+      "detail": "Dial 18000 to reach 999 through a relay assistant, if you are deaf, hard of hearing or have a speech impairment. 18000 is a number you call, not one you text.",
+      "prerequisite": null,
+      "learnMoreURL": "https://www.relayuk.bt.com/how-to-use-relay-uk/contact-999-using-relay-uk.html"
+    }
+  ],
   "services": [
     {
       "id": "national-domestic-abuse-helpline",
       "name": "National Domestic Abuse Helpline",
       "kind": "helpline",
       "coverage": "england",
-      "summary": "Free, confidential support, 24 hours a day. Run by Refuge.",
-      "phone": "08082000247",
+      "audience": "Women",
+      "summary": "Free and confidential, 24 hours a day, for women experiencing domestic abuse and for anyone worried about someone. Run by Refuge. All the advisers are women.",
+      "phone": "0808 2000 247",
       "url": "https://www.nationaldahelpline.org.uk/",
       "availability": "allHours",
+      "billingNote": null,
+      "source": "https://www.nationaldahelpline.org.uk/",
       "attribution": null
     },
     {
-      "id": "refuge",
-      "name": "Refuge",
-      "kind": "charity",
-      "coverage": "england",
-      "summary": "The largest specialist domestic abuse organisation in the UK. Runs the National Domestic Abuse Helpline.",
-      "phone": null,
-      "url": "https://refuge.org.uk/",
-      "availability": "seeWebsite",
+      "id": "live-fear-free",
+      "name": "Live Fear Free",
+      "kind": "helpline",
+      "coverage": "wales",
+      "audience": null,
+      "summary": "Wales's 24-hour helpline for anyone experiencing domestic abuse or sexual violence, and for anyone worried about someone. Calls are welcome in Welsh.",
+      "phone": "0808 80 10 800",
+      "url": "https://www.gov.wales/live-fear-free/contact-live-fear-free",
+      "availability": "allHours",
+      "billingNote": "Free from UK landlines and most mobile networks, and does not show on a phone bill. Some mobile networks may charge.",
+      "source": "https://www.gov.wales/live-fear-free/about-live-fear-free-helpline",
       "attribution": null
     },
     {
-      "id": "womens-aid",
-      "name": "Women's Aid",
-      "kind": "charity",
-      "coverage": "england",
-      "summary": "Support through live chat and email. Women's Aid does not operate a telephone helpline.",
-      "phone": null,
-      "url": "https://chat.womensaid.org.uk/",
-      "availability": { "weekdays": { "openHour": 10, "closeHour": 16 } },
+      "id": "scotland-domestic-abuse-forced-marriage-helpline",
+      "name": "Scotland's Domestic Abuse and Forced Marriage Helpline",
+      "kind": "helpline",
+      "coverage": "scotland",
+      "audience": null,
+      "summary": "Scotland's 24-hour helpline for anyone affected by domestic abuse or forced marriage, of any age or gender, and for anyone worried about someone.",
+      "phone": "0800 027 1234",
+      "url": "https://www.sdafmh.org.uk/en/",
+      "availability": "allHours",
+      "billingNote": null,
+      "source": "https://www.sdafmh.org.uk/en/about-us/",
       "attribution": null
     },
     {
-      "id": "rape-crisis-support-line",
-      "name": "24/7 Rape & Sexual Abuse Support Line",
+      "id": "dsa-helpline-northern-ireland",
+      "name": "Domestic and Sexual Abuse Helpline",
+      "kind": "helpline",
+      "coverage": "northernIreland",
+      "audience": "Aged 18 and over",
+      "summary": "Northern Ireland's free, confidential 24-hour helpline for anyone affected by domestic or sexual abuse, and for anyone worried about someone.",
+      "phone": "0808 802 1414",
+      "url": "https://dsahelpline.org/",
+      "availability": "allHours",
+      "billingNote": null,
+      "source": "https://dsahelpline.org/",
+      "attribution": null
+    },
+    {
+      "id": "rape-sexual-abuse-support-line",
+      "name": "24/7 Rape and Sexual Abuse Support Line",
       "kind": "helpline",
       "coverage": "englandAndWales",
-      "summary": "Free support, 24 hours a day, for anyone affected by rape or sexual abuse.",
-      "phone": "08085002222",
+      "audience": "Aged 16 and over",
+      "summary": "Free phone and online chat for anyone affected by rape, sexual assault or any sexual violence, whenever it happened. You can stay anonymous.",
+      "phone": "0808 500 2222",
       "url": "https://247sexualabusesupport.org.uk/",
       "availability": "allHours",
+      "billingNote": null,
+      "source": "https://247sexualabusesupport.org.uk/",
+      "attribution": null
+    },
+    {
+      "id": "rape-crisis-scotland",
+      "name": "Rape Crisis Scotland Helpline",
+      "kind": "helpline",
+      "coverage": "scotland",
+      "audience": "Aged 13 and over",
+      "summary": "Free, confidential support for people of any gender affected by sexual violence. Open every evening, 5pm until midnight.",
+      "phone": "0808 801 0302",
+      "url": "https://www.rapecrisisscotland.org.uk/help-helpline/",
+      "availability": {
+        "schedule": [
+          {
+            "days": "everyDay",
+            "openHour": 17,
+            "closeHour": 24
+          }
+        ]
+      },
+      "billingNote": "Calls do not show on a phone bill.",
+      "source": "https://www.rapecrisisscotland.org.uk/help-helpline/",
+      "attribution": null
+    },
+    {
+      "id": "the-rowan",
+      "name": "The Rowan Sexual Assault Referral Centre",
+      "kind": "helpline",
+      "coverage": "northernIreland",
+      "audience": null,
+      "summary": "Northern Ireland's sexual assault referral centre, for children, young people, women and men, whether it happened recently or in the past. Answered at any hour.",
+      "phone": "0800 389 4424",
+      "url": "https://therowan.hscni.net/",
+      "availability": "allHours",
+      "billingNote": null,
+      "source": "https://therowan.hscni.net/",
+      "attribution": null
+    },
+    {
+      "id": "victim-support",
+      "name": "Victim Support Supportline",
+      "kind": "helpline",
+      "coverage": "englandAndWales",
+      "audience": null,
+      "summary": "Free and confidential for anyone affected by crime. You can stay anonymous, you do not need to have told the police, and it does not matter how long ago it happened.",
+      "phone": "0808 168 9111",
+      "url": "https://www.victimsupport.org.uk/help-and-support/get-help/supportline/",
+      "availability": "allHours",
+      "billingNote": null,
+      "source": "https://www.victimsupport.org.uk/help-and-support/get-help/supportline/",
+      "attribution": null
+    },
+    {
+      "id": "victim-support-scotland",
+      "name": "Victim Support Scotland",
+      "kind": "helpline",
+      "coverage": "scotland",
+      "audience": null,
+      "summary": "Free support for anyone in Scotland affected by crime. You can talk through your options before deciding whether to tell the police.",
+      "phone": "0800 160 1985",
+      "url": "https://victimsupport.scot/contact/",
+      "availability": {
+        "schedule": [
+          {
+            "days": "weekdays",
+            "openHour": 8,
+            "closeHour": 20
+          },
+          {
+            "days": "weekends",
+            "openHour": 10,
+            "closeHour": 16
+          }
+        ]
+      },
+      "billingNote": null,
+      "source": "https://victimsupport.scot/contact/",
       "attribution": null
     },
     {
@@ -51,48 +191,101 @@
       "name": "Samaritans",
       "kind": "helpline",
       "coverage": "unitedKingdom",
-      "summary": "Free, 24 hours a day, from any phone. The number is not itemised on phone bills.",
-      "phone": "116123",
-      "url": "https://www.samaritans.org/",
+      "audience": null,
+      "summary": "Someone to talk to, day or night, about anything that is troubling you, without judgement.",
+      "phone": "116 123",
+      "url": "https://www.samaritans.org/how-we-can-help/contact-samaritan/",
       "availability": "allHours",
+      "billingNote": "Free from any phone, and the number won't come up on your phone bill.",
+      "source": "https://www.samaritans.org/how-we-can-help/contact-samaritan/",
+      "attribution": null
+    },
+    {
+      "id": "mens-advice-line",
+      "name": "Men's Advice Line",
+      "kind": "helpline",
+      "coverage": "unitedKingdom",
+      "audience": "Men, including trans and non-binary people",
+      "summary": "Confidential support for men experiencing domestic abuse. Run by Respect. Not open at night or at weekends — outside those hours, Samaritans is open.",
+      "phone": "0808 801 0327",
+      "url": "https://mensadviceline.org.uk/",
+      "availability": {
+        "schedule": [
+          {
+            "days": "weekdays",
+            "openHour": 10,
+            "closeHour": 17
+          }
+        ]
+      },
+      "billingNote": "Free, and calls will not appear on itemised bills.",
+      "source": "https://mensadviceline.org.uk/",
+      "attribution": null
+    },
+    {
+      "id": "galop",
+      "name": "Galop — LGBT+ abuse helpline",
+      "kind": "helpline",
+      "coverage": null,
+      "audience": "LGBT+ people aged 18 and over",
+      "summary": "For LGBT+ people experiencing domestic abuse, sexual violence, hate crime or conversion practices. Hours change during the week, so check before calling.",
+      "phone": "0800 999 5428",
+      "url": "https://www.galop.org.uk/helpline",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://www.galop.org.uk/helpline",
+      "attribution": null
+    },
+    {
+      "id": "womens-aid",
+      "name": "Women's Aid",
+      "kind": "information",
+      "coverage": "england",
+      "audience": null,
+      "summary": "A directory of local domestic abuse services, a peer-support forum and the online Survivor's Handbook. Women's Aid has no phone line and its live chat has closed. For a helpline, call the National Domestic Abuse Helpline.",
+      "phone": null,
+      "url": "https://womensaid.org.uk/information-support/",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://womensaid.org.uk/information-support/",
       "attribution": null
     }
   ],
-  "emergencyRoutes": [
+  "guides": [
     {
-      "id": "voice-999",
-      "name": "Call 999",
-      "detail": "The fastest route. Your iPhone sends your location automatically to the 999 call handler, so you do not need an app to do that.",
-      "prerequisite": null,
-      "learnMoreURL": null
+      "id": "emergency-sos",
+      "title": "Emergency SOS",
+      "summary": "Press and hold the side button and either volume button until the countdown ends to call emergency services. Pressing the side button five times only works if you turn on 'Call with 5 Presses' in Settings first.",
+      "caution": null,
+      "url": "https://support.apple.com/en-gb/guide/iphone/iph3c99374c/ios"
     },
     {
-      "id": "silent-solution-55",
-      "name": "Call 999 when you cannot speak",
-      "detail": "A silent 999 call does NOT automatically bring police. If you cannot speak, listen for the automated prompt and then press 55. Pressing 55 tells the operator the call is genuine. It does not let police track you and does not guarantee officers are sent. This works from a mobile.",
-      "prerequisite": null,
-      "learnMoreURL": null
+      "id": "emergency-contacts",
+      "title": "Emergency contacts",
+      "summary": "People you add as emergency contacts are told when you use Emergency SOS, and are sent your location.",
+      "caution": "Only add people you trust. They will be alerted whenever you use Emergency SOS.",
+      "url": "https://support.apple.com/en-gb/guide/personal-safety/ips4f0cd709b/web"
     },
     {
-      "id": "text-999",
-      "name": "Text 999",
-      "detail": "Send a text to 999 saying which service you need, what is happening and where you are. It is slower than a voice call.",
-      "prerequisite": "You must register your phone first. Text the word 'register' to 999 and reply 'yes' to the message you get back. This app cannot register you and cannot tell whether you are registered.",
-      "learnMoreURL": "https://www.relayuk.bt.com/how-to-use-relay-uk/contact-999-using-relay-uk.html"
+      "id": "medical-id",
+      "title": "Medical ID",
+      "summary": "Lets emergency responders see your medical details and who to contact, from the Lock Screen, without your passcode.",
+      "caution": "If you turn on 'Show When Locked', anyone holding your phone can read your Medical ID and see your emergency contacts without your passcode.",
+      "url": "https://support.apple.com/en-gb/105072"
     },
     {
-      "id": "999-bsl",
-      "name": "999 BSL",
-      "detail": "A free 24-hour British Sign Language interpreter service for contacting 999.",
-      "prerequisite": null,
-      "learnMoreURL": "https://999bsl.co.uk/"
+      "id": "check-in",
+      "title": "Check In",
+      "summary": "Tells someone you trust when you get home or when a timer ends, and alerts them with your details if you don't respond. It does what this app cannot: it can alert them without you doing anything. You both need iOS 17 or later.",
+      "caution": "If your phone is lost while Check In is running, your contact is alerted as if you had not responded.",
+      "url": "https://support.apple.com/en-gb/guide/personal-safety/ips56b5bc469/web"
     },
     {
-      "id": "relay-uk-18000",
-      "name": "Relay UK (18000)",
-      "detail": "Dial 18000 to reach 999 through a relay assistant, for people who are deaf, hard of hearing or have a speech impairment. 18000 is a number you call, not one you text.",
-      "prerequisite": null,
-      "learnMoreURL": "https://www.relayuk.bt.com/how-to-use-relay-uk/contact-999-using-relay-uk.html"
+      "id": "safety-check",
+      "title": "Safety Check",
+      "summary": "If you think someone may be watching what your phone shares, Safety Check lets you review and stop sharing with people and apps, or reset all sharing at once. It has a Quick Exit button. Settings › Privacy & Security › Safety Check.",
+      "caution": null,
+      "url": "https://support.apple.com/en-gb/guide/personal-safety/ips2aad835e1/web"
     }
   ]
 }

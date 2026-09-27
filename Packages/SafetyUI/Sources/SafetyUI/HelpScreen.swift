@@ -40,6 +40,14 @@ public struct HelpScreen: View {
                     } header: {
                         Text("help.section.services", bundle: .module)
                     }
+
+                    Section {
+                        ForEach(pack.guides) { GuideRow(guide: $0) }
+                    } header: {
+                        Text("help.section.guides", bundle: .module)
+                    } footer: {
+                        Text("help.guides.footer", bundle: .module)
+                    }
                 } else {
                     // The pack is bundled, so this should be unreachable — but it is
                     // shown rather than swallowed, because an empty list would read
@@ -126,7 +134,20 @@ struct ServiceRow: View {
                 if !typeSize.isAccessibilitySize {
                     Spacer(minLength: Design.Space.tight)
                 }
-                CoverageBadge(coverage: service.coverage)
+                // No badge when the operator does not state its coverage. Showing a
+                // nation it has not claimed would be inventing a fact.
+                if let coverage = service.coverage {
+                    CoverageBadge(coverage: coverage)
+                }
+            }
+
+            if let audience = service.audience {
+                // Shown before the number so nobody calls a line that will turn them
+                // away — the National Domestic Abuse Helpline is for women, and the
+                // Northern Ireland helpline for over-18s.
+                Text(String(format: Strings.localized("help.audience"), audience))
+                    .font(.subheadline.weight(.medium))
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             Text(service.summary)
@@ -145,6 +166,17 @@ struct ServiceRow: View {
                 Text("help.noPhone", bundle: .module)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+            }
+
+            if let note = service.billingNote {
+                // Matters to someone whose abuser checks their phone bill. Only ever
+                // shown where the operator itself makes the claim.
+                Label {
+                    Text(note).font(.footnote).fixedSize(horizontal: false, vertical: true)
+                } icon: {
+                    Image(systemName: "doc.text.magnifyingglass")
+                }
+                .foregroundStyle(.secondary)
             }
 
             if let url = URL(string: service.url) {
@@ -194,6 +226,8 @@ struct CoverageBadge: View {
         case .wales: "help.coverage.wales"
         case .scotland: "help.coverage.scotland"
         case .northernIreland: "help.coverage.northernIreland"
+        case .greatBritain: "help.coverage.greatBritain"
+        case .london: "help.coverage.london"
         }
     }
 
@@ -205,5 +239,38 @@ struct CoverageBadge: View {
             .background(Capsule().fill(.quaternary))
             .fixedSize()
             .accessibilityLabel(Text(Strings.localized(String.LocalizationValue(key))))
+    }
+}
+
+struct GuideRow: View {
+    let guide: SafetyGuide
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Design.Space.tight) {
+            Text(guide.title).font(.headline)
+            Text(guide.summary)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if let caution = guide.caution {
+                // A trade-off to understand before switching the feature on — not a
+                // footnote. Medical ID's "Show When Locked" exposes the emergency
+                // contacts to anyone holding the phone.
+                Label {
+                    Text(caution).font(.footnote).fixedSize(horizontal: false, vertical: true)
+                } icon: {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                }
+                .foregroundStyle(.orange)
+            }
+
+            if let url = URL(string: guide.url) {
+                Link(destination: url) {
+                    Text("help.openInstructions", bundle: .module).font(.subheadline)
+                }
+            }
+        }
+        .padding(.vertical, Design.Space.tight)
     }
 }

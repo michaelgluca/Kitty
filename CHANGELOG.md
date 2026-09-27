@@ -28,6 +28,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   text-to-999 states its registration requirement, and 18000 is described as a number you call.
 - A guard that keeps `SafetyDomain` free of UI and Apple-only frameworks.
 
+- A UK support directory verified against each operator's own page and then
+  adversarially re-checked: domestic abuse lines for all four nations, sexual
+  violence, victims of crime, Samaritans, and specialist lines for men and for
+  LGBT+ people. Numbers are shown the way operators publish them.
+- Opening hours that handle evening-only lines and different weekday and weekend
+  hours, evaluated in UK time.
+- Apple's built-in safety features — Emergency SOS, emergency contacts, Medical ID,
+  Check In and Safety Check — with the trade-offs a user must know first.
+
 ### Notes
 - This is a rebuild. The 2023 MSc dissertation proof of concept is preserved on the
   `archive/dissertation-2023` branch and is not the basis of this history. See ADR-0001.

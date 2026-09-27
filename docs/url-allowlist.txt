@@ -1,17 +1,41 @@
 # Outbound URL allowlist
 #
-# Every URL the app can send a user to. Checked by scripts/check-urls.sh on every
-# push and weekly on a schedule.
+# Every URL the app can send a user to, with a fragment its page title must contain.
+# Checked by scripts/check-urls.sh on every push and weekly on a schedule.
 #
-# Link rot in a safety app is a safety incident, not a chore: emergencysms.org.uk
-# was still linked from UK police and fire service pages after it had been taken
-# over and turned into a gambling affiliate site.
+# Format:   <url> | <title fragment>
+#
+# Why a title fragment and not just "returns 200":
+#   - emergencysms.org.uk still returns 200. It was taken over and its title is now
+#     "Best Casinos Not on Gamstop" — while still being linked from UK police and
+#     fire service pages.
+#   - A wrong Apple support article ID also returns 200, on an unrelated article.
+#   - chat.womensaid.org.uk "worked" only because the checker followed its redirect
+#     to a different page. Women's Aid closed that chat on 31 July 2025.
+# "Resolves" and "is still the right page" are different claims.
 #
 # Adding a URL here requires a citation to the issuing body's own page in the PR.
-https://247sexualabusesupport.org.uk/
-https://999bsl.co.uk/
-https://chat.womensaid.org.uk/
-https://refuge.org.uk/
-https://www.nationaldahelpline.org.uk/
-https://www.relayuk.bt.com/how-to-use-relay-uk/contact-999-using-relay-uk.html
-https://www.samaritans.org/
+# URLs must be canonical: the checker fails on any redirect to a different address.
+
+https://247sexualabusesupport.org.uk/ | Rape and Sexual Abuse Support Line
+https://999bsl.co.uk/ | 999 BSL
+https://dsahelpline.org/ | DSA Helpline
+https://mensadviceline.org.uk/ | Advice Line
+https://support.apple.com/en-gb/105072 | Medical ID
+https://support.apple.com/en-gb/guide/iphone/iph3c99374c/ios | SOS
+https://support.apple.com/en-gb/guide/personal-safety/ips2aad835e1/web | Safety Check
+https://support.apple.com/en-gb/guide/personal-safety/ips4f0cd709b/web | emergency call
+https://support.apple.com/en-gb/guide/personal-safety/ips56b5bc469/web | Check In
+https://therowan.hscni.net/ | The Rowan
+https://victimsupport.scot/contact/ | Victim Support Scotland
+https://womensaid.org.uk/information-support/ | domestic abuse
+https://www.galop.org.uk/helpline | Galop
+https://www.gov.uk/guidance/999-and-112-the-uks-national-emergency-numbers | 999 and 112
+https://www.gov.wales/live-fear-free/contact-live-fear-free | Live Fear Free
+https://www.nationaldahelpline.org.uk/ | National Domestic Abuse Helpline
+https://www.policeconduct.gov.uk/our-work/key-areas-of-work/silent-solution | Silent Solution
+https://www.rapecrisisscotland.org.uk/help-helpline/ | Rape Crisis Scotland
+https://www.relayuk.bt.com/how-to-use-relay-uk/contact-999-using-relay-uk.html | Relay UK
+https://www.samaritans.org/how-we-can-help/contact-samaritan/ | Samaritans
+https://www.sdafmh.org.uk/en/ | Forced Marriage Helpline
+https://www.victimsupport.org.uk/help-and-support/get-help/supportline/ | Victim Support

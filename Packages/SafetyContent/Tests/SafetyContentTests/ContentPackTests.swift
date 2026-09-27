@@ -26,8 +26,15 @@ struct ContentStructureTests {
     @Test("Loads, and is the current version")
     func loads() throws {
         let p = try pack()
-        #expect(p.version == 3)
+        #expect(p.version == 4)
         #expect(!p.services.isEmpty && !p.emergencyRoutes.isEmpty && !p.guides.isEmpty)
+    }
+
+    @Test("Carries the UK emergency number as data, for the confirmed 999 button")
+    func emergencyNumber() throws {
+        let pack = try ContentLoader.loadUK()
+        #expect(pack.emergencyNumber == "999")
+        #expect(PhoneNumber(pack.emergencyNumber)?.dialable == "999")
     }
 
     @Test("Identifiers are unique within each section")

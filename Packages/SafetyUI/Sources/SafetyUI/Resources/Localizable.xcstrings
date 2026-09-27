@@ -600,6 +600,54 @@
           }
         }
       }
+    },
+    "testMode.banner.title": {
+      "comment": "Heading of the banner shown while Test Mode is on.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test Mode is on"
+          }
+        }
+      }
+    },
+    "testMode.banner.body": {
+      "comment": "Explains what Test Mode does.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alerts, calls and texts go to numbers reserved for TV and film, which cannot reach anyone. Your contacts, helplines and 999 will not be contacted."
+          }
+        }
+      }
+    },
+    "testMode.banner.turnOff": {
+      "comment": "Button that switches Test Mode off.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn off Test Mode"
+          }
+        }
+      }
+    },
+    "help.callConfirm.messageTestMode": {
+      "comment": "%1$@ is the stand-in number that will be dialled; %2$@ is the service's real number, which will not be.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test Mode: this will call %1$@, a number reserved for TV and film, instead of %2$@. Nobody will answer."
+          }
+        }
+      }
     }
   }
 }

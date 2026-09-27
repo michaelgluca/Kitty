@@ -35,6 +35,10 @@ public extension ShapeStyle where Self == Color {
     /// happens to be behind it.
     static var alertFill: Color { Color(.sRGB, red: 0.72, green: 0.11, blue: 0.16, opacity: 1) }
     static var alertFillPressed: Color { Color(.sRGB, red: 0.58, green: 0.08, blue: 0.13, opacity: 1) }
+
+    /// The Test Mode banner. Opaque amber with black text: readable in both themes,
+    /// and unlike anything else in the app, so it cannot be mistaken for normal state.
+    static var testModeFill: Color { Color(.sRGB, red: 1.0, green: 0.80, blue: 0.20, opacity: 1) }
 }
 
 /// Reads the accessibility settings that change how the UI must be drawn.

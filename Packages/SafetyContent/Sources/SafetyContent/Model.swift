@@ -183,6 +183,10 @@ public struct SafetyGuide: Codable, Sendable, Identifiable, Equatable {
 public struct ContentPack: Codable, Sendable, Equatable {
     public let version: Int
     public let reviewedOn: String
+    /// The number the 999 button dials, after confirmation. Content rather than code,
+    /// so no emergency number is ever a literal in Swift (CI enforces this) and the
+    /// Android port reads the same value.
+    public let emergencyNumber: String
     public let emergencyRoutes: [EmergencyRoute]
     public let services: [SupportService]
     /// Official routes for reporting a crime. Every one is a link or a number

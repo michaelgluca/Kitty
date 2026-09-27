@@ -1,6 +1,7 @@
 {
-  "version": 3,
+  "version": 4,
   "reviewedOn": "2026-09-27",
+  "emergencyNumber": "999",
   "emergencyRoutes": [
     {
       "id": "voice-999",

@@ -10,8 +10,9 @@ import SwiftUI
 /// correct as the system design evolves, which a hand-rolled bar would not.
 ///
 /// Owns the models the tabs share, so the list edited on one tab is the list
-/// the alert uses on another, and the nation `Nearby` detects is the one `Refuges`
-/// starts from.
+/// the alert uses on another, the nation `Nearby` detects is the one offered to
+/// Get help, Learn and Refuges, and the nation the person chooses is the one they
+/// all show.
 public struct RootView: View {
 
     private let services: Services
@@ -20,6 +21,7 @@ public struct RootView: View {
     @State private var contacts: ContactsModel
     @State private var alert: AlertModel
     @State private var nearby: NearbyModel
+    @State private var nationPreference: NationPreference
     @State private var testMode = TestModeSession()
 
     @Environment(\.scenePhase) private var scenePhase
@@ -34,6 +36,11 @@ public struct RootView: View {
         _contacts = State(initialValue: contacts)
         _alert = State(initialValue: AlertModel(services: services, strings: Strings.alert))
         _nearby = State(initialValue: NearbyModel(services: services))
+        // Read before the first frame too, so Get help never flashes all of the UK and
+        // then narrows to the saved nation under the person's eyes.
+        let nationPreference = NationPreference(store: services.nations)
+        nationPreference.load()
+        _nationPreference = State(initialValue: nationPreference)
     }
 
     public var body: some View {
@@ -58,6 +65,7 @@ public struct RootView: View {
         .environment(contacts)
         .environment(alert)
         .environment(nearby)
+        .environment(nationPreference)
         .environment(testMode)
         .onChange(of: scenePhase) { _, phase in testMode.scenePhaseChanged(to: phase) }
     }

@@ -16,10 +16,7 @@ public struct HelpScreen: View {
     // in a preview. No session in the environment means Test Mode is off.
     @Environment(TestModeSession.self) private var testMode: TestModeSession?
 
-    /// The one call awaiting confirmation, captured at the moment of the tap.
-    @State private var pendingCall: PendingCall?
-    /// A call or text the system could not start, shown so the user can do it by hand.
-    @State private var failure: ContactFailure?
+    @State private var contact = ServiceContactActions()
 
     private var isTestMode: Bool { testMode?.isOn == true }
 
@@ -89,29 +86,7 @@ public struct HelpScreen: View {
                 }
             }
             .navigationTitle(Text("help.title", bundle: .module))
-            // ONE confirmation for the whole screen, not one per row. With a dialog on
-            // every row of a List, SwiftUI presented stale state: tapping one service
-            // produced the previous service's dialog, and confirming would have called
-            // the wrong number. `presenting:` hands the action the value captured at
-            // presentation, and the message shows that same value's number — so what
-            // the user reads and what is dialled cannot differ.
-            .confirmationDialog(
-                Text(pendingCall.map { String(format: Strings.localized("help.callConfirm.title"), $0.serviceName) } ?? ""),
-                isPresented: Binding(get: { pendingCall != nil }, set: { if !$0 { pendingCall = nil } }),
-                titleVisibility: .visible,
-                presenting: pendingCall
-            ) { call in
-                Button(Strings.localized("help.callConfirm.confirm")) { place(call) }
-                Button(Strings.localized("help.callConfirm.cancel"), role: .cancel) {}
-            } message: { call in
-                Text(call.confirmationMessage)
-            }
-            .alert(
-                Text(failure.map(\.message) ?? ""),
-                isPresented: Binding(get: { failure != nil }, set: { if !$0 { failure = nil } })
-            ) {
-                Button(Strings.localized("help.ok"), role: .cancel) {}
-            }
+            .serviceContactDialogs(contact, dialler: services.dialler)
         }
     }
 }
@@ -119,75 +94,13 @@ public struct HelpScreen: View {
 extension HelpScreen {
 
     private func call(_ number: PhoneNumber, serviceName: String) {
-        pendingCall = PendingCall.make(serviceName: serviceName, number: number, testMode: isTestMode)
-    }
-
-    /// Where a Help-screen text goes. In Test Mode it goes to a drama number, like
-    /// every other flow, so a rehearsal can never open Messages to 61016 or a
-    /// helpline's text line.
-    static func textTarget(for number: PhoneNumber, testMode: Bool) -> PhoneNumber {
-        testMode ? TestModeNumbers.service : number
+        contact.requestCall(number, serviceName: serviceName, testMode: isTestMode)
     }
 
     private func text(_ number: PhoneNumber) {
-        let target = Self.textTarget(for: number, testMode: isTestMode)
         let texter = services.texter
-        Task { @MainActor in
-            if await texter.openText(to: target) == false {
-                failure = .text(target)
-            }
-        }
-    }
-
-    /// Dials exactly the number that was confirmed — never re-read from state.
-    private func place(_ call: PendingCall) {
-        let dialler = services.dialler
-        Task { @MainActor in
-            if await dialler.dial(call.dialled) == false {
-                failure = .call(call.dialled)
-            }
-        }
-    }
-}
-
-/// A call awaiting confirmation. Captured whole at the moment of the tap, so the
-/// confirmation and the dial both read one value and cannot drift apart — not even
-/// if Test Mode is switched off while the dialog is open.
-struct PendingCall: Equatable {
-    let serviceName: String
-    /// The number on the service's card.
-    let number: PhoneNumber
-    /// What will actually be dialled: `number`, or in Test Mode a drama number.
-    let dialled: PhoneNumber
-    let isTest: Bool
-
-    static func make(serviceName: String, number: PhoneNumber, testMode: Bool) -> PendingCall {
-        PendingCall(
-            serviceName: serviceName,
-            number: number,
-            dialled: testMode ? TestModeNumbers.service : number,
-            isTest: testMode
-        )
-    }
-
-    var confirmationMessage: String {
-        isTest
-            ? String(format: Strings.localized("help.callConfirm.messageTestMode"), dialled.raw, number.raw)
-            : String(format: Strings.localized("help.callConfirm.messageWithNumber"), number.raw)
-    }
-}
-
-/// A call or text the system could not start. Never silent: the number is shown so
-/// the user can dial or text it by hand.
-enum ContactFailure: Equatable {
-    case call(PhoneNumber)
-    case text(PhoneNumber)
-
-    var message: String {
-        switch self {
-        case let .call(n): String(format: Strings.localized("help.callFailed"), n.raw)
-        case let .text(n): String(format: Strings.localized("help.textFailed"), n.raw)
-        }
+        let testMode = isTestMode
+        Task { await contact.text(number, testMode: testMode, using: texter) }
     }
 }
 

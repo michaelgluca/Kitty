@@ -256,3 +256,50 @@ public struct FixedTime: TimeSource {
         self.timeZone = timeZone
     }
 }
+
+/// Answers police-station searches in order, then `.noneFound`, recording each radius.
+public final class StubPlaceSearch: PlaceSearching, @unchecked Sendable {
+    private let lock = NSLock()
+    private var outcomes: [PlaceSearchOutcome]
+    private var _requestedRadii: [Double] = []
+
+    public init(_ outcomes: [PlaceSearchOutcome]) { self.outcomes = outcomes }
+
+    public var requestedRadii: [Double] { lock.withLock { _requestedRadii } }
+
+    @MainActor
+    public func policeStations(near centre: Coordinate, radiusMetres: Double) async -> PlaceSearchOutcome {
+        lock.withLock {
+            _requestedRadii.append(radiusMetres)
+            return outcomes.isEmpty ? .noneFound : outcomes.removeFirst()
+        }
+    }
+}
+
+public struct StubRouteFinder: RouteFinding {
+    private let outcome: RouteOutcome
+    public init(_ outcome: RouteOutcome) { self.outcome = outcome }
+    @MainActor public func walkingRoute(from origin: Coordinate, to place: NearbyPlace) async -> RouteOutcome { outcome }
+}
+
+public final class SpyMapsOpener: MapsOpening, @unchecked Sendable {
+    private let lock = NSLock()
+    private var _opened: [NearbyPlace] = []
+    private let succeeds: Bool
+
+    public init(succeeds: Bool = true) { self.succeeds = succeeds }
+
+    public var opened: [NearbyPlace] { lock.withLock { _opened } }
+
+    @MainActor
+    public func openWalkingDirections(to place: NearbyPlace) async -> Bool {
+        lock.withLock { _opened.append(place) }
+        return succeeds
+    }
+}
+
+public struct StubAreaNamer: AreaNaming {
+    private let result: GeocodedArea?
+    public init(_ result: GeocodedArea?) { self.result = result }
+    @MainActor public func area(at coordinate: Coordinate) async -> GeocodedArea? { result }
+}

@@ -135,3 +135,39 @@ public struct SystemTimeSource: TimeSource {
     public var now: Date { Date() }
     public var timeZone: TimeZone { TimeZone.autoupdatingCurrent }
 }
+
+// MARK: - Nearby
+
+public enum PlaceSearchOutcome: Sendable, Equatable {
+    case found([NearbyPlace])
+    /// The search ran and there is nothing in range.
+    case noneFound
+    /// The search could not run — usually no connection. Reported, never shown as
+    /// "nothing nearby", which would be a different and false statement.
+    case failed
+}
+
+public protocol PlaceSearching: Sendable {
+    /// Police stations within `radiusMetres` of `centre`, in whatever order the map
+    /// service returns them. The caller orders them.
+    @MainActor func policeStations(near centre: Coordinate, radiusMetres: Double) async -> PlaceSearchOutcome
+}
+
+public enum RouteOutcome: Sendable, Equatable {
+    case found(WalkingRoute)
+    case failed
+}
+
+public protocol RouteFinding: Sendable {
+    @MainActor func walkingRoute(from origin: Coordinate, to place: NearbyPlace) async -> RouteOutcome
+}
+
+public protocol MapsOpening: Sendable {
+    /// Opens Apple Maps with walking directions to the place. Returns whether it opened.
+    @MainActor func openWalkingDirections(to place: NearbyPlace) async -> Bool
+}
+
+public protocol AreaNaming: Sendable {
+    /// Where a coordinate is, or `nil` if that cannot be found (for example, offline).
+    @MainActor func area(at coordinate: Coordinate) async -> GeocodedArea?
+}

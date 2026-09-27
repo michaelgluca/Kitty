@@ -1,6 +1,8 @@
 # ── Assistant instructions (workspace rule: never publish these) ───────────────
 CLAUDE.md
 .claude/
+# The engineer's own to-do list (workspace rule)
+HUMAN-TASKS.md
 
 # ── Working notes (local only) ────────────────────────────────────────────────
 # Implementation plans, the subagent workspace and session handover notes carry

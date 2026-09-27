@@ -18,7 +18,7 @@ let package = Package(
         ),
         .testTarget(
             name: "SafetyContentTests",
-            dependencies: ["SafetyContent"],
+            dependencies: ["SafetyContent", "SafetyDomain"],
             swiftSettings: [.swiftLanguageMode(.v6)]
         ),
     ]

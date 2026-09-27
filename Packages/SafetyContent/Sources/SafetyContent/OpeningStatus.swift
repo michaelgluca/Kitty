@@ -15,10 +15,10 @@ public extension Availability {
 
     /// UK helplines keep UK hours.
     ///
-    /// The evaluation deliberately uses the service's own time zone rather than the
-    /// device's. A UK survivor travelling abroad, checking at their local 3am, may
-    /// well be inside UK opening hours — and telling them a line is shut when it is
-    /// open is the failure that matters here.
+    /// Evaluated in the service's own time zone rather than the device's. A UK
+    /// survivor abroad, checking at their local 3am, may well be inside UK opening
+    /// hours — and telling them a line is shut when it is open is the failure that
+    /// matters here.
     static let ukTimeZone = TimeZone(identifier: "Europe/London") ?? .gmt
 
     func status(at date: Date, in timeZone: TimeZone = Availability.ukTimeZone) -> OpeningStatus {
@@ -27,18 +27,17 @@ public extension Availability {
             return .openNow
         case .seeWebsite:
             return .unknown
-        case let .weekdays(openHour, closeHour):
+        case let .schedule(windows):
             var calendar = Calendar(identifier: .gregorian)
             calendar.timeZone = timeZone
-            let parts = calendar.dateComponents([.weekday, .hour, .minute], from: date)
+            let parts = calendar.dateComponents([.weekday, .hour], from: date)
             guard let weekday = parts.weekday, let hour = parts.hour else { return .unknown }
 
-            // Calendar weekday: 1 = Sunday, 7 = Saturday.
-            let isWeekday = (2...6).contains(weekday)
-            guard isWeekday else { return .closedNow }
-
-            // closeHour is exclusive: a line closing at 16 is shut at 16:00.
-            return (openHour..<closeHour).contains(hour) ? .openNow : .closedNow
+            let open = windows.contains { window in
+                window.days.contains(calendarWeekday: weekday)
+                    && (window.openHour..<window.closeHour).contains(hour)
+            }
+            return open ? .openNow : .closedNow
         }
     }
 }

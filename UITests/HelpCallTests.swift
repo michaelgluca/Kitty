@@ -25,7 +25,7 @@ final class HelpCallTests: XCTestCase {
         // Pin the region rather than depend on the simulator's locale. `-kitty.uiTest`
         // gives the app its own trusted-contacts Keychain item, so these tests never
         // read a developer's real list.
-        app.launchArguments += ["-AppleLocale", locale, "-AppleLanguages", "(en)", "-kitty.uiTest"]
+        app.launchArguments += ["-AppleLocale", locale, "-AppleLanguages", "(en)", "-kitty.uiTest", "-kitty.resetNation"]
         app.launch()
         app.tabBars.buttons["Get help"].tap()
         return app

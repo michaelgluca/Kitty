@@ -74,8 +74,10 @@ extension Services {
         services.routes = MapKitRouteFinder()
         services.maps = AppleMapsOpener()
         services.areas = MapKitAreaNamer()
+        services.nations = UserDefaultsNationStore(defaults: .standard, key: nationStoreKey())
         #if DEBUG
         UITestSupport.prepare(services.contacts)
+        UITestSupport.prepare(nations: services.nations)
         if UITestSupport.stubsNearby { UITestSupport.stubNearby(&services) }
         #endif
         return services
@@ -89,5 +91,14 @@ extension Services {
         if UITestSupport.isActive { return base + ".uitest" }
         #endif
         return base
+    }
+
+    private static func nationStoreKey() -> String {
+        #if DEBUG
+        // UI tests keep their own saved nation, so running them never changes a
+        // developer's real choice.
+        if UITestSupport.isActive { return "nation.saved.uitest" }
+        #endif
+        return "nation.saved"
     }
 }

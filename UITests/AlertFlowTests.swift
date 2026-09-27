@@ -26,7 +26,7 @@ final class AlertFlowTests: XCTestCase {
     private func launch(_ switches: [String] = [], locale: String = "en_GB") -> XCUIApplication {
         continueAfterFailure = false
         let app = XCUIApplication()
-        app.launchArguments += ["-AppleLocale", locale, "-AppleLanguages", "(en)", "-kitty.uiTest"] + switches
+        app.launchArguments += ["-AppleLocale", locale, "-AppleLanguages", "(en)", "-kitty.uiTest", "-kitty.resetNation"] + switches
         app.launch()
         return app
     }

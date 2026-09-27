@@ -23,5 +23,7 @@ struct UnavailableServicesTests {
         #expect(await services.routes.walkingRoute(from: somewhere, to: place) == .failed)
         #expect(await services.maps.openWalkingDirections(to: place) == false)
         #expect(await services.areas.area(at: somewhere) == nil)
+        #expect(throws: NationStoreFailure.unavailable) { try services.nations.load() }
+        #expect(throws: NationStoreFailure.unavailable) { try services.nations.save("scotland") }
     }
 }

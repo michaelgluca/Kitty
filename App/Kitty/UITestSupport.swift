@@ -18,6 +18,9 @@ import SafetyServices
 ///   `-kitty.uiTest`.
 /// - `-kitty.stubNearbySearchFails`: with `-kitty.stubNearby`, the station search
 ///   cannot run, as with no signal, so the failure state can be tested.
+/// - `-kitty.resetNation`: start with no saved nation (all of the UK), so a nation one
+///   test chose never narrows the next test's lists. Honoured only together with
+///   `-kitty.uiTest`.
 enum UITestSupport {
 
     private static var arguments: [String] { ProcessInfo.processInfo.arguments }
@@ -45,6 +48,16 @@ enum UITestSupport {
         } catch {
             // A UI test that silently ran against the wrong data would prove nothing.
             fatalError("UI test setup could not prepare trusted contacts: \(error)")
+        }
+    }
+
+    static func prepare(nations store: any NationStoring) {
+        guard isActive, arguments.contains("-kitty.resetNation") else { return }
+        do {
+            try store.save(nil)
+        } catch {
+            // A UI test that silently ran against a leftover nation would prove nothing.
+            fatalError("UI test setup could not reset the saved nation: \(error)")
         }
     }
 

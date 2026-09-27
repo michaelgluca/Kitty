@@ -14,15 +14,20 @@ public enum LocationAuthorization: Sendable, Equatable {
 }
 
 public protocol LocationProviding: Sendable {
-    var authorization: LocationAuthorization { get async }
-    func requestWhenInUseAuthorization() async -> LocationAuthorization
+    /// Read synchronously: CoreLocation reports it without a round trip.
+    @MainActor var authorization: LocationAuthorization { get }
+
+    /// Shows the system prompt only when the answer is not yet known; otherwise
+    /// returns the current state straight away.
+    @MainActor func requestWhenInUseAuthorization() async -> LocationAuthorization
 
     /// A single fix, or `nil` if none arrives within `timeout`.
     ///
     /// Returning `nil` rather than throwing is deliberate: the caller must carry on
     /// and send the alert without a location. Raising an alert is never blocked on
-    /// location, and never fails because of it.
-    func currentFix(timeout: Duration) async -> LocationFix?
+    /// location, and never fails because of it. Must never show a permission prompt:
+    /// it is called from the alert path.
+    @MainActor func currentFix(timeout: Duration) async -> LocationFix?
 }
 
 // MARK: - Messaging
@@ -37,7 +42,7 @@ public enum MessageOutcome: Sendable, Equatable {
 }
 
 public protocol MessageComposing: Sendable {
-    var canSendText: Bool { get }
+    @MainActor var canSendText: Bool { get }
 
     /// Presents the system composer, pre-filled. iOS never sends without the user
     /// tapping Send, and never will — see ADR-0002. The returned outcome says what
@@ -70,6 +75,42 @@ public protocol TextOpening: Sendable {
 public protocol TrustedContactStoring: Sendable {
     func load() throws -> [TrustedContact]
     func save(_ contacts: [TrustedContact]) throws
+}
+
+// MARK: - Choosing contacts
+
+/// What the system contact picker handed back: one person, and the one number they
+/// chose for them.
+public struct PickedContact: Sendable, Equatable {
+    /// May be empty — a contact saved as a number only. The domain rules then show
+    /// the number instead of a blank name.
+    public let displayName: String
+    public let phoneNumber: String
+
+    public init(displayName: String, phoneNumber: String) {
+        self.displayName = displayName
+        self.phoneNumber = phoneNumber
+    }
+}
+
+public enum ContactPickOutcome: Sendable, Equatable {
+    case picked(PickedContact)
+    case cancelled
+    /// The picker could not be shown. Reported, so the screen can say so.
+    case unavailable
+}
+
+public protocol ContactPicking: Sendable {
+    /// Presents the out-of-process system picker. It needs no Contacts permission:
+    /// the app only ever sees the one contact and number the person chooses.
+    @MainActor func pickContact() async -> ContactPickOutcome
+}
+
+// MARK: - Settings
+
+public protocol SettingsOpening: Sendable {
+    /// Opens this app's page in the Settings app. Returns whether it opened.
+    @MainActor func openAppSettings() async -> Bool
 }
 
 // MARK: - Device

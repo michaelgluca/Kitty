@@ -12,6 +12,8 @@ public struct Services: Sendable {
     public var messages: any MessageComposing
     public var dialler: any Dialling
     public var texter: any TextOpening
+    public var picker: any ContactPicking
+    public var settings: any SettingsOpening
     public var contacts: any TrustedContactStoring
     public var battery: any BatteryReading
     public var time: any TimeSource
@@ -21,6 +23,8 @@ public struct Services: Sendable {
         messages: any MessageComposing,
         dialler: any Dialling,
         texter: any TextOpening,
+        picker: any ContactPicking,
+        settings: any SettingsOpening,
         contacts: any TrustedContactStoring,
         battery: any BatteryReading,
         time: any TimeSource
@@ -29,6 +33,8 @@ public struct Services: Sendable {
         self.messages = messages
         self.dialler = dialler
         self.texter = texter
+        self.picker = picker
+        self.settings = settings
         self.contacts = contacts
         self.battery = battery
         self.time = time
@@ -46,6 +52,8 @@ public struct Services: Sendable {
             messages: UnavailableMessageComposer(),
             dialler: UnavailableDialler(),
             texter: UnavailableTextOpener(),
+            picker: UnavailableContactPicker(),
+            settings: UnavailableSettingsOpener(),
             contacts: EphemeralContactStore(),
             battery: UnknownBattery(),
             time: SystemTimeSource()
@@ -55,16 +63,26 @@ public struct Services: Sendable {
 
 public struct UnavailableLocationProvider: LocationProviding {
     public init() {}
-    public var authorization: LocationAuthorization { get async { .notDetermined } }
-    public func requestWhenInUseAuthorization() async -> LocationAuthorization { .notDetermined }
-    public func currentFix(timeout: Duration) async -> LocationFix? { nil }
+    @MainActor public var authorization: LocationAuthorization { .notDetermined }
+    @MainActor public func requestWhenInUseAuthorization() async -> LocationAuthorization { .notDetermined }
+    @MainActor public func currentFix(timeout: Duration) async -> LocationFix? { nil }
 }
 
 public struct UnavailableMessageComposer: MessageComposing {
     public init() {}
-    public var canSendText: Bool { false }
+    @MainActor public var canSendText: Bool { false }
     @MainActor
     public func compose(recipients: [PhoneNumber], body: String) async -> MessageOutcome { .unavailable }
+}
+
+public struct UnavailableContactPicker: ContactPicking {
+    public init() {}
+    @MainActor public func pickContact() async -> ContactPickOutcome { .unavailable }
+}
+
+public struct UnavailableSettingsOpener: SettingsOpening {
+    public init() {}
+    @MainActor public func openAppSettings() async -> Bool { false }
 }
 
 public struct UnavailableDialler: Dialling {

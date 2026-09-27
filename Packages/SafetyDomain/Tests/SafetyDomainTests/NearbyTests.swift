@@ -63,6 +63,63 @@ struct ReadsAsPoliceStationTests {
     }
 
     @Test(
+        "Welsh-named and PSNI-named stations are kept, so a nearer one is never hidden behind a farther one",
+        arguments: [
+            "Gorsaf Heddlu Caerdydd",
+            "Cardiff Bay Police Station / Gorsaf Heddlu Bae Caerdydd",
+            // The article form is common in Welsh signage: "heddlu" and "gorsaf"
+            // together, not necessarily side by side.
+            "Gorsaf yr Heddlu Aberystwyth",
+            "Police Service of Northern Ireland Lisburn",
+            "Police Service of Northern Ireland \u{2013} Lisburn",
+        ]
+    )
+    func keepsWelshAndNorthernIrishStations(name: String) {
+        #expect(readsAsPoliceStation(name: name))
+    }
+
+    @Test(
+        "Either Welsh word alone is not enough: \"gorsaf\" is any station, \"heddlu\" is the force",
+        arguments: [
+            "Gorsaf Caerdydd Canolog",
+            "Heddlu De Cymru Headquarters",
+        ]
+    )
+    func rejectsHalfOfTheWelshName(name: String) {
+        #expect(!readsAsPoliceStation(name: name))
+    }
+
+    @Test(
+        "A name that reads as a station but is not a working one is rejected, before any accept rule",
+        arguments: [
+            "Police Station Museum",
+            "The Old Police Station",
+            "Former Police Station",
+            "Closed Police Station",
+            "Police Station (closed)",
+            "Amgueddfa Gorsaf Heddlu",
+            "Police Station Telephone Box",
+            "Police Box by Earls Court Police Station",
+            "Police Station Phone Box",
+        ]
+    )
+    func rejectsNamesThatAreNotAWorkingStation(name: String) {
+        #expect(!readsAsPoliceStation(name: name))
+    }
+
+    @Test(
+        "Reject words are matched as whole words, so a real station is not hidden by a place name that contains one",
+        arguments: [
+            "Bold Police Station",
+            "Boxmoor Police Station",
+            "Enclosed Lane Police Station",
+        ]
+    )
+    func rejectWordsAreWholeWords(name: String) {
+        #expect(readsAsPoliceStation(name: name))
+    }
+
+    @Test(
         "Places that merely share the .police category are rejected",
         arguments: [
             "Crime Museum",

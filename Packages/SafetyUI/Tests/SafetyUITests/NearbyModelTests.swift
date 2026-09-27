@@ -54,7 +54,7 @@ struct NearbyModelTests {
     }
 
     @Test("Finds the nearest station, with a walking route to it and the nation")
-    func finds() async throws {
+    func finds() async {
         let m = NearbyModel(services: services(places: StubPlaceSearch([.found([station("far", north: 1_500), station("near", north: 300)])])))
         await m.refresh()
         guard case let .found(found) = m.state else { Issue.record("Expected found, got \(m.state)"); return }
@@ -138,6 +138,133 @@ struct NearbyModelTests {
         hanging.release()
     }
 
+    @Test(
+        "A nation lookup that never answers times out to no nation, without delaying the search, and a later refresh can still find one",
+        .timeLimit(.minutes(1))
+    )
+    func nationLookupTimesOut() async {
+        let hanging = HangingAreaNamer()
+        var s = services()
+        s.areas = hanging
+        let m = NearbyModel(services: s, nationLookupTimeout: .milliseconds(200))
+
+        let clock = ContinuousClock()
+        let start = clock.now
+        await m.refresh()
+        #expect(clock.now - start < .seconds(3))
+        guard case .found = m.state else { Issue.record("Expected found, got \(m.state)"); return }
+        #expect(m.detectedNation == nil)
+
+        hanging.release(with: GeocodedArea(countryCode: "GB", names: ["England"]))
+        await m.refresh()
+        #expect(m.detectedNation == .england)
+    }
+
+    @Test(
+        "A search step that never answers times out to a visible failure, not a wider retry, and a later refresh can still succeed",
+        .timeLimit(.minutes(1))
+    )
+    func searchStepTimesOut() async {
+        let hanging = HangingPlaceSearch()
+        var s = services()
+        s.places = hanging
+        let m = NearbyModel(services: s, searchStepTimeout: .milliseconds(200))
+
+        let clock = ContinuousClock()
+        let start = clock.now
+        await m.refresh()
+        #expect(clock.now - start < .seconds(3))
+        #expect(m.state == .searchFailed)
+        #expect(hanging.requestedRadii.count == 1)
+
+        hanging.release(with: .found([station("a", north: 400)]))
+        await m.refresh()
+        guard case .found = m.state else { Issue.record("Expected found after retry, got \(m.state)"); return }
+    }
+
+    @Test(
+        "A route lookup that never answers times out without hiding the station, and a later refresh can still get one",
+        .timeLimit(.minutes(1))
+    )
+    func routeTimesOut() async {
+        let hanging = HangingRouteFinder()
+        // Two scripted finds: one for the timed-out first refresh, one for the retry —
+        // `StubPlaceSearch` answers each `refresh()` in turn, not just the first.
+        let places = StubPlaceSearch([.found([station("a", north: 400)]), .found([station("a", north: 400)])])
+        let m = NearbyModel(services: services(places: places, routes: hanging), routeTimeout: .milliseconds(200))
+
+        let clock = ContinuousClock()
+        let start = clock.now
+        await m.refresh()
+        #expect(clock.now - start < .seconds(3))
+        guard case let .found(found) = m.state else { Issue.record("Expected found, got \(m.state)"); return }
+        #expect(found.route == nil)
+        #expect(found.stations.count == 1)
+
+        hanging.release(with: .found(route))
+        await m.refresh()
+        guard case let .found(retryFound) = m.state else { Issue.record("Expected found after retry, got \(m.state)"); return }
+        #expect(retryFound.route == route)
+    }
+
+    @Test("A second refresh while one is already searching does nothing, and the first still finishes", .timeLimit(.minutes(1)))
+    func doubleRefresh() async {
+        let hanging = HangingPlaceSearch()
+        var s = services()
+        s.places = hanging
+        let m = NearbyModel(services: s)
+
+        let first = Task { await m.refresh() }
+        // Wait for the actual request, not just the `.searching` state: the state
+        // flips synchronously the moment the fix arrives, a moment before the search
+        // loop's first `firstResult` call actually reaches the double.
+        for _ in 0..<10_000 where hanging.requestedRadii.isEmpty { await Task.yield() }
+        #expect(m.state == .searching)
+        #expect(m.isBusy)
+
+        // A second call made while the first is still stuck in the search must not
+        // issue its own request, or two searches would race.
+        await m.refresh()
+        #expect(hanging.requestedRadii.count == 1)
+
+        hanging.release(with: .found([station("a", north: 400)]))
+        await first.value
+        guard case .found = m.state else { Issue.record("Expected found"); return }
+    }
+
+    @Test(
+        "A nation lookup left over from an old refresh, still pending after the state moved past it, never overwrites a newer refresh's answer",
+        .timeLimit(.minutes(1))
+    )
+    func staleNationLookupNeverOverwritesANewerOne() async {
+        // Wales is what the *second* refresh's own lookup answers, immediately.
+        // Scotland is what the *first* refresh's lookup eventually answers, late —
+        // after the second refresh has already finished. If the fix in NearbyModel
+        // regressed, Scotland would land last and stomp Wales.
+        let namer = SequencedAreaNamer(subsequent: GeocodedArea(countryCode: "GB", names: ["Wales"]))
+        let places = StubPlaceSearch([.found([station("a", north: 400)]), .found([station("a", north: 400)])])
+        var s = services(places: places)
+        s.areas = namer
+        let m = NearbyModel(services: s)
+
+        let first = Task { await m.refresh() }
+        for _ in 0..<10_000 {
+            if case .found = m.state { break }
+            await Task.yield()
+        }
+        guard case .found = m.state else { Issue.record("Expected the first refresh to reach found"); return }
+
+        // The first refresh's own nation lookup (Scotland, below) is still stuck:
+        // this is a second, independent refresh, not the guard from the previous
+        // test — `state` already being terminal is exactly what makes it possible.
+        await m.refresh()
+        #expect(m.detectedNation == .wales)
+
+        namer.releaseFirst(with: GeocodedArea(countryCode: "GB", names: ["Scotland"]))
+        await first.value
+        #expect(m.detectedNation == .wales)
+    }
+
     @Test("An unknown or non-UK area leaves the nation for the person to choose")
     func unknownNation() async {
         let m = NearbyModel(services: services(area: nil))
@@ -184,6 +311,15 @@ struct NearbyModelTests {
         guard case .found = m.state else { Issue.record("Expected found"); return }
     }
 
+    @Test("Being declined when allowing location ends in locationOff, not stuck locating")
+    func allowDeclined() async {
+        let location = StubLocationProvider(authorization: .notDetermined, authorizationAfterRequest: .denied, fix: fix)
+        let m = NearbyModel(services: services(location: location))
+        await m.allowLocation()
+        #expect(location.authorizationRequestCount == 1)
+        #expect(m.state == .locationOff)
+    }
+
     @Test("Directions go to Apple Maps, and a failure to open is reported")
     func directions() async {
         let spy = SpyMapsOpener()
@@ -204,19 +340,18 @@ struct NearbyModelTests {
 /// deliberately has no such setter — its authorization models what CoreLocation
 /// reports at the moment of the call, fixed for the life of the double — so this
 /// stays local to this test rather than widening that double for one scenario.
+///
+/// Every access is through a `@MainActor`-isolated member, and every call site in
+/// this file is itself on the main actor (the suite is `@MainActor`), so — unlike
+/// the `Hanging*` doubles below, which must stay safe across a suspended
+/// continuation and an arbitrary `release()` caller — this needs no lock of its own.
 private final class MutableAuthorizationLocationProvider: LocationProviding, @unchecked Sendable {
-    private let lock = NSLock()
-    private var _authorization: LocationAuthorization
+    @MainActor var authorization: LocationAuthorization
     private let fix: LocationFix?
 
     init(authorization: LocationAuthorization = .authorizedWhenInUse, fix: LocationFix?) {
-        self._authorization = authorization
+        self.authorization = authorization
         self.fix = fix
-    }
-
-    @MainActor var authorization: LocationAuthorization {
-        get { lock.withLock { _authorization } }
-        set { lock.withLock { _authorization = newValue } }
     }
 
     @MainActor func requestWhenInUseAuthorization() async -> LocationAuthorization { authorization }
@@ -225,9 +360,9 @@ private final class MutableAuthorizationLocationProvider: LocationProviding, @un
 
 /// Answers the first call with one area, then another for every call after —
 /// so a test can show a nation detected on one refresh going stale on the next.
+/// No lock: see `MutableAuthorizationLocationProvider` above.
 private final class TogglingAreaNamer: AreaNaming, @unchecked Sendable {
-    private let lock = NSLock()
-    private var _callCount = 0
+    @MainActor private var callCount = 0
     private let first: GeocodedArea?
     private let rest: GeocodedArea?
 
@@ -238,10 +373,148 @@ private final class TogglingAreaNamer: AreaNaming, @unchecked Sendable {
 
     @MainActor
     func area(at coordinate: Coordinate) async -> GeocodedArea? {
-        let count = lock.withLock { () -> Int in
-            _callCount += 1
-            return _callCount
+        callCount += 1
+        return callCount == 1 ? first : rest
+    }
+}
+
+/// A police-station search that never answers until released. Proves a stalled
+/// search times out to a visible failure rather than leaving the busy guard locked
+/// with no way forward, and that releasing it lets a retry succeed. Same shape as
+/// `HangingLocationProvider`: a lock, stored continuations, and a `release`.
+private final class HangingPlaceSearch: PlaceSearching, @unchecked Sendable {
+    private let lock = NSLock()
+    private var released: PlaceSearchOutcome?
+    private var waiters: [CheckedContinuation<PlaceSearchOutcome, Never>] = []
+    private var _requestedRadii: [Double] = []
+
+    var requestedRadii: [Double] { lock.withLock { _requestedRadii } }
+
+    @MainActor
+    func policeStations(near centre: Coordinate, radiusMetres: Double) async -> PlaceSearchOutcome {
+        lock.withLock { _requestedRadii.append(radiusMetres) }
+        return await withCheckedContinuation { continuation in
+            let answerNow = lock.withLock { () -> PlaceSearchOutcome? in
+                if let released { return released }
+                waiters.append(continuation)
+                return nil
+            }
+            if let answerNow { continuation.resume(returning: answerNow) }
         }
-        return count == 1 ? first : rest
+    }
+
+    /// Lets every waiting caller finish, and answers every call from now on.
+    func release(with outcome: PlaceSearchOutcome) {
+        let pending = lock.withLock { () -> [CheckedContinuation<PlaceSearchOutcome, Never>] in
+            released = outcome
+            defer { waiters = [] }
+            return waiters
+        }
+        pending.forEach { $0.resume(returning: outcome) }
+    }
+}
+
+/// A route finder that never answers until released. Proves a stalled route lookup
+/// times out without hiding the station it was for.
+private final class HangingRouteFinder: RouteFinding, @unchecked Sendable {
+    private let lock = NSLock()
+    private var released: RouteOutcome?
+    private var waiters: [CheckedContinuation<RouteOutcome, Never>] = []
+
+    @MainActor
+    func walkingRoute(from origin: Coordinate, to place: NearbyPlace) async -> RouteOutcome {
+        await withCheckedContinuation { continuation in
+            let answerNow = lock.withLock { () -> RouteOutcome? in
+                if let released { return released }
+                waiters.append(continuation)
+                return nil
+            }
+            if let answerNow { continuation.resume(returning: answerNow) }
+        }
+    }
+
+    func release(with outcome: RouteOutcome) {
+        let pending = lock.withLock { () -> [CheckedContinuation<RouteOutcome, Never>] in
+            released = outcome
+            defer { waiters = [] }
+            return waiters
+        }
+        pending.forEach { $0.resume(returning: outcome) }
+    }
+}
+
+/// An area namer that never answers until released. Proves a stalled nation lookup
+/// times out to `nil` rather than blocking the search it must never gate.
+private final class HangingAreaNamer: AreaNaming, @unchecked Sendable {
+    private let lock = NSLock()
+    private var released = false
+    private var releasedValue: GeocodedArea?
+    private var waiters: [CheckedContinuation<GeocodedArea?, Never>] = []
+
+    @MainActor
+    func area(at coordinate: Coordinate) async -> GeocodedArea? {
+        await withCheckedContinuation { continuation in
+            let answerNow = lock.withLock { () -> Bool in
+                if released { return true }
+                waiters.append(continuation)
+                return false
+            }
+            if answerNow { continuation.resume(returning: releasedValue) }
+        }
+    }
+
+    func release(with value: GeocodedArea?) {
+        let pending = lock.withLock { () -> [CheckedContinuation<GeocodedArea?, Never>] in
+            released = true
+            releasedValue = value
+            defer { waiters = [] }
+            return waiters
+        }
+        pending.forEach { $0.resume(returning: value) }
+    }
+}
+
+/// Hangs on its first call until released; every call after that answers
+/// immediately with `subsequent`. Models a nation lookup from one refresh finishing
+/// only after a later refresh has already started and finished its own — the
+/// scenario that a stale answer must never be allowed to overwrite.
+private final class SequencedAreaNamer: AreaNaming, @unchecked Sendable {
+    private let lock = NSLock()
+    private var released = false
+    private var releasedValue: GeocodedArea?
+    private var waiters: [CheckedContinuation<GeocodedArea?, Never>] = []
+    private var callCount = 0
+    private let subsequent: GeocodedArea?
+
+    init(subsequent: GeocodedArea?) {
+        self.subsequent = subsequent
+    }
+
+    @MainActor
+    func area(at coordinate: Coordinate) async -> GeocodedArea? {
+        let isFirstCall = lock.withLock { () -> Bool in
+            callCount += 1
+            return callCount == 1
+        }
+        guard isFirstCall else { return subsequent }
+        return await withCheckedContinuation { continuation in
+            let answerNow = lock.withLock { () -> Bool in
+                if released { return true }
+                waiters.append(continuation)
+                return false
+            }
+            if answerNow { continuation.resume(returning: releasedValue) }
+        }
+    }
+
+    /// Answers the stuck first call.
+    func releaseFirst(with value: GeocodedArea?) {
+        let pending = lock.withLock { () -> [CheckedContinuation<GeocodedArea?, Never>] in
+            released = true
+            releasedValue = value
+            defer { waiters = [] }
+            return waiters
+        }
+        pending.forEach { $0.resume(returning: value) }
     }
 }

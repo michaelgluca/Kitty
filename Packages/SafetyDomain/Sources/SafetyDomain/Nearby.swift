@@ -77,3 +77,20 @@ public extension Array where Element == NearbyPlace {
             .map(\.place)
     }
 }
+
+/// Whether `name` reads as an actual police station — a front counter someone in
+/// danger could walk into — rather than merely something MapKit's `.police`
+/// points-of-interest category also covers, such as a museum inside a police
+/// building or a heritage police telephone box. Apple's category is broader than
+/// "police station", so a map-service result must pass this before it is shown as
+/// one. Pure and platform-neutral, so it is testable without a device and reusable
+/// by the later Kotlin port.
+public func readsAsPoliceStation(name: String?) -> Bool {
+    guard let name, !name.isEmpty else { return false }
+    let lower = name.lowercased()
+    if lower.contains("police station") { return true }
+    if lower.contains("police office") { return true }
+    if lower.contains("psni") { return true }
+    if lower.contains("police") && lower.contains("station") { return true }
+    return false
+}

@@ -15,8 +15,12 @@ private extension Coordinate {
 private extension MKMapItem {
     var nearbyPlace: NearbyPlace {
         let c = location.coordinate
+        // Falls back to the coordinate when MapKit gives no identifier. The name is
+        // folded in too: two distinct co-located POIs (for example inside the same
+        // police building) would otherwise collide on the same "lat,lon" id.
+        let fallback = "\(name ?? "")@\(c.latitude),\(c.longitude)"
         return NearbyPlace(
-            id: identifier?.rawValue ?? "\(c.latitude),\(c.longitude)",
+            id: identifier?.rawValue ?? fallback,
             name: name,
             coordinate: Coordinate(latitude: c.latitude, longitude: c.longitude),
             phone: phoneNumber
@@ -26,37 +30,45 @@ private extension MKMapItem {
 
 /// Police stations from Apple Maps.
 ///
-/// MapKit's points-of-interest request reaches at most
-/// `MKLocalPointsOfInterestRequest.maxRadius` — 2 km on iOS 27. Wider searches use a
-/// region search restricted to the police category. Either way, results beyond the
-/// radius are dropped, so "nothing within N" is true when it is said.
+/// Every step — near or wide — searches by name as well as category: Apple's
+/// `.police` points-of-interest category alone is broader than "police station" and
+/// also covers things like a museum inside a police building or a heritage police
+/// telephone box (confirmed live, near Waterloo — see the Task 9 fix report). There
+/// is no way to combine a natural-language query with
+/// `MKLocalPointsOfInterestRequest` (it has no query property), so every radius uses
+/// `MKLocalSearch.Request` instead, and every result is also checked against
+/// `readsAsPoliceStation(name:)` before being returned — belt and braces alongside
+/// MapKit's own category filter. Results beyond the radius are dropped, so "nothing
+/// within N" is true when it is said, and a radius that filters down to nothing
+/// reports `.noneFound` rather than an unfiltered fallback, so `NearbyModel` widens
+/// the search exactly as it does for a genuinely empty area.
 struct MapKitPlaceSearch: PlaceSearching {
 
     func policeStations(near centre: Coordinate, radiusMetres: Double) async -> PlaceSearchOutcome {
-        let search: MKLocalSearch
-        if radiusMetres <= MKLocalPointsOfInterestRequest.maxRadius {
-            let request = MKLocalPointsOfInterestRequest(center: centre.clCoordinate, radius: radiusMetres)
-            request.pointOfInterestFilter = MKPointOfInterestFilter(including: [.police])
-            search = MKLocalSearch(request: request)
-        } else {
-            let request = MKLocalSearch.Request()
-            // A search term for Apple Maps, never shown to anyone. The category filter
-            // below is what restricts results to police stations.
-            request.naturalLanguageQuery = "police station"
-            request.resultTypes = .pointOfInterest
-            request.pointOfInterestFilter = MKPointOfInterestFilter(including: [.police])
-            request.region = MKCoordinateRegion(
-                center: centre.clCoordinate,
-                latitudinalMeters: radiusMetres * 2,
-                longitudinalMeters: radiusMetres * 2
-            )
-            search = MKLocalSearch(request: request)
-        }
+        let request = MKLocalSearch.Request()
+        // A search term for Apple Maps, never shown to anyone. The category filter
+        // and result type below narrow it to points of interest; the name filter
+        // applied to the response is what actually keeps this to police stations.
+        request.naturalLanguageQuery = "police station"
+        request.resultTypes = .pointOfInterest
+        request.pointOfInterestFilter = MKPointOfInterestFilter(including: [.police])
+        request.region = MKCoordinateRegion(
+            center: centre.clCoordinate,
+            latitudinalMeters: radiusMetres * 2,
+            longitudinalMeters: radiusMetres * 2
+        )
+        let search = MKLocalSearch(request: request)
 
         do {
-            let response = try await search.start()
+            let response = try await withTaskCancellationHandler {
+                try await search.start()
+            } onCancel: {
+                search.cancel()
+            }
             let places = response.mapItems
+                .filter { $0.pointOfInterestCategory == .police }
                 .map(\.nearbyPlace)
+                .filter { readsAsPoliceStation(name: $0.name) }
                 .filter { Distance.metres(from: centre, to: $0.coordinate) <= radiusMetres }
             return places.isEmpty ? .noneFound : .found(places)
         } catch let error as MKError where error.code == .placemarkNotFound {
@@ -75,8 +87,13 @@ struct MapKitRouteFinder: RouteFinding {
         request.source = MKMapItem(location: origin.clLocation, address: nil)
         request.destination = MKMapItem(location: place.coordinate.clLocation, address: nil)
         request.transportType = .walking
+        let directions = MKDirections(request: request)
         do {
-            let response = try await MKDirections(request: request).calculate()
+            let response = try await withTaskCancellationHandler {
+                try await directions.calculate()
+            } onCancel: {
+                directions.cancel()
+            }
             guard let route = response.routes.first else { return .failed }
             let polyline = route.polyline
             var points = [CLLocationCoordinate2D](repeating: kCLLocationCoordinate2DInvalid, count: polyline.pointCount)

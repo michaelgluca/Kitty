@@ -1,5 +1,6 @@
 import Foundation
 import SafetyDomain
+import SafetyTesting
 import SwiftUI
 import Testing
 
@@ -58,11 +59,52 @@ struct HelpCallTestModeTests {
         #expect(!call.confirmationMessage.contains("07700"))
     }
 
+    @Test("In Test Mode a Help-screen text opens Messages to the stand-in, never the service")
+    func textInTestMode() async throws {
+        let real = try #require(PhoneNumber("61016"))
+        let target = HelpScreen.textTarget(for: real, testMode: true)
+        #expect(target == TestModeNumbers.service)
+
+        // SpyTextOpener stops the test outright if handed a number outside the drama
+        // range, so a Test Mode text that leaked the real number could not pass here.
+        let texter = SpyTextOpener()
+        #expect(await texter.openText(to: target))
+        #expect(texter.opened == [TestModeNumbers.service])
+    }
+
+    @Test("Outside Test Mode a Help-screen text goes to exactly the number shown")
+    func textOutsideTestMode() throws {
+        let real = try #require(PhoneNumber("61016"))
+        #expect(HelpScreen.textTarget(for: real, testMode: false) == real)
+    }
+
     @Test("The Test Mode banner's words resolve to real text")
     func bannerCopy() {
         for key in ["testMode.banner.title", "testMode.banner.body", "testMode.banner.turnOff"] {
             let value = Strings.localized(String.LocalizationValue(key))
             #expect(value != key, "Missing catalogue entry: \(key)")
+        }
+    }
+}
+
+/// The doubles that stand in for calls and texts must themselves refuse a real
+/// number, or a Test Mode regression would pass every test while reaching a person.
+@Suite("Doubles refuse real numbers")
+struct DoublesRefuseRealNumbersTests {
+
+    @Test("The text double stops the test when handed a number outside the drama range")
+    func textOpenerTraps() async {
+        await #expect(processExitsWith: .failure) {
+            guard let real = PhoneNumber("61016") else { return }
+            _ = await SpyTextOpener().openText(to: real)
+        }
+    }
+
+    @Test("The dialler double stops the test when asked to dial a number outside the drama range")
+    func diallerTraps() async {
+        await #expect(processExitsWith: .failure) {
+            guard let real = PhoneNumber("0808 2000 247") else { return }
+            _ = await SpyDialler().dial(real)
         }
     }
 }

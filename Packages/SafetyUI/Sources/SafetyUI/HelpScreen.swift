@@ -122,9 +122,15 @@ extension HelpScreen {
         pendingCall = PendingCall.make(serviceName: serviceName, number: number, testMode: isTestMode)
     }
 
+    /// Where a Help-screen text goes. In Test Mode it goes to a drama number, like
+    /// every other flow, so a rehearsal can never open Messages to 61016 or a
+    /// helpline's text line.
+    static func textTarget(for number: PhoneNumber, testMode: Bool) -> PhoneNumber {
+        testMode ? TestModeNumbers.service : number
+    }
+
     private func text(_ number: PhoneNumber) {
-        // In Test Mode a text goes to a drama number, like every other flow.
-        let target = isTestMode ? TestModeNumbers.service : number
+        let target = Self.textTarget(for: number, testMode: isTestMode)
         let texter = services.texter
         Task { @MainActor in
             if await texter.openText(to: target) == false {

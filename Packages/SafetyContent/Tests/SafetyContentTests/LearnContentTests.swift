@@ -267,6 +267,19 @@ struct ContentValidationTests {
         }
     }
 
+    @Test("A duplicate topic within one item is rejected at load")
+    func duplicateTopic() {
+        #expect(throws: ContentLoader.Failure.malformed("service s has a duplicate topic")) {
+            try validate(packJSON(services: [supportService(id: "s", topics: #"["domesticAbuse","domesticAbuse"]"#)], refuges: allNations()))
+        }
+        #expect(throws: ContentLoader.Failure.malformed("reporting route p has a duplicate topic")) {
+            try validate(packJSON(reporting: [supportService(id: "p", topics: #"["reportingAndVictimsRights","reportingAndVictimsRights"]"#)], refuges: allNations()))
+        }
+        #expect(throws: ContentLoader.Failure.malformed("rights topic t has a duplicate topic")) {
+            try validate(packJSON(rightsTopics: #"["domesticAbuse","domesticAbuse"]"#, refuges: allNations()))
+        }
+    }
+
     @Test("A refuge route with topics is rejected: refuges are listed by nation only")
     func refugeWithTopics() {
         let tagged = allNations().map { $0.replacingOccurrences(of: #""topics":[]"#, with: #""topics":["domesticAbuse"]"#) }

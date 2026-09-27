@@ -21,6 +21,10 @@ struct TopicTagTests {
     ///   missing tag hides one.
     /// - `general` is only for help open to anyone in distress, whatever is happening.
     /// - Every reporting route carries `reportingAndVictimsRights`.
+    /// - A rights topic carries `reportingAndVictimsRights` when it is itself about
+    ///   victims' rights after a report, or when its own points state how long you have
+    ///   to report the crime to the police, or that there is no limit — not merely that
+    ///   you can report it to the police, which most rights topics also say.
     ///
     /// Changing a tag means changing its line, and its evidence, in the same commit.
     static let expected: [String: Set<Topic>] = [
@@ -64,8 +68,12 @@ struct TopicTagTests {
         // "Every way to report a crime". The rights topics send people to the police for
         // each of these.
         "report-a-crime": [.domesticAbuse, .sexualViolence, .stalkingAndHarassment, .onlineAbuse, .forcedMarriageAndFGM, .reportingAndVictimsRights],
-        // "For police matters when nobody is in danger". Rights "what you can do" names 101
-        // for domestic abuse, stalking and harassment in public.
+        // "For police matters when nobody is in danger": every topic the rights content
+        // calls a crime — domestic abuse ("a crime"), sexual violence ("a crime"),
+        // stalking and harassment ("a crime everywhere in the UK"), online abuse ("a
+        // crime in every UK nation"), forced marriage and FGM ("crimes across the UK")
+        // — and victims' rights. Rights "what you can do" also names 101 by name for
+        // domestic abuse, stalking and harassment in public.
         "police-101": [.domesticAbuse, .sexualViolence, .stalkingAndHarassment, .onlineAbuse, .forcedMarriageAndFGM, .reportingAndVictimsRights],
         // An anonymous tip line that "do[es] not take your name": not a victim's own route
         // under a crime topic.
@@ -79,30 +87,46 @@ struct TopicTagTests {
 
         // MARK: Rights topics
 
-        // "controlling your money": economic abuse.
-        "what-counts-as-domestic-abuse": [.domesticAbuse, .housingAndMoney],
+        // "controlling your money": economic abuse. Sexual violence: the summary names
+        // "sexual abuse", and the first point says the legal definition "covers physical,
+        // sexual, emotional and economic abuse".
+        "what-counts-as-domestic-abuse": [.domesticAbuse, .sexualViolence, .housingAndMoney],
         // "whether your partner or an ex-partner has a history of abuse".
         "ask-about-a-partner": [.domesticAbuse],
-        // "order an abuser to stop harming or threatening you".
-        "protection-orders": [.domesticAbuse],
+        // "order an abuser to stop harming or threatening you". Stalking & harassment:
+        // Scotland's point names a "non-harassment order" and an "interdict". Housing &
+        // money: the England and Wales point names "an occupation order that decides who
+        // can live in the family home".
+        "protection-orders": [.domesticAbuse, .stalkingAndHarassment, .housingAndMoney],
         // "If abuse means you can't stay at home, you can get help with housing".
         "housing-help": [.domesticAbuse, .housingAndMoney],
         // "You can report rape or sexual assault at any time"; anonymity "if you report".
+        // "There is no time limit for reporting rape or sexual assault" states the
+        // reporting deadline (there is none).
         "sexual-violence": [.sexualViolence, .reportingAndVictimsRights],
-        // "watching you online"; "monitoring your phone, email or internet use".
-        "stalking-and-harassment": [.stalkingAndHarassment, .onlineAbuse],
+        // "watching you online"; "monitoring your phone, email or internet use". Reporting:
+        // "Report early. The less serious charges must be brought within 6 months of the
+        // last incident... have no 6-month limit" states the reporting deadline.
+        "stalking-and-harassment": [.stalkingAndHarassment, .onlineAbuse, .reportingAndVictimsRights],
         // Intimate images, deepfakes and cyberflashing are offences in the Sexual Offences
-        // Act 2003, ss.66A–66H (rights-verification).
-        "online-abuse": [.onlineAbuse, .sexualViolence],
+        // Act 2003, ss.66A–66H (rights-verification). Reporting: the basic sharing offence
+        // "must be charged within 6 months, and making a deepfake within 3 years" states
+        // the reporting deadline.
+        "online-abuse": [.onlineAbuse, .sexualViolence, .reportingAndVictimsRights],
         // "must take steps to prevent sexual harassment".
         "rights-at-work": [.work, .stalkingAndHarassment],
-        // "If a crime happens to you, you have rights".
-        "victims-rights": [.reportingAndVictimsRights],
+        // "If a crime happens to you, you have rights": the same rule (a) basis as
+        // victim-support, every topic the rights content calls a crime. Some of these
+        // rights, such as referral to support, apply "even if you don't report the crime
+        // to the police".
+        "victims-rights": [.domesticAbuse, .sexualViolence, .stalkingAndHarassment, .onlineAbuse, .forcedMarriageAndFGM, .reportingAndVictimsRights],
         // Title and summary.
         "forced-marriage-and-fgm": [.forcedMarriageAndFGM],
-        // "threatened, harassed or intimidated in public". Not tagged sexual violence: the
-        // offence is harassment, though the government's examples include threats.
-        "harassment-in-public": [.stalkingAndHarassment],
+        // "threatened, harassed or intimidated in public". Sexual violence: the
+        // government's examples include "threats of sexual violence", and the Scottish
+        // point on "unwanted sexual comments meant to upset you or for sexual thrills" is
+        // sourced to the Sexual Offences (Scotland) Act 2009 s.7, a sexual offence.
+        "harassment-in-public": [.stalkingAndHarassment, .sexualViolence],
     ]
 
     @Test("Every service, reporting route and rights topic carries exactly its reviewed tags")

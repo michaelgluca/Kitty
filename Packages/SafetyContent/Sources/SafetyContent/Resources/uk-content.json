@@ -653,6 +653,7 @@
       ],
       "topics": [
         "domesticAbuse",
+        "sexualViolence",
         "housingAndMoney"
       ]
     },
@@ -797,7 +798,9 @@
         }
       ],
       "topics": [
-        "domesticAbuse"
+        "domesticAbuse",
+        "stalkingAndHarassment",
+        "housingAndMoney"
       ]
     },
     {
@@ -1026,7 +1029,8 @@
       ],
       "topics": [
         "stalkingAndHarassment",
-        "onlineAbuse"
+        "onlineAbuse",
+        "reportingAndVictimsRights"
       ]
     },
     {
@@ -1122,7 +1126,8 @@
       ],
       "topics": [
         "onlineAbuse",
-        "sexualViolence"
+        "sexualViolence",
+        "reportingAndVictimsRights"
       ]
     },
     {
@@ -1267,6 +1272,11 @@
         }
       ],
       "topics": [
+        "domesticAbuse",
+        "sexualViolence",
+        "stalkingAndHarassment",
+        "onlineAbuse",
+        "forcedMarriageAndFGM",
         "reportingAndVictimsRights"
       ]
     },
@@ -1425,7 +1435,8 @@
         }
       ],
       "topics": [
-        "stalkingAndHarassment"
+        "stalkingAndHarassment",
+        "sexualViolence"
       ]
     }
   ],

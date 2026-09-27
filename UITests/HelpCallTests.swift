@@ -29,40 +29,13 @@ final class HelpCallTests: XCTestCase {
         return app
     }
 
-    /// Scrolls the list until the element exists and can actually be tapped.
-    @MainActor
-    private func reveal(_ element: XCUIElement, in app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
-        var attempts = 0
-        while !(element.exists && element.isHittable) && attempts < 30 {
-            app.swipeUp(velocity: .slow)
-            attempts += 1
-        }
-        XCTAssertTrue(element.isHittable, "Could not reach \(element)", file: file, line: line)
-    }
-
-    @MainActor
-    private func dismissConfirmation(in app: XCUIApplication) {
-        // Never taps Call. Prefer an explicit Cancel (the action-sheet presentation);
-        // otherwise use the popover's own dismiss region, which is what tapping
-        // outside a popover hits. Tapping the navigation bar does not dismiss it.
-        let cancel = app.buttons["Cancel"]
-        let dismissRegion = app.otherElements["PopoverDismissRegion"]
-        if cancel.exists && cancel.isHittable {
-            cancel.tap()
-        } else if dismissRegion.exists {
-            dismissRegion.tap()
-        } else {
-            app.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.05)).tap()
-        }
-    }
-
     @MainActor
     private func assertConfirms(
         number: String, service: String, in app: XCUIApplication,
         file: StaticString = #filePath, line: UInt = #line
     ) {
         let button = app.buttons["Call \(number)"]
-        reveal(button, in: app, file: file, line: line)
+        app.reveal(button, file: file, line: line)
         button.tap()
 
         // The title names the service that was tapped...
@@ -82,7 +55,7 @@ final class HelpCallTests: XCTestCase {
         XCTAssertTrue(message.exists,
                       "Confirmation for \(service) does not show \(number)", file: file, line: line)
 
-        dismissConfirmation(in: app)
+        app.dismissConfirmation()
         XCTAssertTrue(title.waitForNonExistence(timeout: 3), "Confirmation did not dismiss", file: file, line: line)
     }
 
@@ -95,7 +68,7 @@ final class HelpCallTests: XCTestCase {
     @MainActor
     func testReportingIsShownInTheUK() {
         let app = launchOnHelp(locale: "en_GB")
-        reveal(app.buttons[reportingMarker], in: app)
+        app.reveal(app.buttons[reportingMarker])
     }
 
     @MainActor

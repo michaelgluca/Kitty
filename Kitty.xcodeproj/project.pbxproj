@@ -22,6 +22,8 @@
 		AA00000000000000000069 /* SystemContactPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000059 /* SystemContactPicker.swift */; };
 		AA0000000000000000006A /* UITestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000005A /* UITestSupport.swift */; };
 		AA00000000000000000099 /* HelpCallTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA00000000000000000098 /* HelpCallTests.swift */; };
+		AA0000000000000000009D /* AlertFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000009C /* AlertFlowTests.swift */; };
+		AA0000000000000000009F /* XCUIApplication+Kitty.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000009E /* XCUIApplication+Kitty.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +52,8 @@
 		AA00000000000000000059 /* SystemContactPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemContactPicker.swift; sourceTree = "<group>"; };
 		AA0000000000000000005A /* UITestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestSupport.swift; sourceTree = "<group>"; };
 		AA00000000000000000098 /* HelpCallTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpCallTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000009C /* AlertFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertFlowTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000009E /* XCUIApplication+Kitty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+Kitty.swift"; sourceTree = "<group>"; };
 		AA00000000000000000091 /* KittyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KittyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -125,6 +129,8 @@
 			isa = PBXGroup;
 			children = (
 				AA00000000000000000098 /* HelpCallTests.swift */,
+				AA0000000000000000009C /* AlertFlowTests.swift */,
+				AA0000000000000000009E /* XCUIApplication+Kitty.swift */,
 			);
 			path = UITests;
 			sourceTree = "<group>";
@@ -238,6 +244,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA00000000000000000099 /* HelpCallTests.swift in Sources */,
+				AA0000000000000000009D /* AlertFlowTests.swift in Sources */,
+				AA0000000000000000009F /* XCUIApplication+Kitty.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

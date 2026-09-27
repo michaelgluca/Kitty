@@ -45,6 +45,19 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - The call confirmation shows the exact number that will be dialled.
 - UI tests for the call confirmation and for the UK-only reporting rule.
 
+- Trusted contacts, chosen with the system picker (no Contacts permission), kept in the Keychain on
+  this device only, removable after confirmation and reorderable. 999 and every other emergency or
+  service short code are refused as contacts.
+- The one-tap alert: a pre-filled Messages sheet to every trusted contact, with the time, a maps link,
+  plain coordinates and battery level. It never waits more than three seconds for a location, never
+  prompts for permission, never sends a stale location, and says when it could not include one. If
+  the phone cannot text, it says so and offers to call each contact instead.
+- A 999 button, UK only, that always asks first and explains that the iPhone shares its location
+  during the call.
+- Test Mode: every alert, call and text goes to Ofcom's reserved drama numbers. It is announced on
+  every screen that can call or text, and switches itself off when you leave the app.
+- ADR-0012, recording the alert-flow and Test Mode decisions.
+
 ### Fixed
 - Call buttons on the help screen did not place calls: the real dialler had not
   been wired in, so every tap reported that the call could not start.

@@ -19,8 +19,7 @@ struct KittyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
-                .environment(\.services, services)
+            RootView(services: services)
                 .environment(\.regionStance, RegionDetection.current())
         }
     }

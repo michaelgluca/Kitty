@@ -1,3 +1,5 @@
+import SafetyContent
+import SafetyServices
 import SwiftUI
 
 /// The app shell.
@@ -6,47 +8,51 @@ import SwiftUI
 /// with the alert path first rather than buried behind crime reporting. Standard
 /// `TabView` is used deliberately: it picks up Liquid Glass automatically and stays
 /// correct as the system design evolves, which a hand-rolled bar would not.
+///
+/// Owns the three models the tabs share, so the list edited on one tab is the list
+/// the alert uses on another.
 public struct RootView: View {
 
-    public init() {}
+    private let services: Services
+    private let pack: ContentPack?
+
+    @State private var contacts: ContactsModel
+    @State private var alert: AlertModel
+    @State private var testMode = TestModeSession()
+
+    @Environment(\.scenePhase) private var scenePhase
+
+    public init(services: Services = .unavailable, pack: ContentPack? = try? ContentLoader.loadUK()) {
+        self.services = services
+        self.pack = pack
+        // Loaded here, before the first frame, so an alert raised immediately after
+        // launch sees the saved list rather than an empty one.
+        let contacts = ContactsModel(store: services.contacts, picker: services.picker)
+        contacts.load()
+        _contacts = State(initialValue: contacts)
+        _alert = State(initialValue: AlertModel(services: services, strings: Strings.alert))
+    }
 
     public var body: some View {
         TabView {
-            Tab { AlertScreen() } label: {
+            Tab { AlertScreen(emergencyNumber: pack?.emergencyNumber) } label: {
                 Label { Text("tab.alert", bundle: .module) } icon: { Image(systemName: "exclamationmark.bubble.fill") }
             }
-            Tab { HelpScreen() } label: {
+            Tab { HelpScreen(pack: pack) } label: {
                 Label { Text("tab.help", bundle: .module) } icon: { Image(systemName: "lifepreserver.fill") }
             }
             Tab { PlaceholderScreen(titleKey: "tab.nearby") } label: {
                 Label { Text("tab.nearby", bundle: .module) } icon: { Image(systemName: "map.fill") }
             }
-            Tab { PlaceholderScreen(titleKey: "tab.settings") } label: {
+            Tab { SettingsScreen() } label: {
                 Label { Text("tab.settings", bundle: .module) } icon: { Image(systemName: "gearshape.fill") }
             }
         }
-    }
-}
-
-/// The alert screen scaffold. Wiring lands in M3; the layout contract is set now so
-/// the accessibility work is not retrofitted.
-struct AlertScreen: View {
-    var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: Design.Space.loose) {
-                    Spacer(minLength: Design.Space.loose)
-                    // Bottom-weighted: the control sits in thumb reach for one-handed
-                    // use, not at the top of the screen.
-                    PrimaryAlertButton {}
-                    SafetyDisclaimer()
-                }
-                .padding(.horizontal, Design.Space.gutter)
-                .padding(.bottom, Design.Space.loose)
-                .frame(maxWidth: .infinity)
-            }
-            .navigationTitle(Text("tab.alert", bundle: .module))
-        }
+        .environment(\.services, services)
+        .environment(contacts)
+        .environment(alert)
+        .environment(testMode)
+        .onChange(of: scenePhase) { _, phase in testMode.scenePhaseChanged(to: phase) }
     }
 }
 

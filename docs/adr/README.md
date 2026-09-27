@@ -18,3 +18,4 @@ and update the status of the old.
 | [0010](0010-face-id-lock.md) | Whether an app lock ships in v1.0 | Open |
 | [0011](0011-crime-map.md) | Crime map: scope and privacy | Open |
 | [0012](0012-alert-flow-and-test-mode.md) | The alert flow and Test Mode | Accepted |
+| [0013](0013-learn-and-nearby.md) | Learn and Nearby: rights, iPhone features, police stations, refuges | Accepted |

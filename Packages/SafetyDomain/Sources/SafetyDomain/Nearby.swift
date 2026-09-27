@@ -85,12 +85,39 @@ public extension Array where Element == NearbyPlace {
 /// "police station", so a map-service result must pass this before it is shown as
 /// one. Pure and platform-neutral, so it is testable without a device and reusable
 /// by the later Kotlin port.
+///
+/// The reject list is checked first, because the places it catches — "The Old
+/// Police Station" pub, a "Police Station Museum", a telephone box — also read as a
+/// station by name. The accept rules cover all four nations: English and Scottish
+/// wording, Welsh ("Gorsaf Heddlu", or "Gorsaf yr Heddlu"), and the Police Service of
+/// Northern Ireland. A real station that fails them is hidden, and a farther one is
+/// then shown as nearest, so a missing nation's wording is a defect, not a nicety.
 public func readsAsPoliceStation(name: String?) -> Bool {
     guard let name, !name.isEmpty else { return false }
     let lower = name.lowercased()
+    let words = lower.split(whereSeparator: { !$0.isLetter }).map(String.init)
+    // Padded with spaces so a phrase matches only whole words: "old police station"
+    // must not match "Bold Police Station".
+    let spaced = " " + words.joined(separator: " ") + " "
+
+    if words.contains(where: PoliceStationName.rejectedWords.contains) { return false }
+    if PoliceStationName.rejectedPhrases.contains(where: { spaced.contains(" \($0) ") }) { return false }
+
     if lower.contains("police station") { return true }
     if lower.contains("police office") { return true }
     if lower.contains("psni") { return true }
+    if lower.contains("police service of northern ireland") { return true }
     if lower.contains("police") && lower.contains("station") { return true }
+    // Welsh: "gorsaf" alone is any station (a railway station), and "heddlu" alone is
+    // the force (a headquarters or a force name), so both must be present.
+    if words.contains("gorsaf") && words.contains("heddlu") { return true }
     return false
+}
+
+private enum PoliceStationName {
+    /// Whole words that mean the place is not a working station. "Amgueddfa" is
+    /// Welsh for museum.
+    static let rejectedWords: Set<String> = ["museum", "amgueddfa", "former", "closed", "telephone"]
+    /// Whole-word phrases that mean the same.
+    static let rejectedPhrases = ["old police station", "police box", "phone box"]
 }

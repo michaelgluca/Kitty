@@ -16,6 +16,8 @@ import SafetyServices
 /// - `-kitty.stubNearby`: a fixed world for the Nearby UI tests, so they need no
 ///   real location, network or Apple Maps data. Honoured only together with
 ///   `-kitty.uiTest`.
+/// - `-kitty.stubNearbySearchFails`: with `-kitty.stubNearby`, the station search
+///   cannot run, as with no signal, so the failure state can be tested.
 enum UITestSupport {
 
     private static var arguments: [String] { ProcessInfo.processInfo.arguments }
@@ -25,6 +27,8 @@ enum UITestSupport {
     static var withoutContent: Bool { isActive && arguments.contains("-kitty.withoutContent") }
 
     static var stubsNearby: Bool { isActive && arguments.contains("-kitty.stubNearby") }
+
+    private static var stubbedSearchFails: Bool { arguments.contains("-kitty.stubNearbySearchFails") }
 
     static func prepare(_ store: any TrustedContactStoring) {
         guard isActive else { return }
@@ -55,7 +59,7 @@ enum UITestSupport {
             phone: nil
         )
         services.location = FixedLocation(coordinate: here)
-        services.places = FixedPlaces(result: .found([station]))
+        services.places = FixedPlaces(result: stubbedSearchFails ? .failed : .found([station]))
         services.routes = FixedRoute(result: .found(WalkingRoute(distanceMetres: 450, expectedSeconds: 360, path: [here, station.coordinate])))
         services.areas = FixedArea(result: GeocodedArea(countryCode: "GB", names: ["England"]))
         // Without this, a UI test tapping Directions would leave the app and open

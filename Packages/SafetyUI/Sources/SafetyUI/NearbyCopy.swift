@@ -18,6 +18,22 @@ enum NearbyCopy {
         }
     }
 
+    /// Whether the "front counters keep limited hours / 999 in an emergency" note is
+    /// shown. It belongs wherever a station was looked for — found or not — because
+    /// the person with no station, no signal or no fix is the one who most needs the
+    /// 999 line. Permission and progress states carry their own message instead.
+    static func showsCounterNote(in state: NearbyModel.State) -> Bool {
+        switch state {
+        case .found, .noneFound, .searchFailed, .noLocation: true
+        case .idle, .needsPermission, .locationOff, .locationRestricted, .locationApproximate, .locating, .searching: false
+        }
+    }
+
+    /// The note's wording: 999 in the UK, the local emergency number elsewhere.
+    static func counterNote(isUnitedKingdom: Bool) -> String {
+        isUnitedKingdom ? Strings.localized("nearby.police.footer.uk") : Strings.localized("nearby.police.footer.elsewhere")
+    }
+
     /// A road distance in the person's units — miles in the UK.
     static func distance(_ metres: Double, locale: Locale = .autoupdatingCurrent) -> String {
         Measurement(value: metres, unit: UnitLength.meters)

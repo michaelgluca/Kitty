@@ -107,6 +107,9 @@ struct NearbyScreen: View {
                 action
             }
             .padding(.vertical, 2)
+            if NearbyCopy.showsCounterNote(in: model.state) {
+                PoliceCounterNote(isUnitedKingdom: region.isUnitedKingdom)
+            }
         }
     }
 
@@ -169,17 +172,19 @@ private struct StationMap: View {
 }
 
 /// Front counters keep limited hours, and 999 is the number in an emergency (UK).
-/// Kept as its own row, directly after the nearest station, rather than a section
-/// footer — see `stationContent`.
+/// Kept as its own row — directly after the nearest station, or directly after the
+/// message when none is shown — rather than a section footer: see `stationContent`
+/// and `NearbyCopy.showsCounterNote(in:)`.
 private struct PoliceCounterNote: View {
     let isUnitedKingdom: Bool
 
     var body: some View {
-        Text(isUnitedKingdom ? "nearby.police.footer.uk" : "nearby.police.footer.elsewhere", bundle: .module)
+        Text(NearbyCopy.counterNote(isUnitedKingdom: isUnitedKingdom))
             .font(.footnote)
             .foregroundStyle(.secondary)
             .fixedSize(horizontal: false, vertical: true)
             .padding(.vertical, 2)
+            .accessibilityIdentifier("nearby.counterNote")
     }
 }
 

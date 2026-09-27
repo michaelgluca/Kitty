@@ -41,6 +41,7 @@ struct TestModeBanner: View {
             } label: {
                 Text("testMode.banner.turnOff", bundle: .module)
                     .font(.body.weight(.semibold))
+                    .foregroundStyle(.white)
                     .frame(minHeight: Design.minimumTapTarget)
             }
             .buttonStyle(.borderedProminent)

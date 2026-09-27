@@ -53,7 +53,8 @@ struct TimeoutTests {
         #expect(result == nil)
     }
 
-    @Test("Gives up on time even when the operation ignores cancellation")
+    // A regression here would hang rather than fail, so it is given a time limit.
+    @Test("Gives up on time even when the operation ignores cancellation", .timeLimit(.minutes(1)))
     func abandonsAHungOperation() async {
         let gate = Gate()
         let clock = ContinuousClock()

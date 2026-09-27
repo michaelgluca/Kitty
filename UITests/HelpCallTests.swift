@@ -22,8 +22,10 @@ final class HelpCallTests: XCTestCase {
     private func launchOnHelp(locale: String = "en_GB") -> XCUIApplication {
         continueAfterFailure = false
         let app = XCUIApplication()
-        // Pin the region rather than depend on the simulator's locale.
-        app.launchArguments += ["-AppleLocale", locale, "-AppleLanguages", "(en)"]
+        // Pin the region rather than depend on the simulator's locale. `-kitty.uiTest`
+        // gives the app its own trusted-contacts Keychain item, so these tests never
+        // read a developer's real list.
+        app.launchArguments += ["-AppleLocale", locale, "-AppleLanguages", "(en)", "-kitty.uiTest"]
         app.launch()
         app.tabBars.buttons["Get help"].tap()
         return app

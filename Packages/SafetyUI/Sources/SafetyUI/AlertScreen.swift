@@ -135,6 +135,12 @@ struct AlertScreen: View {
                     // would not detect — see `raise(scrollProxy:)`.
                     if case .locating = phase {
                         scrollToStatus(proxy)
+                        // The wait for a location can take up to three seconds. A
+                        // VoiceOver user hears that it has started, not silence until
+                        // Messages opens.
+                        if let progress = AlertCopy.progress(phase) {
+                            AccessibilityNotification.Announcement(progress).post()
+                        }
                     }
                 }
             }

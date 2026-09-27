@@ -22,6 +22,8 @@ jobs:
     # Must be xcode-27: the packages declare swift-tools-version 6.4, and macos-26
     # ships Swift 6.3.3, which refuses to resolve them outright.
     runs-on: xcode-27
+    # A hang fails the job here, not after GitHub's six-hour default.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
 
@@ -56,6 +58,8 @@ jobs:
     # stability guarantee. The Toolchain step prints what is actually installed, so
     # a future break is diagnosable from the log rather than a mystery.
     runs-on: xcode-27
+    # A hang fails the job here, not after GitHub's six-hour default.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
 
@@ -83,6 +87,8 @@ jobs:
     # in the UK; Test Mode is announced, routes to drama numbers and switches off
     # when the app is left; and removing a contact is confirmed and remembered.
     runs-on: xcode-27
+    # A hang fails the job here, not after GitHub's six-hour default.
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
 

@@ -21,12 +21,19 @@ struct LocationStatusRow: View {
 
             switch LocationCopy.action(for: authorization) {
             case .allow?:
-                Button(Strings.localized("alert.location.allow"), action: onAllow)
-                    .buttonStyle(.bordered)
-                    .accessibilityIdentifier("alert.location.allow")
+                Button(action: onAllow) {
+                    Text(Strings.localized("alert.location.allow"))
+                        .frame(minHeight: Design.minimumTapTarget)
+                }
+                .buttonStyle(.bordered)
+                .accessibilityIdentifier("alert.location.allow")
             case .openSettings?:
-                Button(Strings.localized("alert.location.openSettings"), action: onOpenSettings)
-                    .buttonStyle(.bordered)
+                Button(action: onOpenSettings) {
+                    Text(Strings.localized("alert.location.openSettings"))
+                        .frame(minHeight: Design.minimumTapTarget)
+                }
+                .buttonStyle(.bordered)
+                .accessibilityIdentifier("alert.location.openSettings")
             case nil:
                 EmptyView()
             }

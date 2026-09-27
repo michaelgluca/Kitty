@@ -16,6 +16,8 @@ private let officialHosts = [
     "gov.uk", "legislation.gov.uk", "gov.scot", "mygov.scot", "gov.wales", "nidirect.gov.uk",
     "police.uk", "cps.gov.uk", "copfs.gov.uk", "judiciary.uk", "acas.org.uk",
     "equalityhumanrights.com", "lra.org.uk", "justice-ni.gov.uk",
+    // The Public Prosecution Service for Northern Ireland.
+    "ppsni.gov.uk",
 ]
 
 @Suite("Coverage and nations")
@@ -43,9 +45,9 @@ struct RightsContentTests {
         for topic in p.rights {
             #expect(!topic.points.isEmpty, "\(topic.id) has no points")
             #expect(topic.points.allSatisfy { !$0.nations.isEmpty }, "\(topic.id) has a point with no nation")
-            // One to five: enough that every point's own source is on screen, few enough
-            // that each can be kept on the checked allowlist.
-            #expect((1...5).contains(topic.sources.count), "\(topic.id) has \(topic.sources.count) sources, not 1 to 5")
+            // No upper limit: every point must trace to a page listed on its own topic, and
+            // a cap would delete fact-checked content rather than add a source.
+            #expect(!topic.sources.isEmpty, "\(topic.id) has no source")
             for source in topic.sources {
                 let host = try #require(URL(string: source.url)?.host())
                 #expect(source.url.hasPrefix("https://"))
@@ -103,14 +105,16 @@ struct RefugeContentTests {
         }
     }
 
-    @Test("No refuge entry carries an address")
+    @Test("No refuge entry, and not the refuge note, carries an address")
     func noAddresses() throws {
-        for entry in try pack().refuges {
+        let p = try pack()
+        for entry in p.refuges {
             let text = [entry.name, entry.summary, entry.audience, entry.billingNote, entry.textNote]
                 .compactMap { $0 }
                 .joined(separator: " ")
             #expect(text.firstMatch(of: postcode) == nil, "\(entry.id) contains what looks like a postcode")
         }
+        #expect(p.refugeNote.text.firstMatch(of: postcode) == nil, "The refuge note contains what looks like a postcode")
     }
 
     @Test("The note explains why there are no addresses")

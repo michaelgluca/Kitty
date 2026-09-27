@@ -596,16 +596,9 @@
             "wales",
             "scotland"
           ]
-        },
-        {
-          "text": "If the police tell you they have nothing to share, it does not mean the person is safe.",
-          "nations": [
-            "england",
-            "wales"
-          ]
         }
       ],
-      "whatYouCanDo": "Apply online, phone the police on 101, or go to a police station. If you are in danger now, call 999.",
+      "whatYouCanDo": "Apply online, phone the police on 101, or go to a police station. If the police tell you they have nothing to share, it does not mean the person is safe. If you are in danger now, call 999.",
       "nationDifferences": "The schemes have different names: Clare's Law in England and Wales, DSDAS in Scotland and DVADS in Northern Ireland. If you apply about someone else, the information usually goes to the person at risk. In England and Wales you may simply be told there is no information to disclose to you, even if the person at risk was told something.",
       "sources": [
         {
@@ -632,7 +625,7 @@
       "summary": "A court can order an abuser to stop harming or threatening you, or to stay away from your home. In England and Wales, the police can also give an abuser a notice banning them from your home.",
       "points": [
         {
-          "text": "You can apply for a non-molestation order, or an occupation order that decides who can live in the family home. There's no fee to apply, and the person can be arrested if they break the order.",
+          "text": "You can apply for a non-molestation order, or an occupation order that decides who can live in the family home. There's no fee to apply, and breaking a non-molestation order is a crime.",
           "nations": [
             "england",
             "wales"
@@ -646,7 +639,7 @@
           ]
         },
         {
-          "text": "A domestic abuse protection order protects you from all forms of domestic abuse. You can only apply for one if the abuser lives in Greater Manchester, Croydon, Bromley, Sutton, Hartlepool, Middlesbrough, Redcar, Cleveland, Stockton-on-Tees or North Wales.",
+          "text": "Domestic abuse protection orders are being piloted. You can only apply for one if the abuser lives in Greater Manchester, Croydon, Bromley, Sutton, Hartlepool, Middlesbrough, Redcar and Cleveland, Stockton-on-Tees or North Wales. Applying is free. The pilot is due to end on 24 November 2026.",
           "nations": [
             "england",
             "wales"
@@ -665,12 +658,32 @@
           ]
         }
       ],
-      "whatYouCanDo": "Talk to a solicitor or a domestic abuse charity. In England and Wales, check if you can get legal aid to help pay for legal advice.",
+      "whatYouCanDo": "Talk to a solicitor or a domestic abuse charity. In England and Wales, if you apply for legal aid for a protection order, the usual upper income and savings limits are waived, though you may have to pay a contribution.",
       "nationDifferences": "Police notices and domestic abuse protection orders are for England and Wales only.",
       "sources": [
         {
           "title": "Get an injunction if you've been the victim of domestic abuse: Overview - GOV.UK",
           "url": "https://www.gov.uk/injunction-domestic-violence"
+        },
+        {
+          "title": "Family Law Act 1996",
+          "url": "https://www.legislation.gov.uk/ukpga/1996/27/section/42A"
+        },
+        {
+          "title": "Apply for a domestic abuse protection order in a family court - GOV.UK",
+          "url": "https://www.gov.uk/guidance/apply-for-a-domestic-abuse-protection-order-in-a-family-court"
+        },
+        {
+          "title": "The Domestic Abuse Act 2021 (Commencement No. 6, 8 and 9 and Saving Provisions) (Amendment) Regulations 2026",
+          "url": "https://www.legislation.gov.uk/uksi/2026/342/made"
+        },
+        {
+          "title": "The Domestic Abuse Act 2021 (Commencement No. 8 and Saving Provisions) Regulations 2025",
+          "url": "https://www.legislation.gov.uk/uksi/2025/319/made"
+        },
+        {
+          "title": "Civil legal aid: means testing - GOV.UK",
+          "url": "https://www.gov.uk/guidance/civil-legal-aid-means-testing"
         },
         {
           "title": "Crime and Security Act 2010",
@@ -693,7 +706,7 @@
     {
       "id": "housing-help",
       "title": "Housing help if you leave",
-      "summary": "If abuse means you can't stay at home, you can get help with housing. Ask your council, or the Housing Executive in Northern Ireland. In England and Wales, being homeless because of domestic abuse gives you \"priority need\".",
+      "summary": "If abuse means you can't stay at home, you can get help with housing. Ask your council, or the Housing Executive in Northern Ireland. In England and Wales, being homeless because of domestic abuse gives you \"priority need\", if you are eligible for help.",
       "points": [
         {
           "text": "If you are homeless because of domestic abuse, you are automatically in \"priority need\". If you are eligible for help, the council must find you somewhere to stay while it looks into your case, and it may then have to house you. It cannot pass your case to a council in an area where you would be at risk of abuse.",
@@ -754,13 +767,14 @@
     {
       "id": "sexual-violence",
       "title": "Sexual violence and consent",
-      "summary": "Sex or sexual touching without your consent is a crime. You can get help from a sexual assault referral centre without going to the police first. You can report rape at any time, even years later.",
+      "summary": "Sex or sexual touching without your consent is a crime. You can get help from a sexual assault referral centre without going to the police first. You can report rape or sexual assault at any time, even years later.",
       "points": [
         {
           "text": "In law, you consent only if you agree by choice and have the freedom and capacity to make that choice.",
           "nations": [
             "england",
-            "wales"
+            "wales",
+            "northernIreland"
           ]
         },
         {
@@ -768,19 +782,21 @@
           "nations": [
             "england",
             "wales",
-            "scotland"
+            "scotland",
+            "northernIreland"
           ]
         },
         {
-          "text": "There is no time limit for reporting rape to the police.",
+          "text": "There is no time limit for reporting rape or sexual assault to the police.",
           "nations": [
             "england",
             "wales",
-            "scotland"
+            "scotland",
+            "northernIreland"
           ]
         },
         {
-          "text": "If you report rape, nothing that identifies you may be published in your lifetime.",
+          "text": "If you report a sexual offence, nothing that identifies you may be published in your lifetime.",
           "nations": [
             "england",
             "wales",
@@ -805,6 +821,10 @@
           "url": "https://www.cps.gov.uk/how-cps-charges-and-prosecutes-rape-cases"
         },
         {
+          "title": "What you need to know first - Rape and Serious Sexual Assault | The Crown Prosecution Service",
+          "url": "https://www.cps.gov.uk/rasso-guide/what-you-need-know-first-0"
+        },
+        {
           "title": "Code of Practice for Victims of Crime in England and Wales (Victims' Code) - GOV.UK",
           "url": "https://www.gov.uk/government/publications/the-code-of-practice-for-victims-of-crime/code-of-practice-for-victims-of-crime-in-england-and-wales-victims-code"
         },
@@ -819,6 +839,18 @@
         {
           "title": "Getting help after sexual violence | nidirect",
           "url": "https://www.nidirect.gov.uk/articles/getting-help-after-sexual-violence"
+        },
+        {
+          "title": "The Sexual Offences (Northern Ireland) Order 2008",
+          "url": "https://www.legislation.gov.uk/nisi/2008/1769/article/3"
+        },
+        {
+          "title": "The Magistrates' Courts (Northern Ireland) Order 1981",
+          "url": "https://www.legislation.gov.uk/nisi/1981/1675/article/19"
+        },
+        {
+          "title": "Policy for Prosecuting Sexual Offences - Public Prosecution Service for Northern Ireland (PDF)",
+          "url": "https://www.ppsni.gov.uk/files/ppsni/2023-11/PPS%20Policy%20for%20Prosecuting%20Sexual%20Offences.pdf"
         }
       ]
     },
@@ -917,6 +949,15 @@
           ]
         },
         {
+          "text": "Sending someone an unwanted sexual image, such as a photo of genitals (\"cyberflashing\"), is a crime.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        },
+        {
           "text": "Since 29 June 2026, online platforms must have systems to remove an intimate image shared without consent as soon as they can, and within 48 hours at most, after the person shown (or someone acting for them) reports it. A platform can refuse if it decides the image is not covered.",
           "nations": [
             "england",
@@ -926,8 +967,8 @@
           ]
         }
       ],
-      "whatYouCanDo": "Keep evidence (screenshots, links, usernames), then report it to the platform and the police as soon as you can.",
-      "nationDifferences": "In England and Wales, the basic offence of sharing needs no intent to cause distress. In Scotland it is a crime if the person meant to cause fear, alarm or distress, or was reckless about it. In Northern Ireland it is a crime if they meant to cause distress.",
+      "whatYouCanDo": "Keep evidence (screenshots, links, usernames), then report it to the platform and the police as soon as you can: in England and Wales, some of these charges have time limits.",
+      "nationDifferences": "In England and Wales, the basic sharing offence must be charged within 6 months, and making a deepfake within 3 years; the more serious sharing offences and threats have no 6-month limit. The basic offence there needs no intent to cause distress. In Scotland it is a crime if the person meant to cause fear, alarm or distress, or was reckless about it. In Northern Ireland it is a crime if they meant to cause distress.",
       "sources": [
         {
           "title": "Sexual Offences Act 2003",
@@ -936,6 +977,26 @@
         {
           "title": "Sexual Offences Act 2003",
           "url": "https://www.legislation.gov.uk/ukpga/2003/42/section/66E"
+        },
+        {
+          "title": "Sexual Offences Act 2003",
+          "url": "https://www.legislation.gov.uk/ukpga/2003/42/section/66H"
+        },
+        {
+          "title": "Magistrates’ Courts Act 1980",
+          "url": "https://www.legislation.gov.uk/ukpga/1980/43/section/127"
+        },
+        {
+          "title": "Sexual Offences Act 2003",
+          "url": "https://www.legislation.gov.uk/ukpga/2003/42/section/66A"
+        },
+        {
+          "title": "Sexual Offences (Scotland) Act 2009",
+          "url": "https://www.legislation.gov.uk/asp/2009/9/section/6"
+        },
+        {
+          "title": "The Sexual Offences (Northern Ireland) Order 2008",
+          "url": "https://www.legislation.gov.uk/nisi/2008/1769/article/72A"
         },
         {
           "title": "Online Safety Act 2023",
@@ -996,7 +1057,7 @@
           ]
         }
       ],
-      "whatYouCanDo": "Raise it with your employer, in writing if you can, and keep notes and evidence. Get advice from Acas (England, Scotland, Wales) or the Labour Relations Agency (Northern Ireland).",
+      "whatYouCanDo": "Raise it with your employer, in writing if you can, and keep notes and evidence. Get advice from Acas (England, Scotland, Wales) or the Labour Relations Agency (Northern Ireland: 03300 555 300).",
       "nationDifferences": "In Northern Ireland, claims go to an Industrial Tribunal, and sacking a woman because she is pregnant is sex discrimination.",
       "sources": [
         {
@@ -1018,6 +1079,10 @@
         {
           "title": "Sex discrimination and equal pay | nidirect",
           "url": "https://www.nidirect.gov.uk/articles/sex-discrimination-and-equal-pay"
+        },
+        {
+          "title": "Labour Relations Agency - Official | Improving employment relations in Northern Ireland",
+          "url": "https://www.lra.org.uk/"
         }
       ]
     },
@@ -1091,7 +1156,7 @@
       "summary": "Nobody can force you to marry. Forced marriage and female genital mutilation (FGM) are crimes across the UK. Courts can make orders to protect you, and the Forced Marriage Unit can help, including if you are abroad.",
       "points": [
         {
-          "text": "Forcing someone to marry is a crime.",
+          "text": "Forcing someone to marry is a crime, and that includes religious ceremonies that are not legally binding.",
           "nations": [
             "england",
             "wales",
@@ -1123,15 +1188,16 @@
           ]
         },
         {
-          "text": "You can apply to a court for an FGM protection order to keep you or someone you know safe.",
+          "text": "You can apply to a court for an FGM protection order to keep you or someone you know safe. In England and Wales it is free, and you don't have to reveal your identity.",
           "nations": [
             "england",
-            "wales"
+            "wales",
+            "northernIreland"
           ]
         }
       ],
       "whatYouCanDo": "If you are in danger, call 999. The Forced Marriage Unit: 020 7008 0151 (Monday to Friday, 9am to 5pm), 020 7008 5000 out of hours, or fmu@fcdo.gov.uk. NSPCC FGM helpline: 0800 028 3550.",
-      "nationDifferences": "In Scotland, people under 16 cannot consent to marriage, and courts can also make forced marriage protection orders.",
+      "nationDifferences": "In Scotland, people under 16 cannot consent to marriage, and courts can also make forced marriage protection orders. In Northern Ireland, you apply for an FGM protection order to the High Court or a county court.",
       "sources": [
         {
           "title": "Forced marriage - GOV.UK",
@@ -1140,6 +1206,14 @@
         {
           "title": "Forced marriage - Police Scotland",
           "url": "https://www.scotland.police.uk/advice/forced-marriage/"
+        },
+        {
+          "title": "Anti-social Behaviour, Crime and Policing Act 2014",
+          "url": "https://www.legislation.gov.uk/ukpga/2014/12/section/121"
+        },
+        {
+          "title": "Anti-social Behaviour, Crime and Policing Act 2014",
+          "url": "https://www.legislation.gov.uk/ukpga/2014/12/section/122"
         },
         {
           "title": "Human Trafficking and Exploitation (Criminal Justice and Support for Victims) Act (Northern Ireland) 2015",
@@ -1152,6 +1226,18 @@
         {
           "title": "Female Genital Mutilation Act 2003",
           "url": "https://www.legislation.gov.uk/ukpga/2003/31/section/6"
+        },
+        {
+          "title": "Prohibition of Female Genital Mutilation (Scotland) Act 2005",
+          "url": "https://www.legislation.gov.uk/asp/2005/8/section/6"
+        },
+        {
+          "title": "Get a female genital mutilation protection order - GOV.UK",
+          "url": "https://www.gov.uk/female-genital-mutilation-protection-order"
+        },
+        {
+          "title": "Female genital mutilation | nidirect",
+          "url": "https://www.nidirect.gov.uk/articles/female-genital-mutilation"
         }
       ]
     },
@@ -1193,6 +1279,10 @@
         {
           "title": "Cracking down on sex-based harassment in public - GOV.UK",
           "url": "https://www.gov.uk/government/news/cracking-down-on-sex-based-harassment-in-public"
+        },
+        {
+          "title": "The Protection from Sex-based Harassment in Public Act 2023 (Commencement) Regulations 2026",
+          "url": "https://www.legislation.gov.uk/uksi/2026/344/made"
         },
         {
           "title": "Criminal Justice and Licensing (Scotland) Act 2010",

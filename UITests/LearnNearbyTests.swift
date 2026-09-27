@@ -105,6 +105,21 @@ final class LearnNearbyTests: XCTestCase {
         XCTAssertTrue(app.buttons["nearby.directions.test-station"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["nearby.map"].exists)
         XCTAssertTrue(anything(containing: "front counters", in: app).exists)
+        XCTAssertTrue(app.staticTexts["nearby.counterNote"].label.contains("999"))
+    }
+
+    /// Review Focus 4: the 999 line must be on screen when no station is shown, not
+    /// only beside one — the person with no signal is the one who most needs it.
+    @MainActor
+    func testFailedSearchStillSaysFrontCountersAreLimitedAndToCall999() {
+        let app = launch(["-kitty.stubNearby", "-kitty.stubNearbySearchFails"])
+        app.tabBars.buttons["Nearby"].tap()
+        XCTAssertTrue(app.buttons["nearby.retry"].waitForExistence(timeout: 5), "A failed search offers a retry")
+        XCTAssertTrue(anything(containing: "could not search", in: app).exists, "The failure says what happened")
+        XCTAssertFalse(app.descendants(matching: .any)["nearby.map"].exists, "No map without a result")
+        let note = app.staticTexts["nearby.counterNote"]
+        XCTAssertTrue(note.exists, "The front-counter note must show when no station is found")
+        XCTAssertTrue(note.label.contains("999"), "In the UK the note names 999")
     }
 
     @MainActor

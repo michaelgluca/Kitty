@@ -24,3 +24,10 @@ struct SystemTextOpener: TextOpening {
         return await UIApplication.shared.open(url)
     }
 }
+
+struct SystemSettingsOpener: SettingsOpening {
+    @MainActor func openAppSettings() async -> Bool {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return false }
+        return await UIApplication.shared.open(url)
+    }
+}

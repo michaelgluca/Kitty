@@ -173,11 +173,50 @@ public struct SafetyGuide: Codable, Sendable, Identifiable, Equatable {
     public let id: String
     public let title: String
     public let summary: String
+    /// Numbered setup steps, as the Settings paths appear on iOS 26 and later.
+    public let steps: [String]
+    /// How to use it when it is needed, where that differs from setting it up.
+    public let howToUse: String?
     /// A trade-off the user must understand before switching the feature on. Medical
     /// ID's "Show When Locked", for instance, lets anyone holding the phone read the
     /// named emergency contacts without the passcode.
     public let caution: String?
+    /// Models, iOS version and UK availability.
+    public let requirements: String?
     public let url: String
+}
+
+/// A page the person can read for themselves: the government's or the legislation's own.
+public struct ContentSource: Codable, Sendable, Equatable {
+    /// The page's own name, shown as the link text.
+    public let title: String
+    public let url: String
+}
+
+/// One fact about the law, and where it is true.
+public struct RightsPoint: Codable, Sendable, Equatable {
+    public let text: String
+    /// Never empty (checked at load). The law differs by nation, so a point that names
+    /// none would be a claim about nowhere in particular.
+    public let nations: [Nation]
+}
+
+/// A right, explained in plain English. General information, not legal advice.
+public struct RightsTopic: Codable, Sendable, Identifiable, Equatable {
+    public let id: String
+    public let title: String
+    public let summary: String
+    public let points: [RightsPoint]
+    public let whatYouCanDo: String
+    /// How the nations differ, where they do.
+    public let nationDifferences: String?
+    public let sources: [ContentSource]
+}
+
+/// Why the refuges list shows services and never addresses.
+public struct RefugeNote: Codable, Sendable, Equatable {
+    public let text: String
+    public let source: ContentSource
 }
 
 public struct ContentPack: Codable, Sendable, Equatable {
@@ -196,6 +235,11 @@ public struct ContentPack: Codable, Sendable, Equatable {
     /// bypassed by accident.
     let reporting: [SupportService]
     public let guides: [SafetyGuide]
+    public let rights: [RightsTopic]
+    /// The services that place women in refuge, per nation — never refuge addresses,
+    /// which are confidential (ADR-0013). Read through `refuges(for:)`.
+    public let refuges: [SupportService]
+    public let refugeNote: RefugeNote
 }
 
 public extension ContentPack {
@@ -209,5 +253,11 @@ public extension ContentPack {
     /// entirely rather than shown with a caveat.
     func reporting(for region: RegionStance) -> [SupportService] {
         region.isUnitedKingdom ? reporting : []
+    }
+
+    /// The refuge routes for people in `nation`. A route with no coverage is never
+    /// returned; validation rejects one at load.
+    func refuges(for nation: Nation) -> [SupportService] {
+        refuges.filter { $0.coverage?.includes(nation) == true }
     }
 }

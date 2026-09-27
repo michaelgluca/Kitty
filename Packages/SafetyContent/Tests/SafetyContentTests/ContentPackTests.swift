@@ -26,7 +26,7 @@ struct ContentStructureTests {
     @Test("Loads, and is the current version")
     func loads() throws {
         let p = try pack()
-        #expect(p.version == 4)
+        #expect(p.version == 5)
         #expect(!p.services.isEmpty && !p.emergencyRoutes.isEmpty && !p.guides.isEmpty)
     }
 
@@ -74,7 +74,8 @@ struct PhoneNumberContentTests {
 
     @Test("Every phone number is dialable")
     func allDialable() throws {
-        for s in try pack().services {
+        let p = try pack()
+        for s in p.services + p.refuges {
             guard let phone = s.phone else { continue }
             #expect(PhoneNumber(phone) != nil, "\(s.id) has an undialable number: \(phone)")
         }
@@ -87,7 +88,8 @@ struct PhoneNumberContentTests {
         // cannot speak — the exact failure that route exists to prevent. Emergency
         // numbers belong in emergencyRoutes, which have no dialable field at all.
         let forbidden: Set = ["999", "112", "18000", "18001", "61016"]
-        for s in try pack().services {
+        let p = try pack()
+        for s in p.services + p.refuges {
             guard let phone = s.phone, let dialable = PhoneNumber(phone)?.dialable else { continue }
             #expect(!forbidden.contains(dialable), "\(s.id) carries emergency short code \(dialable)")
         }
@@ -96,7 +98,8 @@ struct PhoneNumberContentTests {
     @Test("Numbers are shown in readable groups, not as an unbroken string of digits")
     func readable() throws {
         // "08085002222" is hard to read under stress and easy to misdial by hand.
-        for s in try pack().services {
+        let p = try pack()
+        for s in p.services + p.refuges {
             guard let phone = s.phone, phone.count > 7 else { continue }
             #expect(phone.contains(" "), "\(s.id) number is not grouped: \(phone)")
         }
@@ -232,7 +235,7 @@ struct SafetyGuideTests {
 
     @Test("Medical ID warns that Show When Locked exposes emergency contacts")
     func medicalID() throws {
-        let caution = try #require(try guide("medical-id").caution).lowercased()
+        let caution = try #require(try guide("emergency-contacts-and-medical-id").caution).lowercased()
         #expect(caution.contains("show when locked"))
         #expect(caution.contains("without your passcode"))
     }
@@ -257,9 +260,12 @@ struct LinkTests {
     @Test("Every link and source is https and parses")
     func urlsAreSound() throws {
         let p = try pack()
-        let urls = (p.services + p.reporting(for: .unitedKingdom)).flatMap { [$0.url, $0.source] }
-            + p.emergencyRoutes.compactMap(\.learnMoreURL)
-            + p.guides.map(\.url)
+        // Built in steps: as one expression it is too much for the type checker.
+        var urls: [String] = (p.services + p.reporting(for: .unitedKingdom) + p.refuges).flatMap { [$0.url, $0.source] }
+        urls += p.emergencyRoutes.compactMap(\.learnMoreURL)
+        urls += p.guides.map(\.url)
+        urls += p.rights.flatMap { $0.sources.map(\.url) }
+        urls.append(p.refugeNote.source.url)
         for url in urls {
             #expect(url.hasPrefix("https://"), "Not https: \(url)")
             #expect(URL(string: url) != nil, "Unparseable: \(url)")

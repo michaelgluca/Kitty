@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "reviewedOn": "2026-09-27",
   "emergencyNumber": "999",
   "emergencyRoutes": [
@@ -338,37 +338,1044 @@
     {
       "id": "emergency-sos",
       "title": "Emergency SOS",
-      "summary": "Press and hold the side button and either volume button until the countdown ends to call emergency services. Pressing the side button five times only works if you turn on 'Call with 5 Presses' in Settings first.",
-      "caution": null,
+      "summary": "Calls the emergency services from your iPhone, even when it is locked. Pressing the side button five times only works if you turn on Call with 5 Presses first. Afterwards, it can text your emergency contacts your location.",
+      "steps": [
+        "Settings > Emergency SOS: turn on Call with Hold and Release, Call with 5 Presses, or both.",
+        "Health app > tap your picture > Medical ID > Edit: add people you trust under Emergency Contacts."
+      ],
+      "howToUse": "Hold the side button and either volume button until the sliders appear and the countdown ends. Or, if you have turned on Call with 5 Presses, press the side button five times quickly. When the call ends, your emergency contacts get a text with your current location (if available), then updates for a while, unless you cancel. The text needs mobile service, and your contacts are not told if Messages is not your chosen messaging app (Settings > Apps > Default Apps > Messaging) or has been deleted.",
+      "caution": "By default, your iPhone plays a warning sound and counts down before it calls, and someone near you may hear it. After an emergency call, Do Not Disturb, Silence Unknown Callers and Screen Time may stop silencing calls for a while, so your phone may ring out loud if someone calls back. If SOS starts by accident, don't hang up: wait for the operator and explain that you don't need help. Bringing up the sliders also turns Face ID off until you next enter your passcode, which stops someone forcing you to unlock with your face, but keep holding and the SOS countdown starts. Only add emergency contacts you trust: they can be sent your location after any SOS call.",
+      "requirements": "Any iPhone. In the UK it calls 999 or 112.",
       "url": "https://support.apple.com/en-gb/guide/iphone/iph3c99374c/ios"
     },
     {
-      "id": "emergency-contacts",
-      "title": "Emergency contacts",
-      "summary": "People you add as emergency contacts are told when you use Emergency SOS, and are sent your location.",
-      "caution": "Only add people you trust. They will be alerted whenever you use Emergency SOS.",
-      "url": "https://support.apple.com/en-gb/guide/personal-safety/ips4f0cd709b/web"
-    },
-    {
-      "id": "medical-id",
-      "title": "Medical ID",
-      "summary": "Lets emergency responders see your medical details and who to contact, from the Lock Screen, without your passcode.",
-      "caution": "If you turn on 'Show When Locked', anyone holding your phone can read your Medical ID and see your emergency contacts without your passcode.",
-      "url": "https://support.apple.com/en-gb/105072"
+      "id": "emergency-contacts-and-medical-id",
+      "title": "Medical ID and emergency contacts",
+      "summary": "Stores your medical details and who to contact, so first responders can see them from your Lock Screen. The people you add as emergency contacts are the ones Emergency SOS can text with your location.",
+      "steps": [
+        "Health app > tap your picture > Medical ID > Get Started or Edit: fill in your details.",
+        "Under Emergency Contacts, tap Add Emergency Contact, choose the person, then add their relationship to you.",
+        "Scroll down and decide whether to turn on Show When Locked (read the caution first). The switch called Emergency Call or Share During Emergency Call has no effect in the UK."
+      ],
+      "howToUse": "If Show When Locked is on, someone can see your Medical ID by tapping Emergency on your Lock Screen passcode pad. Apple's automatic sharing during an emergency call is not available in the UK, so don't expect the 999 call handler to see it.",
+      "caution": "If you turn on Show When Locked, anyone holding your phone can read your medical details and see who your emergency contacts are, without your passcode. Don't turn it on if you're worried about someone who can get hold of your phone. Only add emergency contacts you trust: everyone listed can be sent your location after any Emergency SOS call. To remove someone quickly, Safety Check's Emergency Reset includes reviewing your emergency contacts.",
+      "requirements": "The Health app, on any iPhone.",
+      "url": "https://support.apple.com/en-gb/guide/iphone/iph08022b192/ios"
     },
     {
       "id": "check-in",
       "title": "Check In",
-      "summary": "Tells someone you trust when you get home or when a timer ends, and alerts them with your details if you don't respond. It does what this app cannot: it can alert them without you doing anything. You both need iOS 17 or later.",
-      "caution": "If your phone is lost while Check In is running, your contact is alerted as if you had not responded.",
+      "summary": "Lets someone you trust know when you arrive, or when a timer ends. If you don't respond, they are automatically sent the details you chose to share. You both need an iPhone with iOS 17 or later.",
+      "steps": [
+        "Messages > open a conversation with the person > tap + > More > Check In > Edit.",
+        "Choose When I arrive or After a timer, set the details, then send.",
+        "To change how much it shares: Settings > Apps > Messages > Check In Data, then choose Limited or Full."
+      ],
+      "howToUse": "Your contact is alerted if you don't reach your destination, if you are significantly delayed and don't respond to the prompt to add time (you have 15 minutes), if the timer ends and you don't respond, or if you make an Emergency SOS call and don't respond to the follow-up prompt. They get a link showing what you chose to share: Limited (your location, battery and signal) or Full (also the route you've travelled and when you last unlocked your iPhone or took off your Apple Watch).",
+      "caution": "With a journey Check In, your contact learns your destination and roughly when you'll arrive as soon as you start. While it runs, your Lock Screen shows that a Check In is running. If your phone is lost, your contact is alerted as if you had not responded. If you lose signal or your iPhone switches off, they may be alerted late or early, so don't make Check In your only safeguard. Your contact needs an iPhone: someone with an Android phone can't receive it.",
+      "requirements": "iOS 17 or later, on your iPhone and on the other person's iPhone.",
       "url": "https://support.apple.com/en-gb/guide/personal-safety/ips56b5bc469/web"
+    },
+    {
+      "id": "emergency-sos-via-satellite",
+      "title": "Emergency SOS via satellite",
+      "summary": "Lets you text the emergency services when you have no mobile signal and no Wi-Fi, as long as you are outside with a clear view of the sky and the horizon.",
+      "steps": [
+        "Update to the latest iOS, and set up your Medical ID and emergency contacts before you go somewhere with no signal.",
+        "Optional: go outside, then Settings > Emergency SOS > Try Demo, to practise. The demo does not call anyone."
+      ],
+      "howToUse": "Try calling 999 first. If the call can't connect, tap Emergency Text via Satellite and answer the questions on screen. Hold your iPhone naturally in your hand (you don't need to raise it) and follow the prompts to turn or move.",
+      "caution": "It only works when you have no mobile signal and no Wi-Fi, so it won't help somewhere with signal where you can't speak. Trees with light foliage can slow the connection; dense foliage, hills, canyons and tall structures can block it. A message may take 30 seconds to send, and over a minute under trees. Your location is shared with Apple and its relay providers. Telling your emergency contacts is optional. This is not the same as the UK's text-to-999 service.",
+      "requirements": "iPhone 14 or later. In the UK it needs iOS 16.2 or later. Apple says it is free for two years after your iPhone is activated.",
+      "url": "https://support.apple.com/en-gb/101573"
+    },
+    {
+      "id": "crash-detection",
+      "title": "Crash Detection",
+      "summary": "If your iPhone detects a severe car crash and you don't respond, it calls the emergency services and texts your emergency contacts that you've been in a crash, with your location.",
+      "steps": [
+        "It is on by default. Check that Settings > Emergency SOS > Call After Severe Crash is turned on.",
+        "To share your location with your emergency contacts: Settings > Privacy & Security > Location Services > System Services > turn on Emergency Calls & SOS."
+      ],
+      "howToUse": "After a severe crash, your iPhone shows an alert and counts down. Respond to the alert to cancel, or let the countdown finish and it calls the emergency services and plays them a recorded message. If a call is placed and you're fine, don't hang up: tell the operator you don't need help.",
+      "caution": "During the countdown your phone makes loud whoops, vibrates and flashes lights. The recorded message also plays out loud on your own phone, repeating every 5 seconds, so anyone near you will hear it. It shares your estimated latitude and longitude, with a search radius, even if Location Services is off. Your emergency contacts are not told if Messages is not your chosen messaging app or has been deleted. It cancels any other call you're on. Crash Detection cannot detect all car crashes.",
+      "requirements": "iPhone 14 or later with iOS 16 or later. Older iPhones don't have it, even when updated.",
+      "url": "https://support.apple.com/en-gb/104959"
+    },
+    {
+      "id": "share-my-location",
+      "title": "Share My Location in Find My",
+      "summary": "Lets you share your live location with people you trust, and lets you check who you are sharing your location with in Find My.",
+      "steps": [
+        "Find My > Me: turn on Share My Location. Location Services must be on.",
+        "To share with someone: Find My > People > + > Share My Location, add the person, send, then choose how long.",
+        "Check Find My > Me > Notifications About You, in case someone has set up alerts for when your location changes."
+      ],
+      "howToUse": "To check who can see you, open Find My > People and tap each name to see whether you are sharing with them. People also lists people who share with you, and Family Sharing members appear there automatically. To stop, tap their name > Stop Sharing My Location, or turn off Share My Location under Me.",
+      "caution": "When you stop sharing, the other person may notice, and on older software they may get a notification in Messages, so this is not a silent way to cut someone off. People you share with see you in Find My, Messages, Maps and Contacts, and may see which direction and how fast you're travelling. Anyone who knows your Apple Account password can see your devices in Find My > Devices: check that list and remove any device you don't recognise. Find My can locate your iPhone for up to 24 hours after it is turned off. You can turn off iPhone Findable After Power Off on the power-off screen, but then you can't find a lost phone. If someone uses Precision Finding to find you, you get a notification. Find My can't be turned off while Stolen Device Protection is on.",
+      "requirements": "Any iPhone signed in to your Apple Account, with Location Services on for Find My.",
+      "url": "https://support.apple.com/en-gb/guide/personal-safety/ips05ede4573/web"
+    },
+    {
+      "id": "notification-previews",
+      "title": "Show Previews",
+      "summary": "Controls whether the text of a message or email, or the details of a calendar invitation, appear on your Lock Screen, where anyone glancing at your phone could read them.",
+      "steps": [
+        "Settings > Notifications > Show Previews.",
+        "Choose Always, When Unlocked or Never.",
+        "To change one app only: Settings > Notifications > [the app]."
+      ],
+      "howToUse": "Set it to Never if you don't want message and email text or calendar invitation details on a Lock Screen someone else might see.",
+      "caution": "The notification itself still appears on the Lock Screen; only the preview is hidden. To keep an app off the Lock Screen completely, go to Settings > Notifications > [the app] and, under Alerts, turn off Lock Screen. Not all apps support previews, so check the ones that matter to you. Notifications show while you share your screen unless you turn them off at Settings > Notifications > Screen Sharing.",
+      "requirements": "Any iPhone.",
+      "url": "https://support.apple.com/en-gb/guide/iphone/iph7c3d96bab/ios"
+    },
+    {
+      "id": "lock-and-hide-apps",
+      "title": "Lock or hide an app",
+      "summary": "Makes an app need Face ID, Touch ID or your passcode to open, and can move it off your Home Screen into a hidden folder.",
+      "steps": [
+        "Touch and hold the app on the Home Screen until the quick actions menu opens.",
+        "Tap Require Face ID. Then tap Require Face ID again to lock the app, or tap Hide and Require Face ID, authenticate, and tap Hide App to lock and hide it."
+      ],
+      "howToUse": "To open a hidden app, swipe to App Library, tap the Hidden folder, then use Face ID, Touch ID or your passcode. A locked app's content is kept out of notification previews, search, Siri suggestions and call history.",
+      "caution": "This does not fully conceal an app. The Hidden folder still shows in App Library, and hidden app names can appear in Settings > Apps > Hidden Apps, in Screen Time, in Battery > Battery Health & Charging, and in your App Store purchase history. Calculator, Camera, Clock, Contacts, Find My, Maps, Shortcuts and Settings can't be locked. Your ordinary passcode opens a locked app, so someone who knows it can still get in, unless Stolen Device Protection is on and you're away from a familiar location. In Family Sharing, a parent or guardian can see that a 13 to 17-year-old downloaded an app and how long they use it.",
+      "requirements": "Only apps you download from the App Store can be hidden; built-in apps, and the app you use as your default browser, can't be. Locking and hiding are set on each device and don't sync through iCloud.",
+      "url": "https://support.apple.com/en-gb/guide/personal-safety/ipsd0be4c185/web"
+    },
+    {
+      "id": "stolen-device-protection",
+      "title": "Stolen Device Protection",
+      "summary": "Adds a Face ID or Touch ID check, with no passcode fallback, for sensitive actions when your iPhone is away from places it knows, such as home or work.",
+      "steps": [
+        "Settings > Face ID & Passcode (Touch ID & Passcode on an iPhone with a Home button), enter your passcode > Stolen Device Protection: turn it on.",
+        "For stronger protection: on the same screen, Require Security Delay > Always."
+      ],
+      "howToUse": "Nothing to do day to day. Away from familiar locations, sensitive actions need Face ID or Touch ID with no passcode fallback, and critical changes to your account also need a one-hour delay.",
+      "caution": "Home counts as a familiar location, so by default it does not stop someone at home who knows your passcode. Only Require Security Delay set to Always closes that gap. But Always slows you down too: changing your own passcode or Apple Account password always needs a one-hour wait, even at home, which delays locking out someone who has learned your passcode. The check accepts any face or fingerprint set up on the phone, so if someone may have added their own Face ID appearance, reset Face ID first. Turning it on needs Significant Locations, Apple's location history. While it is on, Find My can't be turned off, so your devices stay findable by anyone with your Apple Account password. Changing your Apple Account password on the iPhone can briefly hide your devices' location on iCloud.com.",
+      "requirements": "iOS 17.3 or later, with two-factor authentication, a passcode, Face ID or Touch ID, Significant Locations and Find My all turned on.",
+      "url": "https://support.apple.com/en-gb/120340"
+    },
+    {
+      "id": "sensitive-content-warning",
+      "title": "Sensitive Content Warning",
+      "summary": "Blurs photos and videos that may contain nudity before you see them, in Messages, AirDrop, FaceTime, shared photo albums and Contact Posters, and offers ways to get help or block the sender.",
+      "steps": [
+        "Settings > Privacy & Security > Sensitive Content Warning: turn it on.",
+        "On the same screen, check which apps it covers."
+      ],
+      "howToUse": "When a blurred image arrives with a warning, you can choose to view it, get safety resources or block the sender. If it came in an iMessage or a FaceTime video call, you can report the sender to Apple: the content is then sent to Apple, which may pass it to the police.",
+      "caution": "Detection happens on your iPhone and is approximate, so some images may not be caught. The warning itself creates no record with Apple. It only blurs images already sent to you; it doesn't stop someone sending them. It also warns you before you send such images, and turning it on turns it on for a paired Apple Watch too.",
+      "requirements": "iOS 17 or later. For adults it is off until you turn it on.",
+      "url": "https://support.apple.com/en-gb/105071"
+    },
+    {
+      "id": "unwanted-tracker-alerts",
+      "title": "Unwanted tracking notifications",
+      "summary": "Warns you if an AirTag, AirPods, another Find My accessory or a compatible Bluetooth tracker that isn't yours seems to be moving with you over time.",
+      "steps": [
+        "Settings > Privacy & Security > Location Services: turn it on, then System Services > Find My iPhone: on.",
+        "Settings > Bluetooth: on. Make sure Airplane Mode is off.",
+        "Settings > Notifications > Tracking Notifications: turn on Allow Notifications."
+      ],
+      "howToUse": "If you get an alert, tap it, then tap Play Sound, or Find Nearby to use Precision Finding. You can find it again later in Find My > Items > Items Detected With You (your iPhone may call it Unknown Items Detected with You). Check places you rarely look, such as a jacket pocket, the outer compartment of a bag, or your car.",
+      "caution": "Before you change anything, including disabling the item, think about how that could affect your safety. Disabling it stops its owner getting its location, which the owner may notice, and stops your alerts for it. First take a screenshot of the item and owner details, and keep the item: the police may need it and its serial number. Holding your iPhone near the item shows the last four digits of the owner's phone number. Turning off Bluetooth, Location Services or Find My on your own iPhone does not stop the owner tracking the item. If you can't find it and feel unsafe, go to a safe public place and contact the police. Alerts are not guaranteed: an item that was with you overnight may not be flagged.",
+      "requirements": "iOS 14.5 or later for AirTags and Find My accessories; iOS 17.5 or later for other Bluetooth trackers that follow the cross-platform standard.",
+      "url": "https://support.apple.com/en-gb/guide/personal-safety/ips139b15fd9/web"
     },
     {
       "id": "safety-check",
       "title": "Safety Check",
-      "summary": "If you think someone may be watching what your phone shares, Safety Check lets you review and stop sharing with people and apps, or reset all sharing at once. It has a Quick Exit button. Settings › Privacy & Security › Safety Check.",
-      "caution": null,
+      "summary": "A screen in Settings to see which people and apps can access your information, and to stop sharing with them one by one or all at once if you feel unsafe. It has a Quick Exit button.",
+      "steps": [
+        "Make sure you are signed in to your Apple Account on the iPhone, with two-factor authentication on.",
+        "Settings > Privacy & Security > Safety Check.",
+        "Choose Emergency Reset to stop all sharing at once, or Manage Sharing & Access to review person by person."
+      ],
+      "howToUse": "Tap Emergency Reset, then Start Emergency Reset, and follow the prompts to stop sharing with every person and app Safety Check covers, review your devices and emergency contacts, and change your passcode and Apple Account password. Tap Quick Exit at any time to close Settings straight away; changes you made before that are kept.",
+      "caution": "Apple says to think about the impact on your safety and privacy before you make changes. Changes to sharing or access may be noticed by others, so plan for the other person finding out. Cutting off sharing can also cut you off from tools and information you rely on. Safety Check can't reach non-Apple accounts, social media, or devices signed in to a different Apple Account. If someone else controls Screen Time on your iPhone, or it has a management profile, some options may not be available. If you start sharing again later, some apps or services send a notification about it.",
+      "requirements": "iOS 16 or later. It works differently if Stolen Device Protection is also on.",
       "url": "https://support.apple.com/en-gb/guide/personal-safety/ips2aad835e1/web"
     }
-  ]
+  ],
+  "rights": [
+    {
+      "id": "what-counts-as-domestic-abuse",
+      "title": "What counts as domestic abuse",
+      "summary": "Domestic abuse is not only hitting. It includes controlling you, cutting you off from people, threats, sexual abuse and controlling your money. Much of it is a crime, and the law still protects you after you split up.",
+      "points": [
+        {
+          "text": "The legal definition covers physical, sexual, emotional and economic abuse, and controlling or coercive behaviour, by a partner, ex-partner or relative. Both of you must be 16 or over.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "Controlling or coercive behaviour is a crime, including by an ex-partner or relative. It can lead to up to 5 years in prison.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "Scotland has its own crime of abusing a partner or ex-partner. It covers controlling, isolating, monitoring, frightening or humiliating you, not just violence.",
+          "nations": [
+            "scotland"
+          ]
+        },
+        {
+          "text": "Northern Ireland has a domestic abuse offence covering partners, ex-partners and close family members. It needs abusive behaviour on two or more occasions.",
+          "nations": [
+            "northernIreland"
+          ]
+        },
+        {
+          "text": "Economic or financial abuse counts as domestic abuse. That includes controlling your money, holding money back or stopping you from working.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        }
+      ],
+      "whatYouCanDo": "If you are in danger now, call 999. Otherwise you can report it to the police on 101, or talk in confidence to the domestic abuse helpline for your nation.",
+      "nationDifferences": "Scotland's offence covers only partners and ex-partners; abuse by other relatives is dealt with under other laws there. The offences in England and Wales and in Northern Ireland also cover family members. Scotland and Northern Ireland both need behaviour on at least two occasions. In England and Wales, the abuser must repeatedly or continuously behave in a controlling or coercive way that has a serious effect on you.",
+      "sources": [
+        {
+          "title": "Domestic Abuse Act 2021",
+          "url": "https://www.legislation.gov.uk/ukpga/2021/17/section/1"
+        },
+        {
+          "title": "Domestic Abuse (Scotland) Act 2018",
+          "url": "https://www.legislation.gov.uk/asp/2018/5/section/2"
+        },
+        {
+          "title": "Domestic Abuse and Civil Proceedings Act (Northern Ireland) 2021",
+          "url": "https://www.legislation.gov.uk/nia/2021/2/section/2"
+        }
+      ]
+    },
+    {
+      "id": "ask-about-a-partner",
+      "title": "Ask police about a partner",
+      "summary": "You can ask the police whether your partner, an ex-partner or a new partner has a history of abuse. A friend or relative can ask for you. The police decide what to share and who to tell, and you will be asked to agree to keep it confidential.",
+      "points": [
+        {
+          "text": "In England and Wales this is the Domestic Violence Disclosure Scheme, also called \"Clare's Law\". You can ask about a new, current or former partner. Police should finish a check within 28 days, unless there are good reasons it takes longer.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "In Scotland it is the Disclosure Scheme for Domestic Abuse Scotland. If you ask about someone else's partner, police tell the person at risk, not you.",
+          "nations": [
+            "scotland"
+          ]
+        },
+        {
+          "text": "In Northern Ireland the scheme is called DVADS. You must be 16 or over to apply, and it covers partners and ex-partners.",
+          "nations": [
+            "northernIreland"
+          ]
+        },
+        {
+          "text": "Police can also warn someone at risk without being asked. This is called the \"right to know\" in England and Wales, and \"Power to Tell\" in Scotland and Northern Ireland.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        },
+        {
+          "text": "If the police tell you nothing, it does not mean the person is safe.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        }
+      ],
+      "whatYouCanDo": "Apply online, phone the police on 101, or go to a police station. A domestic abuse support worker can help you apply. If you are in danger now, call 999.",
+      "nationDifferences": "The schemes have different names: Clare's Law in England and Wales, DSDAS in Scotland and DVADS in Northern Ireland. If you apply about someone else, the information usually goes to the person at risk. In England and Wales you may simply be told there is no information to disclose to you, even if the person at risk was told something.",
+      "sources": [
+        {
+          "title": "Domestic Violence Disclosure Scheme (accessible) - GOV.UK",
+          "url": "https://www.gov.uk/government/publications/domestic-violence-disclosure-scheme-pilot-guidance/domestic-violence-disclosure-scheme-accessible"
+        },
+        {
+          "title": "Check someone's history of domestic abuse - Police Scotland",
+          "url": "https://www.scotland.police.uk/advice/domestic-abuse/disclosure-scheme-for-domestic-abuse-scotland/"
+        },
+        {
+          "title": "Checking for a person's history of abuse | nidirect",
+          "url": "https://www.nidirect.gov.uk/articles/checking-persons-history-abuse"
+        }
+      ]
+    },
+    {
+      "id": "protection-orders",
+      "title": "Court orders to keep you safe",
+      "summary": "A court can order an abuser to stop contacting or harming you, or to stay away from your home. In some places the police can also act fast to keep an abuser away for a short time.",
+      "points": [
+        {
+          "text": "You can apply for a non-molestation order, or an occupation order that decides who lives in the home. There's no court fee, and breaking a non-molestation order is a crime.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "If police believe someone aged 18 or over has been violent or threatened violence towards you, a senior officer can give them a notice that can ban them from your home. The police then ask a magistrates' court for an order, which lasts 14 to 28 days.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "Domestic Abuse Protection Orders are a pilot, only where the abuser lives in Greater Manchester, Croydon, Bromley, Sutton, the Cleveland area or North Wales. Applying is free.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "You can ask a court for an interdict, an exclusion order or a non-harassment order. Breaking a non-harassment order, or a domestic abuse interdict with a power of arrest attached, is a crime.",
+          "nations": [
+            "scotland"
+          ]
+        },
+        {
+          "text": "There is no court fee for a non-molestation or occupation order, but you may have to pay to have the papers served. Legal aid may help. Breaking a non-molestation order is a crime.",
+          "nations": [
+            "northernIreland"
+          ]
+        }
+      ],
+      "whatYouCanDo": "Talk to a solicitor or a domestic abuse charity. In England and Wales, if you apply for a protection order, the usual upper income and savings limits for legal aid are waived, though you may have to pay a contribution. For other family cases, you usually need evidence of abuse and must show you cannot afford a lawyer.",
+      "nationDifferences": "Police notices and Domestic Abuse Protection Orders apply only in England and Wales. In the pilot areas, police may use a domestic abuse protection notice instead; the pilot is currently set to run until 24 November 2026. Everywhere else in England and Wales, police use Domestic Violence Protection Notices and Orders. Scotland has passed its own protection notice and order law, but that part is not in force yet. In Scotland you usually need a solicitor, and legal aid can help.",
+      "sources": [
+        {
+          "title": "Get an injunction if you've been the victim of domestic abuse: Overview - GOV.UK",
+          "url": "https://www.gov.uk/injunction-domestic-violence"
+        },
+        {
+          "title": "Domestic abuse interdict - mygov.scot",
+          "url": "https://www.mygov.scot/legal-protection-against-abuse-and-harassment/domestic-abuse-interdict"
+        },
+        {
+          "title": "Applying for a Non Molestation / Occupation Order | Department of Justice",
+          "url": "https://www.justice-ni.gov.uk/articles/applying-non-molestation-occupation-order"
+        }
+      ]
+    },
+    {
+      "id": "housing-help",
+      "title": "Housing help if you leave",
+      "summary": "If abuse means you can't stay at home, you can get help with housing. Ask your council, or the Housing Executive in Northern Ireland. In England and Wales, being made homeless by domestic abuse gives you priority, if you are eligible for help.",
+      "points": [
+        {
+          "text": "If you are homeless because of domestic abuse, you are automatically in \"priority need\". If you are eligible for help, the council must find you somewhere to stay while it looks into your case, and it may then have to house you. It cannot pass your case to a council in an area where you would be at risk of abuse.",
+          "nations": [
+            "england"
+          ]
+        },
+        {
+          "text": "If you have no recourse to public funds, you are not usually eligible for this help. Get advice from a domestic abuse service first, and ask about the Destitute Domestic Violence Concession.",
+          "nations": [
+            "england"
+          ]
+        },
+        {
+          "text": "If you are homeless because of domestic abuse, Welsh housing law also puts you in priority need.",
+          "nations": [
+            "wales"
+          ]
+        },
+        {
+          "text": "Your council has a legal duty to help you if you're homeless, and there is no \"priority need\" test. You count as homeless if staying at home would probably lead to abuse.",
+          "nations": [
+            "scotland"
+          ]
+        },
+        {
+          "text": "Go to the Housing Executive, not the council. It will assess your needs and may give you temporary accommodation while it finds you a permanent home.",
+          "nations": [
+            "northernIreland"
+          ]
+        }
+      ],
+      "whatYouCanDo": "Contact your council's homelessness team. In Northern Ireland, contact the Housing Executive on 03448 920 900, or 03448 920 908 out of hours. A support worker can help you make contact safely.",
+      "nationDifferences": "Scotland abolished the priority need test at the end of 2012. Wales has passed a law that will abolish priority need, but that part is not in force yet. In Northern Ireland, people with dependent children are in priority need anyway; for others, the rule refers to being \"subject to violence\".",
+      "sources": [
+        {
+          "title": "Homelessness code of guidance for local authorities - Chapter 21: Domestic abuse - Guidance - GOV.UK",
+          "url": "https://www.gov.uk/guidance/homelessness-code-of-guidance-for-local-authorities/chapter-21-domestic-abuse"
+        },
+        {
+          "title": "If you're homeless or have nowhere safe to stay - mygov.scot",
+          "url": "https://www.mygov.scot/if-youre-homeless"
+        },
+        {
+          "title": "Domestic Abuse Support - Northern Ireland Housing Executive",
+          "url": "https://www.nihe.gov.uk/DomesticAbuseSupport"
+        }
+      ]
+    },
+    {
+      "id": "sexual-violence",
+      "title": "Sexual violence and consent",
+      "summary": "Sex or sexual touching without your consent is a crime. You can get medical care and a forensic exam without going to the police first. You can report rape or sexual assault at any time, even years later.",
+      "points": [
+        {
+          "text": "In law, you consent only if you agree by choice and have the freedom and capacity to make that choice.",
+          "nations": [
+            "england",
+            "wales",
+            "northernIreland"
+          ]
+        },
+        {
+          "text": "You can change your mind at any time, even during sex. Agreeing to one thing, or agreeing before, does not mean you agree to everything.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        },
+        {
+          "text": "There is no time limit for reporting rape or sexual assault to the police.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        },
+        {
+          "text": "If you report a sexual offence, the law protects your identity for life. Nobody may publish your name or anything that identifies you.",
+          "nations": [
+            "england",
+            "wales",
+            "northernIreland"
+          ]
+        },
+        {
+          "text": "You can have a forensic medical exam at a Sexual Assault Referral Centre without reporting to the police first. Evidence can be stored while you decide.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        }
+      ],
+      "whatYouCanDo": "If you are in danger, call 999. Contact a Sexual Assault Referral Centre for care and a forensic exam, even if you haven't decided about the police. Go as soon as you can.",
+      "nationDifferences": "In Scotland, consent means \"free agreement\", and the law says you cannot consent while asleep or unconscious. Scotland has passed a law giving automatic lifelong anonymity, but it is not in force yet. In Northern Ireland, anonymity lasts for life and 25 years after death, and suspects who are not charged also get anonymity. In Scotland you can refer yourself for a forensic exam if you are 16 or over, and evidence is kept for 26 months. In Wales, Ynys Saff in Cardiff keeps self-referral samples for 2 years; other Welsh centres don't publish a storage period, so ask. In Northern Ireland, adult evidence is stored until you decide.",
+      "sources": [
+        {
+          "title": "How the CPS charges and prosecutes rape cases | The Crown Prosecution Service",
+          "url": "https://www.cps.gov.uk/how-cps-charges-and-prosecutes-rape-cases"
+        },
+        {
+          "title": "Rape and sexual crime - Police Scotland",
+          "url": "https://www.scotland.police.uk/advice/rape-and-sexual-crime/"
+        },
+        {
+          "title": "Getting help after sexual violence | nidirect",
+          "url": "https://www.nidirect.gov.uk/articles/getting-help-after-sexual-violence"
+        }
+      ]
+    },
+    {
+      "id": "stalking-and-harassment",
+      "title": "Stalking and harassment",
+      "summary": "Stalking is a pattern of unwanted behaviour that makes you scared or distressed. It can mean following you, contacting you again and again, or watching you online. It is a crime everywhere in the UK, and courts can order a stalker to stay away.",
+      "points": [
+        {
+          "text": "Stalking is a crime. It can include following you, repeatedly contacting you, watching or spying on you, or monitoring your phone, email or internet use.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        },
+        {
+          "text": "Police can ask a court for a Stalking Protection Order to stop the stalker's behaviour, even before any criminal case. A fixed-term order lasts at least 2 years.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "Report early. The less serious charges must be brought within 6 months of the last incident. The more serious charges, where you feared violence or it seriously affected your daily life, have no time limit.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "If someone is convicted of stalking you on or after 1 September 2026, the court must make a non-harassment order to protect you, unless it decides you don't need one.",
+          "nations": [
+            "scotland"
+          ]
+        },
+        {
+          "text": "Police can apply for a Stalking Protection Order lasting 2 to 5 years. Breaking it can mean up to 5 years in prison.",
+          "nations": [
+            "northernIreland"
+          ]
+        }
+      ],
+      "whatYouCanDo": "Keep a diary and save messages, emails, call logs, letters and gifts as evidence. Don't reply to them or agree to meet. Report it to the police: 999 if you are in danger, otherwise 101.",
+      "nationDifferences": "Each nation has its own stalking law. Scotland has no Stalking Protection Order and uses non-harassment orders instead. In England and Wales, courts can also make restraining orders when someone is convicted or acquitted.",
+      "sources": [
+        {
+          "title": "Stalking or Harassment | The Crown Prosecution Service",
+          "url": "https://www.cps.gov.uk/prosecution-guidance/stalking-or-harassment"
+        },
+        {
+          "title": "Stalking and harassment - Police Scotland",
+          "url": "https://www.scotland.police.uk/advice/stalking-and-harassment/"
+        },
+        {
+          "title": "Stalking Protection Orders | nidirect",
+          "url": "https://www.nidirect.gov.uk/articles/stalking-protection-orders"
+        }
+      ]
+    },
+    {
+      "id": "online-abuse",
+      "title": "Intimate images and online abuse",
+      "summary": "Sharing or threatening to share intimate images of you without consent is a crime. In England and Wales, making a sexual deepfake of you is now a crime too. Online platforms must have systems to remove intimate images you report, within 48 hours at most.",
+      "points": [
+        {
+          "text": "Sharing, or threatening to share, an intimate photo or video of you without your consent is a crime in every UK nation. The exact rules differ.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        },
+        {
+          "text": "A threat to share is a crime even if the photo doesn't exist, or if it is fake.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "Since 6 February 2026, it is a crime to create a sexual deepfake of an adult without consent, or to ask someone to make one.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "Sending someone an unwanted sexual image, such as a photo of genitals (\"cyberflashing\"), is a crime.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        },
+        {
+          "text": "Since 29 June 2026, online platforms must have systems to remove an intimate image shared without consent as soon as they can, and within 48 hours at most, after the person shown (or someone acting for them) reports it. A platform can refuse if it decides the image is not covered.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        }
+      ],
+      "whatYouCanDo": "Keep evidence (screenshots, links, usernames), then report it to the platform and the police as soon as you can: some of these charges have time limits. The Revenge Porn Helpline supports adults in the UK: 0345 6000 459, Monday to Friday, 10am to 4pm.",
+      "nationDifferences": "In England and Wales, the basic sharing offence must be charged within 6 months, and making a deepfake within 3 years; the more serious sharing offences and threats have no 6-month limit. Scotland's law covers sharing images that have been altered, though it is not clear whether a wholly computer-generated image counts, and creating a deepfake is not a crime there. Northern Ireland's law does not cover images that are sexual only because they were edited, and its Department of Justice has said adult deepfakes are not yet covered; its cyberflashing law does cover computer-generated images. Making or supplying \"nudification\" tools is a crime in England and Wales only. In Scotland and Northern Ireland, sharing is a crime only if it is meant to cause distress (in Scotland, also if the person is reckless about that); in England and Wales the basic offence needs no intent.",
+      "sources": [
+        {
+          "title": "Sexual Offences Act 2003",
+          "url": "https://www.legislation.gov.uk/ukpga/2003/42/section/66B"
+        },
+        {
+          "title": "Online Safety Act 2023",
+          "url": "https://www.legislation.gov.uk/ukpga/2023/50/section/10"
+        },
+        {
+          "title": "Abusive Behaviour and Sexual Harm (Scotland) Act 2016",
+          "url": "https://www.legislation.gov.uk/asp/2016/22/section/2"
+        }
+      ]
+    },
+    {
+      "id": "rights-at-work",
+      "title": "Your rights at work",
+      "summary": "The law protects you from being treated worse at work because of your sex, pregnancy or maternity leave. Women and men must get equal pay for equal work. In England, Scotland and Wales, your employer must take reasonable steps to prevent sexual harassment.",
+      "points": [
+        {
+          "text": "Your employer must not treat you worse because of your sex, or because you are pregnant or on maternity leave. Pregnant employees get paid time off for antenatal care.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland"
+          ]
+        },
+        {
+          "text": "Men and women must get equal pay for doing equal work.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        },
+        {
+          "text": "Your employer must take reasonable steps to prevent sexual harassment at work. Since 6 April 2026, reporting sexual harassment can count as protected whistleblowing, if you reasonably believe the report is in the public interest.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland"
+          ]
+        },
+        {
+          "text": "Act fast: for most claims, you must contact Acas within 3 months minus 1 day. This changes to 6 months minus 1 day where your time limit starts on or after 1 October 2026.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland"
+          ]
+        },
+        {
+          "text": "Northern Ireland has its own law against sex discrimination and harassment at work. Tribunal claims usually must be made within 3 months, or 6 months for unequal pay.",
+          "nations": [
+            "northernIreland"
+          ]
+        }
+      ],
+      "whatYouCanDo": "Raise it with your employer, in writing if you can, and keep notes and evidence. Get free advice from Acas (England, Scotland, Wales) or the Labour Relations Agency (Northern Ireland: 03300 555 300).",
+      "nationDifferences": "The Equality Act 2010, the duty to prevent sexual harassment and the whistleblowing change apply in Great Britain only. Northern Ireland has its own sex discrimination and equal pay law; early conciliation there is through the Labour Relations Agency, and claims go to the Industrial Tribunal. Pregnancy discrimination is unlawful in Northern Ireland too.",
+      "sources": [
+        {
+          "title": "What sexual harassment is - Sexual harassment - Acas",
+          "url": "https://www.acas.org.uk/sexual-harassment"
+        },
+        {
+          "title": "Employment tribunal time limits - Acas",
+          "url": "https://www.acas.org.uk/employment-tribunal-time-limits"
+        },
+        {
+          "title": "Sex discrimination and equal pay | nidirect",
+          "url": "https://www.nidirect.gov.uk/articles/sex-discrimination-and-equal-pay"
+        }
+      ]
+    },
+    {
+      "id": "victims-rights",
+      "title": "Your rights as a victim",
+      "summary": "If a crime happens to you, you have rights. They include help to understand and be understood, support, updates on your case and, in many cases, a chance to tell the court how the crime has affected you.",
+      "points": [
+        {
+          "text": "The Victims' Code gives you 12 rights. Some, such as being referred to support services, apply even if you don't report the crime to the police.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "You have the right to an interpreter when reporting, being interviewed or giving evidence, and to be told about important decisions in your case.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "You can make a Victim Personal Statement telling the court how the crime affected you. You can say whether you'd like to read it aloud or have it read for you, but the judge or magistrate decides.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "The Victims' Code for Scotland sets out your rights. You can ask for an interpreter, ask for information, and ask for a decision not to prosecute to be reviewed.",
+          "nations": [
+            "scotland"
+          ]
+        },
+        {
+          "text": "The Victim Charter gives you free interpretation, updates on your case, and a written statement to the court on how the crime affected you. You are not entitled to read it aloud in court.",
+          "nations": [
+            "northernIreland"
+          ]
+        }
+      ],
+      "whatYouCanDo": "Ask the police which rights apply to you, and ask for a copy of the Victims' Code or Victim Charter. If your rights are not met, you can complain to the organisation involved.",
+      "nationDifferences": "In Scotland, you make a victim statement only if the prosecutor invites you, and only in some cases. In Northern Ireland, you make a Victim Personal Statement through Victim Support NI, the NSPCC or a PSNI family liaison officer. In England and Wales, the rights to understand and be understood, to be referred to support, and to complain apply to all victims.",
+      "sources": [
+        {
+          "title": "Code of Practice for Victims of Crime in England and Wales (Victims' Code) - GOV.UK",
+          "url": "https://www.gov.uk/government/publications/the-code-of-practice-for-victims-of-crime/code-of-practice-for-victims-of-crime-in-england-and-wales-victims-code"
+        },
+        {
+          "title": "After a crime: your rights - mygov.scot",
+          "url": "https://www.mygov.scot/victim-witness-rights"
+        },
+        {
+          "title": "Victim Charter | nidirect",
+          "url": "https://www.nidirect.gov.uk/articles/victim-charter"
+        }
+      ]
+    },
+    {
+      "id": "forced-marriage-and-fgm",
+      "title": "Forced marriage and FGM",
+      "summary": "Nobody can force you to marry. Forced marriage and female genital mutilation (FGM) are crimes across the UK. Courts can make orders to protect you, and the Forced Marriage Unit can help, including if you are taken abroad.",
+      "points": [
+        {
+          "text": "Forcing someone to marry is a crime, and that includes religious ceremonies that are not legally binding.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        },
+        {
+          "text": "The minimum age to marry is 18. Doing anything to make a child marry before 18 is a crime, even without force or threats.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "A court can make a Forced Marriage Protection Order, for example to stop you being taken abroad. It is free to apply, and emergency orders are possible.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "FGM is a crime, and so is taking a girl or woman who is a UK national, or who normally lives in the UK, abroad for FGM. The maximum sentence is 14 years in prison.",
+          "nations": [
+            "england",
+            "wales",
+            "scotland",
+            "northernIreland"
+          ]
+        },
+        {
+          "text": "You can apply for an FGM Protection Order to keep you or someone else safe. In England and Wales it is free, and you don't have to reveal your identity.",
+          "nations": [
+            "england",
+            "wales",
+            "northernIreland"
+          ]
+        }
+      ],
+      "whatYouCanDo": "If you are in danger, call 999. The Forced Marriage Unit: 020 7008 0151 (Monday to Friday, 9am to 5pm), 020 7008 5000 out of hours, or fmu@fcdo.gov.uk. NSPCC FGM helpline: 0800 028 3550.",
+      "nationDifferences": "In Scotland you can marry at 16 without your parents' consent. In Northern Ireland you can marry at 16 or 17 with your parents' consent. Forced Marriage Protection Orders also exist in Scotland and Northern Ireland. FGM Protection Orders are not available in Scotland yet: the law has been passed but is not in force. In Northern Ireland, you apply for one to the High Court or a county court.",
+      "sources": [
+        {
+          "title": "Forced marriage - GOV.UK",
+          "url": "https://www.gov.uk/stop-forced-marriage"
+        },
+        {
+          "title": "Get a female genital mutilation protection order - GOV.UK",
+          "url": "https://www.gov.uk/female-genital-mutilation-protection-order"
+        },
+        {
+          "title": "Female genital mutilation | nidirect",
+          "url": "https://www.nidirect.gov.uk/articles/female-genital-mutilation"
+        }
+      ]
+    },
+    {
+      "id": "harassment-in-public",
+      "title": "Harassment in public places",
+      "summary": "Being threatened, harassed or intimidated in public is against the law. In England and Wales, harassing someone because of their sex is now a separate crime with a longer maximum prison sentence.",
+      "points": [
+        {
+          "text": "Since 1 April 2026, it is a separate crime to deliberately harass, alarm or distress someone because of their sex. It can mean up to 2 years in prison.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "The government says it can cover things like obscene comments, threats of sexual violence and threatening invasions of personal space, in streets, parks, public transport, taxis and shops, when they are done on purpose to harass, alarm or distress you because of your sex.",
+          "nations": [
+            "england",
+            "wales"
+          ]
+        },
+        {
+          "text": "Threatening or abusive behaviour likely to make a reasonable person afraid or alarmed is a crime. So are unwanted sexual comments meant to upset you or for sexual thrills.",
+          "nations": [
+            "scotland"
+          ]
+        },
+        {
+          "text": "Threatening or abusive behaviour likely to make a reasonable person afraid or alarmed is a crime, even if it happens once. It can mean up to 5 years in prison.",
+          "nations": [
+            "northernIreland"
+          ]
+        }
+      ],
+      "whatYouCanDo": "If you feel unsafe, go somewhere busy and call 999. Afterwards, write down the time, place and what happened, and report it to the police on 101.",
+      "nationDifferences": "The offence of harassing someone because of their sex applies in England and Wales only. Scotland will add sex to its hate crime law from 5 April 2027, but that is not in force yet. Northern Ireland has no sex-specific harassment offence; its general offence of threatening or abusive behaviour applies.",
+      "sources": [
+        {
+          "title": "Cracking down on sex-based harassment in public - GOV.UK",
+          "url": "https://www.gov.uk/government/news/cracking-down-on-sex-based-harassment-in-public"
+        },
+        {
+          "title": "Criminal Justice and Licensing (Scotland) Act 2010",
+          "url": "https://www.legislation.gov.uk/asp/2010/13/section/38"
+        },
+        {
+          "title": "Protection from Stalking Act (Northern Ireland) 2022",
+          "url": "https://www.legislation.gov.uk/nia/2022/17/section/2"
+        }
+      ]
+    }
+  ],
+  "refuges": [
+    {
+      "id": "refuge-national-domestic-abuse-helpline",
+      "name": "National Domestic Abuse Helpline",
+      "kind": "helpline",
+      "coverage": "england",
+      "audience": null,
+      "summary": "Free, 24 hours a day, every day. Advisers can help you find a refuge vacancy for you and your children, or other specialist services near you. Confidential, in many languages, with BSL video relay on weekdays from 10am to 6pm.",
+      "phone": "0808 2000 247",
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://www.nationaldahelpline.org.uk/",
+      "availability": "allHours",
+      "billingNote": null,
+      "source": "https://www.nationaldahelpline.org.uk/how-we-can-support-you/",
+      "attribution": null
+    },
+    {
+      "id": "refuge-womens-aid-directory",
+      "name": "Women's Aid Directory",
+      "kind": "information",
+      "coverage": "england",
+      "audience": null,
+      "summary": "Search by area for local, regional and national domestic abuse and refuge services, including specialist services for Black and minoritised, d/Deaf and disabled, and LGBT+ survivors, and contact them directly.",
+      "phone": null,
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://womensaid.org.uk/information-support/womens-aid-directory/",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://womensaid.org.uk/information-support/womens-aid-directory/",
+      "attribution": null
+    },
+    {
+      "id": "refuge-england-council",
+      "name": "Your local council",
+      "kind": "information",
+      "coverage": "england",
+      "audience": null,
+      "summary": "If you're homeless because of domestic abuse and eligible for help, you automatically have priority need for accommodation. The council should give you somewhere to stay straight away while it looks into your case, and should not insist on police evidence. You can apply to any council, and it cannot pass your case to one in an area where you would be at risk of abuse. Women with no recourse to public funds are not usually eligible: a local domestic abuse service can apply to Southall Black Sisters' No Recourse Fund for you.",
+      "phone": null,
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://www.gov.uk/guidance/homelessness-code-of-guidance-for-local-authorities/chapter-21-domestic-abuse",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://www.gov.uk/guidance/homelessness-code-of-guidance-for-local-authorities/chapter-21-domestic-abuse",
+      "attribution": null
+    },
+    {
+      "id": "refuge-southall-black-sisters",
+      "name": "Southall Black Sisters",
+      "kind": "helpline",
+      "coverage": "england",
+      "audience": "Casework is for women living in Ealing, Hounslow or Hillingdon. The helpline is open to women elsewhere.",
+      "summary": "Specialist support for Black and minoritised women. Its No Recourse Fund helps migrant women across the UK with no recourse to public funds reach a refuge or safe accommodation; your local domestic abuse service applies for you. The helpline is not open 24 hours, and you may need to leave a voicemail. For an urgent refuge space, it directs you to the National Domestic Abuse Helpline.",
+      "phone": "020 8571 0800",
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://southallblacksisters.org.uk/our-services/domestic-abuse-helpline/",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://southallblacksisters.org.uk/our-services/domestic-abuse-helpline/",
+      "attribution": null
+    },
+    {
+      "id": "refuge-live-fear-free-helpline",
+      "name": "Live Fear Free Helpline",
+      "kind": "helpline",
+      "coverage": "wales",
+      "audience": null,
+      "summary": "24 hours a day, 7 days a week. Advisers can put you in touch with safe emergency accommodation through a national network of refuges, as well as other support.",
+      "phone": "0808 80 10 800",
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://www.gov.wales/live-fear-free/domestic-abuse-wales",
+      "availability": "allHours",
+      "billingNote": null,
+      "source": "https://www.gov.wales/live-fear-free/domestic-abuse-wales",
+      "attribution": null
+    },
+    {
+      "id": "refuge-welsh-womens-aid-local-services",
+      "name": "Find your local service (Welsh Women's Aid)",
+      "kind": "information",
+      "coverage": "wales",
+      "audience": null,
+      "summary": "Lists specialist domestic abuse and sexual violence services by local authority area across Wales. The Welsh Government says you can get a refuge place through the Live Fear Free Helpline or your local group.",
+      "phone": null,
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://welshwomensaid.org.uk/information-support/find-your-local-service/",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://welshwomensaid.org.uk/information-support/find-your-local-service/",
+      "attribution": null
+    },
+    {
+      "id": "refuge-wales-council",
+      "name": "Your local council",
+      "kind": "information",
+      "coverage": "wales",
+      "audience": null,
+      "summary": "If you're homeless because of domestic abuse, Welsh law puts you in priority need. Your council must assess your case, and should give you emergency accommodation while it does.",
+      "phone": null,
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://www.gov.wales/live-fear-free/domestic-abuse-wales",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://www.gov.wales/live-fear-free/domestic-abuse-wales",
+      "attribution": null
+    },
+    {
+      "id": "refuge-bawso",
+      "name": "Bawso",
+      "kind": "helpline",
+      "coverage": "wales",
+      "audience": "Black, minority ethnic and migrant survivors",
+      "summary": "Free, 24 hours a day, 7 days a week. Wales's lead specialist service for survivors from ethnic minorities, offering safe accommodation in refuges and safe houses as well as crisis support. It takes referrals from all over the UK.",
+      "phone": "0800 731 8147",
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://bawso.org.uk/en/",
+      "availability": "allHours",
+      "billingNote": null,
+      "source": "https://bawso.org.uk/en/",
+      "attribution": null
+    },
+    {
+      "id": "refuge-scotland-domestic-abuse-forced-marriage-helpline",
+      "name": "Scotland's Domestic Abuse and Forced Marriage Helpline",
+      "kind": "helpline",
+      "coverage": "scotland",
+      "audience": null,
+      "summary": "24 hours a day, 7 days a week. Managed by Scottish Women's Aid. It can direct you to your local Women's Aid group, Scotland's only refuge providers. To get a refuge place you contact that group, which checks space and suitability. If no refuge is free, the group can help you get temporary accommodation from your council.",
+      "phone": "0800 027 1234",
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://www.sdafmh.org.uk/en/information-support/your-rights-practical-information/refuge/",
+      "availability": "allHours",
+      "billingNote": null,
+      "source": "https://www.sdafmh.org.uk/en/information-support/your-rights-practical-information/refuge/",
+      "attribution": null
+    },
+    {
+      "id": "refuge-scottish-womens-aid-groups",
+      "name": "Find your nearest Women's Aid group",
+      "kind": "information",
+      "coverage": "scotland",
+      "audience": null,
+      "summary": "Search for your local Women's Aid group, with phone numbers and, for most groups, email and office hours, and contact it about a refuge place. Most groups are open on weekdays in office hours only. Out of hours, call the helpline or contact your council.",
+      "phone": null,
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://womensaid.scot/find-nearest-wa-group/",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://womensaid.scot/find-nearest-wa-group/",
+      "attribution": null
+    },
+    {
+      "id": "refuge-scotland-council",
+      "name": "Your local council",
+      "kind": "information",
+      "coverage": "scotland",
+      "audience": null,
+      "summary": "Your local council has a legal duty to help you if you're homeless, and must provide temporary accommodation if you need it. If you leave because of domestic abuse, you might stay with friends or family, in a refuge, or in temporary accommodation the council provides.",
+      "phone": null,
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://www.mygov.scot/if-youre-homeless",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://www.mygov.scot/if-youre-homeless",
+      "attribution": null
+    },
+    {
+      "id": "refuge-dsa-helpline-northern-ireland",
+      "name": "Domestic and Sexual Abuse Helpline",
+      "kind": "helpline",
+      "coverage": "northernIreland",
+      "audience": "Aged 18 and over",
+      "summary": "Free and confidential, 24 hours a day, 365 days a year. Operators talk through your options and can support you to make a referral to refuge or emergency accommodation. Local Women's Aid groups keep office hours, so out of hours this is the way into refuge. Managed and delivered by Nexus.",
+      "phone": "0808 802 1414",
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://dsahelpline.org/get-help/what-to-expect-when-you-contact-us",
+      "availability": "allHours",
+      "billingNote": null,
+      "source": "https://dsahelpline.org/get-help/what-to-expect-when-you-contact-us",
+      "attribution": null
+    },
+    {
+      "id": "refuge-womens-aid-ni-local-groups",
+      "name": "Local Women's Aid groups",
+      "kind": "information",
+      "coverage": "northernIreland",
+      "audience": null,
+      "summary": "There are 12 Women's Aid refuges across Northern Ireland, run by the local groups. Find your local group and contact it directly to ask about a space. Groups are open Monday to Friday, 9am to 5pm; out of hours, call the Domestic and Sexual Abuse Helpline.",
+      "phone": null,
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://www.womensaidni.org/get-help/local-groups/",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://www.womensaidni.org/get-help/local-groups/",
+      "attribution": null
+    },
+    {
+      "id": "refuge-housing-executive-ni",
+      "name": "Northern Ireland Housing Executive",
+      "kind": "information",
+      "coverage": "northernIreland",
+      "audience": null,
+      "summary": "Homelessness help in Northern Ireland comes from the Housing Executive, not the council. It will assess your housing needs, and may give you temporary accommodation while it helps you find a permanent home. Out of hours (5pm to 9am on weekdays, and at weekends and on public holidays), call 03448 920 908.",
+      "phone": "03448 920 900",
+      "textNumber": null,
+      "textNote": null,
+      "url": "https://www.nihe.gov.uk/DomesticAbuseSupport",
+      "availability": "seeWebsite",
+      "billingNote": null,
+      "source": "https://www.nihe.gov.uk/DomesticAbuseSupport",
+      "attribution": null
+    }
+  ],
+  "refugeNote": {
+    "text": "Kitty G never shows where a refuge is. Refuge addresses are kept confidential to keep the women and children living there safe, as Women's Aid in England, Scotland's national helpline and the Welsh Government all say. These are the services that can help you find a place.",
+    "source": {
+      "title": "I want to leave my relationship safely - Women’s Aid",
+      "url": "https://womensaid.org.uk/information-support/the-survivors-handbook/i-want-to-leave-my-relationship-safely/"
+    }
+  }
 }

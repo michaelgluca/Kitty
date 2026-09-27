@@ -1,4 +1,5 @@
 import Foundation
+import SafetyDomain
 
 /// Which part of the UK a service actually covers.
 ///
@@ -135,6 +136,14 @@ public struct SupportService: Codable, Sendable, Identifiable, Equatable {
     /// as a call button: a "Text 999" card carrying 999 here would place a VOICE call
     /// for someone who cannot speak.
     public let phone: String?
+    /// A TEXT destination — British Transport Police's 61016, for example. Kept in a
+    /// separate field from `phone` and rendered as a Text action, never a call, so a
+    /// text-only number can never be dialled as a voice call by mistake.
+    public let textNumber: String?
+    /// What someone must know before texting: cost, whether it shows on a bill, and
+    /// when it fails. BTP warns 61016 may carry a small charge and will not work if
+    /// premium numbers are blocked or the phone has no credit.
+    public let textNote: String?
     public let url: String
     public let availability: Availability
     /// Stated only when the operator itself says so — for example, that a call does
@@ -176,5 +185,25 @@ public struct ContentPack: Codable, Sendable, Equatable {
     public let reviewedOn: String
     public let emergencyRoutes: [EmergencyRoute]
     public let services: [SupportService]
+    /// Official routes for reporting a crime. Every one is a link or a number
+    /// belonging to the police or a charity; the app never collects a report itself.
+    ///
+    /// Read through `reporting(for:)`, never directly, so the UK gate cannot be
+    /// bypassed by accident.
+    let reporting: [SupportService]
     public let guides: [SafetyGuide]
+}
+
+public extension ContentPack {
+
+    /// The crime-reporting routes to show, given where the user appears to be.
+    ///
+    /// Empty outside the UK. App Store Review Guideline 1.7 requires that apps for
+    /// reporting alleged criminal activity "involve local law enforcement, and can
+    /// only be offered in countries or regions where such involvement is present".
+    /// These routes involve only UK police, so outside the UK they are withheld
+    /// entirely rather than shown with a caveat.
+    func reporting(for region: RegionStance) -> [SupportService] {
+        region.isUnitedKingdom ? reporting : []
+    }
 }

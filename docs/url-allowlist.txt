@@ -39,3 +39,14 @@ https://www.relayuk.bt.com/how-to-use-relay-uk/contact-999-using-relay-uk.html |
 https://www.samaritans.org/how-we-can-help/contact-samaritan/ | Samaritans
 https://www.sdafmh.org.uk/en/ | Forced Marriage Helpline
 https://www.victimsupport.org.uk/help-and-support/get-help/supportline/ | Victim Support
+
+# ── Crime reporting ─────────────────────────────────────────────────────────────
+# police.uk and btp.police.uk sit behind Cloudflare and refuse every non-browser
+# client with a 403. These three were verified in a real browser on 2026-09-27:
+# no redirect, title as below, and the key facts present on the page. CI fails if
+# that date is more than 90 days old.
+https://www.gov.uk/report-crime | Report a crime
+https://crimestoppers-uk.org/ | Crimestoppers
+https://www.police.uk/pu/contact-us/ | Contact us | manual 2026-09-27
+https://www.btp.police.uk/police-forces/british-transport-police/areas/campaigns/61016-text-service/ | 61016 | manual 2026-09-27
+https://www.police.uk/pu/notices/streetsafe/street-safe/ | StreetSafe | manual 2026-09-27

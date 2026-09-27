@@ -26,13 +26,15 @@ struct ContentStructureTests {
     @Test("Loads, and is the current version")
     func loads() throws {
         let p = try pack()
-        #expect(p.version == 2)
+        #expect(p.version == 3)
         #expect(!p.services.isEmpty && !p.emergencyRoutes.isEmpty && !p.guides.isEmpty)
     }
 
     @Test("Identifiers are unique within each section")
     func uniqueIDs() throws {
         let p = try pack()
+        let reporting = p.reporting(for: .unitedKingdom)
+        #expect(Set(reporting.map(\.id)).count == reporting.count)
         #expect(Set(p.services.map(\.id)).count == p.services.count)
         #expect(Set(p.emergencyRoutes.map(\.id)).count == p.emergencyRoutes.count)
         #expect(Set(p.guides.map(\.id)).count == p.guides.count)
@@ -248,12 +250,108 @@ struct LinkTests {
     @Test("Every link and source is https and parses")
     func urlsAreSound() throws {
         let p = try pack()
-        let urls = p.services.flatMap { [$0.url, $0.source] }
+        let urls = (p.services + p.reporting(for: .unitedKingdom)).flatMap { [$0.url, $0.source] }
             + p.emergencyRoutes.compactMap(\.learnMoreURL)
             + p.guides.map(\.url)
         for url in urls {
             #expect(url.hasPrefix("https://"), "Not https: \(url)")
             #expect(URL(string: url) != nil, "Unparseable: \(url)")
         }
+    }
+}
+
+@Suite("Content pack: crime reporting")
+struct CrimeReportingTests {
+
+    private func reporting() throws -> [SupportService] { try pack().reporting(for: .unitedKingdom) }
+    private func route(_ id: String) throws -> SupportService {
+        try #require(try reporting().first { $0.id == id }, "No reporting route \(id)")
+    }
+
+    @Test("Reporting routes are withheld entirely outside the UK")
+    func hiddenOutsideUK() throws {
+        // App Store Review Guideline 1.7: apps for reporting alleged criminal activity
+        // "can only be offered in countries or regions where such involvement is
+        // present". These routes involve only UK police, so outside the UK they are
+        // not shown at all — a caveat is not enough.
+        #expect(try pack().reporting(for: .elsewhere(countryCode: "US")).isEmpty)
+        #expect(try pack().reporting(for: .elsewhere(countryCode: nil)).isEmpty)
+    }
+
+    @Test("Reporting routes are shown in the UK")
+    func shownInUK() throws {
+        #expect(!(try reporting()).isEmpty)
+    }
+
+    @Test("Every reporting route is marked as reporting")
+    func kind() throws {
+        for r in try reporting() { #expect(r.kind == .reporting, "\(r.id)") }
+    }
+
+    @Test("British Transport Police covers Great Britain, not the UK")
+    func btpCoverage() throws {
+        // BTP does not police Northern Ireland. Labelling it UK-wide would send someone
+        // in Belfast to a force that cannot help them.
+        #expect(try route("british-transport-police").coverage == .greatBritain)
+    }
+
+    @Test("61016 is a text number, and BTP's voice line is separate")
+    func btpNumbers() throws {
+        // 61016 is text-only. In the `phone` field it would become a call button.
+        let btp = try route("british-transport-police")
+        #expect(PhoneNumber(try #require(btp.textNumber))?.dialable == "61016")
+        #expect(PhoneNumber(try #require(btp.phone))?.dialable == "0800405040")
+        #expect(btp.phone != btp.textNumber)
+    }
+
+    @Test("Every text number carries a note about cost or failure")
+    func textNotes() throws {
+        let p = try pack()
+        for s in p.services + p.reporting(for: .unitedKingdom) where s.textNumber != nil {
+            #expect(s.textNote != nil, "\(s.id) offers a text number with no warning")
+        }
+    }
+
+    @Test("No reporting route carries an emergency number as a call or text")
+    func noEmergencyNumbers() throws {
+        // Reporting is for when nobody is in danger. 999 and 112 belong in the
+        // emergency routes, behind their own guidance.
+        let forbidden: Set = ["999", "112"]
+        for r in try reporting() {
+            for raw in [r.phone, r.textNumber].compactMap({ $0 }) {
+                #expect(!forbidden.contains(PhoneNumber(raw)?.dialable ?? ""), "\(r.id) carries \(raw)")
+            }
+        }
+    }
+
+    @Test("StreetSafe is never presented as a way to report a crime")
+    func streetSafe() throws {
+        // police.uk: "StreetSafe is not for reporting crimes." And because it is
+        // anonymous, nobody can come back to the person who used it.
+        let summary = try route("streetsafe").summary.lowercased()
+        #expect(summary.contains("not for reporting a crime"))
+        #expect(summary.contains("anonymous"))
+    }
+
+    @Test("101 is not claimed to be open at any hour")
+    func oneOhOneHours() throws {
+        // Neither police.uk nor GOV.UK states 101's hours, so the app must not say
+        // "24/7".
+        #expect(try route("police-101").availability != .allHours)
+    }
+
+    @Test("Crimestoppers is open at any hour and is said not to be the police")
+    func crimestoppers() throws {
+        let c = try route("crimestoppers")
+        #expect(c.availability == .allHours)
+        #expect(c.summary.lowercased().contains("not the police"))
+    }
+
+    @Test("Project Guardian is not offered — it is now a schools workshop")
+    func noProjectGuardian() throws {
+        // The 2023 dissertation cited the 2013 policing operation. The name now
+        // belongs to a Year 9 workshop run by the London Transport Museum.
+        let text = String(decoding: try JSONEncoder().encode(try pack()), as: UTF8.self).lowercased()
+        #expect(!text.contains("project guardian"))
     }
 }

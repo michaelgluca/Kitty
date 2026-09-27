@@ -11,6 +11,7 @@ public struct Services: Sendable {
     public var location: any LocationProviding
     public var messages: any MessageComposing
     public var dialler: any Dialling
+    public var texter: any TextOpening
     public var contacts: any TrustedContactStoring
     public var battery: any BatteryReading
     public var time: any TimeSource
@@ -19,6 +20,7 @@ public struct Services: Sendable {
         location: any LocationProviding,
         messages: any MessageComposing,
         dialler: any Dialling,
+        texter: any TextOpening,
         contacts: any TrustedContactStoring,
         battery: any BatteryReading,
         time: any TimeSource
@@ -26,6 +28,7 @@ public struct Services: Sendable {
         self.location = location
         self.messages = messages
         self.dialler = dialler
+        self.texter = texter
         self.contacts = contacts
         self.battery = battery
         self.time = time
@@ -42,6 +45,7 @@ public struct Services: Sendable {
             location: UnavailableLocationProvider(),
             messages: UnavailableMessageComposer(),
             dialler: UnavailableDialler(),
+            texter: UnavailableTextOpener(),
             contacts: EphemeralContactStore(),
             battery: UnknownBattery(),
             time: SystemTimeSource()
@@ -67,6 +71,12 @@ public struct UnavailableDialler: Dialling {
     public init() {}
     @MainActor
     public func dial(_ number: PhoneNumber) async -> Bool { false }
+}
+
+public struct UnavailableTextOpener: TextOpening {
+    public init() {}
+    @MainActor
+    public func openText(to number: PhoneNumber) async -> Bool { false }
 }
 
 public struct UnknownBattery: BatteryReading {

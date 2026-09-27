@@ -27,11 +27,13 @@ struct KittyApp: App {
 }
 
 extension Services {
-    /// The real wiring. CoreLocation and MessageUI implementations land in M3 and
-    /// M4; until then those capabilities report themselves unavailable rather than
+    /// The real wiring. Location and the alert composer land in later milestones;
+    /// until then those capabilities report themselves unavailable rather than
     /// silently doing nothing.
     static func live() -> Services {
         var services = Services.unavailable
+        services.dialler = SystemDialler()
+        services.texter = SystemTextOpener()
         services.contacts = KeychainContactStore(
             service: Bundle.main.bundleIdentifier ?? "uk.co.example.safety"
         )

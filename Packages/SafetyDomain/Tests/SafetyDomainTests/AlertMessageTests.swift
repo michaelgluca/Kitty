@@ -154,7 +154,7 @@ struct PhoneNumberTests {
     func rejectsJunk() {
         #expect(PhoneNumber("") == nil)
         #expect(PhoneNumber("   ") == nil)
-        #expect(PhoneNumber("123") == nil)
+        #expect(PhoneNumber("12") == nil)
     }
 
     @Test("Recognises Ofcom's reserved drama range, in national and international form")

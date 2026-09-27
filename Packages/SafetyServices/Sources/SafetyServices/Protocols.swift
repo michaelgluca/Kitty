@@ -55,6 +55,16 @@ public protocol Dialling: Sendable {
     func dial(_ number: PhoneNumber) async -> Bool
 }
 
+public protocol TextOpening: Sendable {
+    /// Opens Messages to a number, with nothing pre-filled. Returns whether Messages
+    /// actually opened.
+    ///
+    /// A separate capability from `Dialling`, deliberately. A text-only destination
+    /// such as British Transport Police's 61016 must never reach a call path.
+    @MainActor
+    func openText(to number: PhoneNumber) async -> Bool
+}
+
 // MARK: - Storage
 
 public protocol TrustedContactStoring: Sendable {

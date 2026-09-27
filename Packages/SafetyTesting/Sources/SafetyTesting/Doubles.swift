@@ -106,6 +106,22 @@ public final class SpyDialler: Dialling, @unchecked Sendable {
     }
 }
 
+public final class SpyTextOpener: TextOpening, @unchecked Sendable {
+    private let lock = NSLock()
+    private var _opened: [PhoneNumber] = []
+    private let succeeds: Bool
+
+    public init(succeeds: Bool = true) { self.succeeds = succeeds }
+
+    public var opened: [PhoneNumber] { lock.withLock { _opened } }
+
+    @MainActor
+    public func openText(to number: PhoneNumber) async -> Bool {
+        lock.withLock { _opened.append(number) }
+        return succeeds
+    }
+}
+
 public final class InMemoryContactStore: TrustedContactStoring, @unchecked Sendable {
     private let lock = NSLock()
     private var contacts: [TrustedContact]

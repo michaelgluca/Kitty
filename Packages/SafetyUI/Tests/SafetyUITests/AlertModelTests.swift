@@ -200,7 +200,8 @@ struct AlertModelTests {
         #expect(m.phase == .finished(.handedToMessages(includedLocation: false)))
     }
 
-    @Test("A provider that never answers does not hold the alert")
+    // A regression here would hang rather than fail, so it is given a time limit.
+    @Test("A provider that never answers does not hold the alert", .timeLimit(.minutes(1)))
     func hungProvider() async throws {
         let hanging = HangingLocationProvider()
         defer { hanging.release() }
@@ -258,7 +259,7 @@ struct AlertModelTests {
         #expect(m.recipients.map(\.number) == [TestModeNumbers.contact(at: 0), TestModeNumbers.contact(at: 1)])
     }
 
-    @Test("A second tap while the first is still working does nothing")
+    @Test("A second tap while the first is still working does nothing", .timeLimit(.minutes(1)))
     func doubleTap() async throws {
         let hanging = HangingLocationProvider()
         let spy = SpyMessageComposer()
@@ -281,7 +282,7 @@ struct AlertModelTests {
         #expect(m.phase == .idle)
     }
 
-    @Test("The busy guard also holds while a compose sheet is up, not only while locating")
+    @Test("The busy guard also holds while a compose sheet is up, not only while locating", .timeLimit(.minutes(1)))
     func doubleTapWhileComposing() async throws {
         let composer = HangingMessageComposer()
         defer { composer.release() }

@@ -42,6 +42,9 @@ struct ContactsModelTests {
 
         await m.addFromPicker()
         m.move(fromOffsets: IndexSet(integer: 0), toOffset: 0)
+        // With nothing readable, a removal would otherwise save an empty list over
+        // the stored one.
+        m.remove(id: UUID())
         #expect(store.saveCount == 0)
     }
 

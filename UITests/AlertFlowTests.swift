@@ -85,6 +85,11 @@ final class AlertFlowTests: XCTestCase {
     @MainActor
     func testAlertWithNoContactsOpensSetup() {
         let app = launch(["-kitty.resetContacts"])
+        XCTAssertTrue(app.buttons["alert.button"].waitForExistence(timeout: 5))
+        // Only one of these is shown, depending on the simulator's location setting.
+        for id in ["alert.location.allow", "alert.location.openSettings"] where app.buttons[id].exists {
+            XCTAssertGreaterThanOrEqual(app.buttons[id].frame.height, 44, "\(id) must clear the minimum tap target")
+        }
         app.buttons["alert.button"].tap()
         XCTAssertTrue(app.buttons["contacts.add"].waitForExistence(timeout: 5),
                       "With no contacts, the alert must open setup rather than fail")
@@ -138,6 +143,11 @@ final class AlertFlowTests: XCTestCase {
         XCTAssertTrue(result.label.contains("cannot send text messages"), result.label)
         XCTAssertTrue(app.buttons["Call Alice (07700 900001)"].exists, "The person must be offered a call instead")
         XCTAssertTrue(app.buttons["Call Bob (07700 900002)"].exists)
+
+        let done = app.buttons["alert.result.dismiss"]
+        XCTAssertTrue(done.exists)
+        XCTAssertGreaterThanOrEqual(done.frame.height, 44, "Done must clear the minimum tap target")
+        XCTAssertGreaterThanOrEqual(done.frame.width, 44, "Done must clear the minimum tap target")
     }
 
     /// Spec §7: the alert control is in thumb reach and one tap from launch at every
@@ -240,6 +250,7 @@ final class AlertFlowTests: XCTestCase {
         let call = app.buttons["emergency.call"]
         app.reveal(call)
         XCTAssertEqual(call.label, "Call 999")
+        XCTAssertGreaterThanOrEqual(call.frame.height, 96, "999 is on the alert path, so it clears the critical tap target")
         call.tap()
 
         XCTAssertTrue(app.staticTexts["Call 999?"].waitForExistence(timeout: 3), "999 must always be confirmed first")

@@ -52,11 +52,21 @@ struct AlertStatusView: View {
                     let key: String.LocalizationValue = outcome == .contactsUnreadable
                         ? "alert.contacts.open"
                         : "alert.contacts.add"
-                    Button(Strings.localized(key), action: onAddContacts)
-                        .buttonStyle(.borderedProminent)
+                    Button(action: onAddContacts) {
+                        Text(Strings.localized(key))
+                            .frame(minHeight: Design.minimumTapTarget)
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
 
-                Button(Strings.localized("alert.result.dismiss"), action: onDismiss)
+                // Every way forward from a result clears the minimum target: these
+                // are used under stress and one-handed.
+                Button(action: onDismiss) {
+                    Text(Strings.localized("alert.result.dismiss"))
+                        .frame(minWidth: Design.minimumTapTarget, minHeight: Design.minimumTapTarget)
+                        .contentShape(Rectangle())
+                }
+                .accessibilityIdentifier("alert.result.dismiss")
             }
             .padding(Design.Space.base)
             .frame(maxWidth: .infinity, alignment: .leading)

@@ -18,9 +18,13 @@ struct EmergencyCallButton: View {
             } icon: {
                 Image(systemName: "phone.fill")
             }
-            .frame(maxWidth: .infinity, minHeight: Design.minimumTapTarget)
+            // White on a solid fill, not tinted text on a faint tint: the fill is a
+            // fixed red with no dark variant, so tinted text fell to about 3:1 in
+            // dark mode. On the alert path, so it clears the critical target.
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity, minHeight: Design.criticalTapTarget)
         }
-        .buttonStyle(.bordered)
+        .buttonStyle(.borderedProminent)
         .tint(Color.alertFill)
         .accessibilityHint(Text("emergency.call.hint", bundle: .module))
         .accessibilityIdentifier("emergency.call")

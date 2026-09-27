@@ -77,9 +77,11 @@ jobs:
 
   ui:
     name: UI tests
-    # Two behaviours only a UI test can prove: that each Call button confirms its own
-    # service and shows the exact number to be dialled, and that crime reporting is
-    # withheld entirely outside the UK (App Store Guideline 1.7).
+    # Behaviours only a UI test can prove: each Call button confirms its own service
+    # and number; crime reporting is withheld outside the UK (Guideline 1.7); an
+    # alert with no contacts opens setup; 999 is always confirmed and offered only
+    # in the UK; Test Mode is announced, routes to drama numbers and switches off
+    # when the app is left; and removing a contact is confirmed and remembered.
     runs-on: xcode-27
     steps:
       - uses: actions/checkout@v7
@@ -104,10 +106,15 @@ jobs:
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
 
       - name: Run UI tests
-        # No signing, so no secrets are needed and pull requests from forks work.
+        # Ad-hoc "sign to run locally", not CODE_SIGNING_ALLOWED=NO: an unsigned build
+        # carries no simulator entitlements, so the Keychain refuses it and every
+        # trusted-contacts test fails. This needs no certificate or secret, so pull
+        # requests from forks still work.
         run: |
           xcodebuild test \
             -project Kitty.xcodeproj \
             -scheme Kitty \
             -destination "id=${{ steps.sim.outputs.udid }}" \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGN_IDENTITY=- \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM=

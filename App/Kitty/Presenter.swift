@@ -42,7 +42,13 @@ enum Presenter {
         guard var top = topViewController() else { return nil }
         if let coordinator = top.transitionCoordinator {
             await withCheckedContinuation { continuation in
-                coordinator.animate(alongsideTransition: nil) { _ in
+                // `animate(alongsideTransition:completion:)` returns `false` when it
+                // did not queue the animation, in which case the completion handler
+                // never runs. The two resumes are mutually exclusive: `false` means
+                // the completion will never fire, so resuming here cannot race it.
+                // Without this, that case would leave the continuation — and the
+                // alert — hanging forever.
+                if !coordinator.animate(alongsideTransition: nil, completion: { _ in continuation.resume() }) {
                     continuation.resume()
                 }
             }

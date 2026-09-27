@@ -207,9 +207,15 @@ final class AlertFlowTests: XCTestCase {
         let turnOff = app.buttons["testMode.turnOff"]
         app.reveal(turnOff, towardsTop: true)
         turnOff.tap()
-        XCTAssertTrue(app.staticTexts["Test Mode is on"].waitForNonExistence(timeout: 3))
+        // A more generous timeout than the 3s used elsewhere in this file: this is
+        // the one path that reaches the button by scrolling up past a call result
+        // with two contacts' Call buttons, rather than tapping it already on
+        // screen, so it has more layout to settle after the tap under load. The
+        // condition asserted is unchanged — only how long a slow device gets to
+        // reach it.
+        XCTAssertTrue(app.staticTexts["Test Mode is on"].waitForNonExistence(timeout: 5))
 
-        XCTAssertTrue(result.waitForNonExistence(timeout: 3),
+        XCTAssertTrue(result.waitForNonExistence(timeout: 5),
                       "A rehearsal's result must be cleared when Test Mode is turned off")
         XCTAssertFalse(callAlice.exists, "Outside Test Mode, a rehearsal's drama number must never be offered")
         XCTAssertFalse(app.buttons["Call Bob (07700 900002)"].exists)

@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "reviewedOn": "2026-09-27",
   "emergencyNumber": "999",
   "emergencyRoutes": [
@@ -52,7 +52,11 @@
       "availability": "allHours",
       "billingNote": null,
       "source": "https://www.nationaldahelpline.org.uk/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "domesticAbuse",
+        "housingAndMoney"
+      ]
     },
     {
       "id": "live-fear-free",
@@ -66,7 +70,12 @@
       "availability": "allHours",
       "billingNote": "Free from UK landlines and most mobile networks, and does not show on a phone bill. Some mobile networks may charge.",
       "source": "https://www.gov.wales/live-fear-free/about-live-fear-free-helpline",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "domesticAbuse",
+        "sexualViolence",
+        "housingAndMoney"
+      ]
     },
     {
       "id": "scotland-domestic-abuse-forced-marriage-helpline",
@@ -80,7 +89,12 @@
       "availability": "allHours",
       "billingNote": null,
       "source": "https://www.sdafmh.org.uk/en/about-us/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "domesticAbuse",
+        "forcedMarriageAndFGM",
+        "housingAndMoney"
+      ]
     },
     {
       "id": "dsa-helpline-northern-ireland",
@@ -94,7 +108,12 @@
       "availability": "allHours",
       "billingNote": null,
       "source": "https://dsahelpline.org/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "domesticAbuse",
+        "sexualViolence",
+        "housingAndMoney"
+      ]
     },
     {
       "id": "rape-sexual-abuse-support-line",
@@ -108,7 +127,10 @@
       "availability": "allHours",
       "billingNote": null,
       "source": "https://247sexualabusesupport.org.uk/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "sexualViolence"
+      ]
     },
     {
       "id": "rape-crisis-scotland",
@@ -130,7 +152,10 @@
       },
       "billingNote": "Calls do not show on a phone bill.",
       "source": "https://www.rapecrisisscotland.org.uk/help-helpline/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "sexualViolence"
+      ]
     },
     {
       "id": "the-rowan",
@@ -144,7 +169,10 @@
       "availability": "allHours",
       "billingNote": null,
       "source": "https://therowan.hscni.net/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "sexualViolence"
+      ]
     },
     {
       "id": "victim-support",
@@ -158,7 +186,15 @@
       "availability": "allHours",
       "billingNote": null,
       "source": "https://www.victimsupport.org.uk/help-and-support/get-help/supportline/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "domesticAbuse",
+        "sexualViolence",
+        "stalkingAndHarassment",
+        "onlineAbuse",
+        "forcedMarriageAndFGM",
+        "reportingAndVictimsRights"
+      ]
     },
     {
       "id": "victim-support-scotland",
@@ -185,7 +221,15 @@
       },
       "billingNote": null,
       "source": "https://victimsupport.scot/contact/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "domesticAbuse",
+        "sexualViolence",
+        "stalkingAndHarassment",
+        "onlineAbuse",
+        "forcedMarriageAndFGM",
+        "reportingAndVictimsRights"
+      ]
     },
     {
       "id": "samaritans",
@@ -199,7 +243,10 @@
       "availability": "allHours",
       "billingNote": "Free from any phone, and the number won't come up on your phone bill.",
       "source": "https://www.samaritans.org/how-we-can-help/contact-samaritan/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "general"
+      ]
     },
     {
       "id": "mens-advice-line",
@@ -221,7 +268,10 @@
       },
       "billingNote": "Free, and calls will not appear on itemised bills.",
       "source": "https://mensadviceline.org.uk/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "domesticAbuse"
+      ]
     },
     {
       "id": "galop",
@@ -235,7 +285,12 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://www.galop.org.uk/helpline",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "domesticAbuse",
+        "sexualViolence",
+        "stalkingAndHarassment"
+      ]
     },
     {
       "id": "womens-aid",
@@ -249,7 +304,11 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://womensaid.org.uk/information-support/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "domesticAbuse",
+        "housingAndMoney"
+      ]
     }
   ],
   "reporting": [
@@ -267,7 +326,15 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://www.gov.uk/report-crime",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "domesticAbuse",
+        "sexualViolence",
+        "stalkingAndHarassment",
+        "onlineAbuse",
+        "forcedMarriageAndFGM",
+        "reportingAndVictimsRights"
+      ]
     },
     {
       "id": "police-101",
@@ -283,7 +350,15 @@
       "availability": "seeWebsite",
       "billingNote": "Free from any phone.",
       "source": "https://www.police.uk/pu/contact-us/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "domesticAbuse",
+        "sexualViolence",
+        "stalkingAndHarassment",
+        "onlineAbuse",
+        "forcedMarriageAndFGM",
+        "reportingAndVictimsRights"
+      ]
     },
     {
       "id": "crimestoppers",
@@ -299,7 +374,10 @@
       "availability": "allHours",
       "billingNote": null,
       "source": "https://crimestoppers-uk.org/about-us",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "reportingAndVictimsRights"
+      ]
     },
     {
       "id": "british-transport-police",
@@ -315,7 +393,12 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://www.btp.police.uk/police-forces/british-transport-police/areas/campaigns/61016-text-service/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "sexualViolence",
+        "stalkingAndHarassment",
+        "reportingAndVictimsRights"
+      ]
     },
     {
       "id": "streetsafe",
@@ -331,7 +414,11 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://www.police.uk/pu/notices/streetsafe/street-safe/",
-      "attribution": null
+      "attribution": null,
+      "topics": [
+        "stalkingAndHarassment",
+        "reportingAndVictimsRights"
+      ]
     }
   ],
   "guides": [
@@ -563,6 +650,10 @@
           "title": "Domestic abuse | nidirect",
           "url": "https://www.nidirect.gov.uk/domestic-abuse"
         }
+      ],
+      "topics": [
+        "domesticAbuse",
+        "housingAndMoney"
       ]
     },
     {
@@ -617,6 +708,9 @@
           "title": "Checking for a person's history of abuse | nidirect",
           "url": "https://www.nidirect.gov.uk/articles/checking-persons-history-abuse"
         }
+      ],
+      "topics": [
+        "domesticAbuse"
       ]
     },
     {
@@ -701,6 +795,9 @@
           "title": "Family Homes and Domestic Violence (Northern Ireland) Order 1998",
           "url": "https://www.legislation.gov.uk/nisi/1998/1071/article/25"
         }
+      ],
+      "topics": [
+        "domesticAbuse"
       ]
     },
     {
@@ -762,6 +859,10 @@
           "title": "Domestic Abuse Support - Northern Ireland Housing Executive",
           "url": "https://www.nihe.gov.uk/DomesticAbuseSupport"
         }
+      ],
+      "topics": [
+        "domesticAbuse",
+        "housingAndMoney"
       ]
     },
     {
@@ -852,6 +953,10 @@
           "title": "Policy for Prosecuting Sexual Offences - Public Prosecution Service for Northern Ireland (PDF)",
           "url": "https://www.ppsni.gov.uk/files/ppsni/2023-11/PPS%20Policy%20for%20Prosecuting%20Sexual%20Offences.pdf"
         }
+      ],
+      "topics": [
+        "sexualViolence",
+        "reportingAndVictimsRights"
       ]
     },
     {
@@ -918,6 +1023,10 @@
           "title": "Stalking Protection Orders | nidirect",
           "url": "https://www.nidirect.gov.uk/articles/stalking-protection-orders"
         }
+      ],
+      "topics": [
+        "stalkingAndHarassment",
+        "onlineAbuse"
       ]
     },
     {
@@ -1010,6 +1119,10 @@
           "title": "Justice Act (Northern Ireland) 2016",
           "url": "https://www.legislation.gov.uk/nia/2016/21/section/51"
         }
+      ],
+      "topics": [
+        "onlineAbuse",
+        "sexualViolence"
       ]
     },
     {
@@ -1084,6 +1197,10 @@
           "title": "Labour Relations Agency - Official | Improving employment relations in Northern Ireland",
           "url": "https://www.lra.org.uk/"
         }
+      ],
+      "topics": [
+        "work",
+        "stalkingAndHarassment"
       ]
     },
     {
@@ -1148,6 +1265,9 @@
           "title": "Victim personal statements | nidirect",
           "url": "https://www.nidirect.gov.uk/articles/victim-personal-statements"
         }
+      ],
+      "topics": [
+        "reportingAndVictimsRights"
       ]
     },
     {
@@ -1239,6 +1359,9 @@
           "title": "Female genital mutilation | nidirect",
           "url": "https://www.nidirect.gov.uk/articles/female-genital-mutilation"
         }
+      ],
+      "topics": [
+        "forcedMarriageAndFGM"
       ]
     },
     {
@@ -1300,6 +1423,9 @@
           "title": "Protection from Stalking Act (Northern Ireland) 2022",
           "url": "https://www.legislation.gov.uk/nia/2022/17/section/2"
         }
+      ],
+      "topics": [
+        "stalkingAndHarassment"
       ]
     }
   ],
@@ -1318,7 +1444,8 @@
       "availability": "allHours",
       "billingNote": null,
       "source": "https://www.nationaldahelpline.org.uk/how-we-can-support-you/",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     },
     {
       "id": "refuge-womens-aid-directory",
@@ -1334,7 +1461,8 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://womensaid.org.uk/information-support/womens-aid-directory/",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     },
     {
       "id": "refuge-england-council",
@@ -1350,7 +1478,8 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://www.gov.uk/guidance/homelessness-code-of-guidance-for-local-authorities/chapter-21-domestic-abuse",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     },
     {
       "id": "refuge-southall-black-sisters",
@@ -1366,7 +1495,8 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://southallblacksisters.org.uk/get-help/sbs-no-recourse-to-public-funds/",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     },
     {
       "id": "refuge-live-fear-free-helpline",
@@ -1382,7 +1512,8 @@
       "availability": "allHours",
       "billingNote": null,
       "source": "https://www.gov.wales/live-fear-free/domestic-abuse-wales",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     },
     {
       "id": "refuge-welsh-womens-aid-local-services",
@@ -1398,7 +1529,8 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://welshwomensaid.org.uk/information-support/find-your-local-service/",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     },
     {
       "id": "refuge-wales-council",
@@ -1414,7 +1546,8 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://www.gov.wales/live-fear-free/domestic-abuse-wales",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     },
     {
       "id": "refuge-bawso",
@@ -1430,7 +1563,8 @@
       "availability": "allHours",
       "billingNote": null,
       "source": "https://bawso.org.uk/en/",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     },
     {
       "id": "refuge-scotland-domestic-abuse-forced-marriage-helpline",
@@ -1446,7 +1580,8 @@
       "availability": "allHours",
       "billingNote": null,
       "source": "https://www.sdafmh.org.uk/en/information-support/your-rights-practical-information/refuge/",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     },
     {
       "id": "refuge-scottish-womens-aid-groups",
@@ -1462,7 +1597,8 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://womensaid.scot/find-nearest-wa-group/",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     },
     {
       "id": "refuge-scotland-council",
@@ -1478,7 +1614,8 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://www.mygov.scot/if-youre-homeless",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     },
     {
       "id": "refuge-dsa-helpline-northern-ireland",
@@ -1494,7 +1631,8 @@
       "availability": "allHours",
       "billingNote": null,
       "source": "https://dsahelpline.org/get-help/what-to-expect-when-you-contact-us",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     },
     {
       "id": "refuge-womens-aid-ni-local-groups",
@@ -1510,7 +1648,8 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://www.womensaidni.org/get-help/your-rights/",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     },
     {
       "id": "refuge-housing-executive-ni",
@@ -1526,7 +1665,8 @@
       "availability": "seeWebsite",
       "billingNote": null,
       "source": "https://www.nihe.gov.uk/DomesticAbuseSupport",
-      "attribution": null
+      "attribution": null,
+      "topics": []
     }
   ],
   "refugeNote": {

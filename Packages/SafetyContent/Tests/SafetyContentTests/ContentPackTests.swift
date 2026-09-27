@@ -26,7 +26,7 @@ struct ContentStructureTests {
     @Test("Loads, and is the current version")
     func loads() throws {
         let p = try pack()
-        #expect(p.version == 5)
+        #expect(p.version == 6)
         #expect(!p.services.isEmpty && !p.emergencyRoutes.isEmpty && !p.guides.isEmpty)
     }
 

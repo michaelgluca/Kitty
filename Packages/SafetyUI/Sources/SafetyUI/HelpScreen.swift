@@ -68,11 +68,16 @@ public struct HelpScreen: View {
                     }
 
                     Section {
-                        ForEach(pack.guides) { GuideRow(guide: $0) }
-                    } header: {
-                        Text("help.section.guides", bundle: .module)
-                    } footer: {
-                        Text("help.guides.footer", bundle: .module)
+                        NavigationLink {
+                            SafetyFeaturesScreen(pack: pack)
+                        } label: {
+                            Label {
+                                Text("help.features.link", bundle: .module)
+                            } icon: {
+                                Image(systemName: "iphone.gen3")
+                            }
+                        }
+                        .accessibilityIdentifier("help.features.link")
                     }
                 } else {
                     // The pack is bundled, so this should be unreachable — but it is
@@ -300,35 +305,3 @@ struct CoverageBadge: View {
     }
 }
 
-struct GuideRow: View {
-    let guide: SafetyGuide
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Design.Space.tight) {
-            Text(guide.title).font(.headline)
-            Text(guide.summary)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            if let caution = guide.caution {
-                // A trade-off to understand before switching the feature on — not a
-                // footnote. Medical ID's "Show When Locked" exposes the emergency
-                // contacts to anyone holding the phone.
-                Label {
-                    Text(caution).font(.footnote).fixedSize(horizontal: false, vertical: true)
-                } icon: {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                }
-                .foregroundStyle(.orange)
-            }
-
-            if let url = URL(string: guide.url) {
-                Link(destination: url) {
-                    Text("help.openInstructions", bundle: .module).font(.subheadline)
-                }
-            }
-        }
-        .padding(.vertical, Design.Space.tight)
-    }
-}

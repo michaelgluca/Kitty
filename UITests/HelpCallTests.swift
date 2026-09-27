@@ -79,10 +79,10 @@ final class HelpCallTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Written for the UK"].waitForExistence(timeout: 3),
                       "The non-UK notice should be shown")
 
-        // "Not found" means nothing unless the whole list was scrolled. The guides come
-        // after where reporting would sit, so reaching the last guide proves the test
-        // looked everywhere reporting could have been.
-        let lastGuide = app.staticTexts["Safety Check"]
+        // "Not found" means nothing unless the whole list was scrolled. The iPhone
+        // features link comes after where reporting would sit, so reaching it proves
+        // the test looked everywhere reporting could have been.
+        let lastGuide = app.buttons["help.features.link"]
         var attempts = 0
         while !(lastGuide.exists && lastGuide.isHittable) && attempts < 40 {
             XCTAssertFalse(app.buttons[reportingMarker].exists, "Crime reporting shown outside the UK")

@@ -34,7 +34,18 @@ public final class AlertModel {
     /// Who the alert was for, kept so the failure states can offer to call them.
     public private(set) var recipients: [AlertRecipient] = []
 
-    public var isBusy: Bool { phase == .locating || phase == .composing }
+    /// `true` for as long as a `raise` is in flight, from the moment it is called
+    /// to the moment it returns — tracked independently of `phase`, which exists
+    /// only to drive the screen. `phase` stays `.idle`/`.finished` across some
+    /// awaits (for example when location is not authorised), so relying on it here
+    /// would let a second tap slip through a future suspension point and stack a
+    /// second composer.
+    private var inFlight = false
+
+    public var isBusy: Bool { inFlight }
+
+    /// How long `raise` waits for a location before sending without one.
+    public static let defaultLocationTimeout: Duration = .seconds(3)
 
     private let services: Services
     private let strings: AlertStrings
@@ -45,7 +56,7 @@ public final class AlertModel {
         services: Services,
         strings: AlertStrings,
         locale: Locale = .autoupdatingCurrent,
-        locationTimeout: Duration = .seconds(3)
+        locationTimeout: Duration = defaultLocationTimeout
     ) {
         self.services = services
         self.strings = strings
@@ -55,7 +66,11 @@ public final class AlertModel {
 
     public func raise(contacts: [TrustedContact], contactsReadable: Bool, testMode: Bool) async {
         // A second tap while the first is still working would stack two composers.
-        guard !isBusy else { return }
+        // Set before any `await`, so nothing can interleave between the check and
+        // the flag being raised.
+        guard !inFlight else { return }
+        inFlight = true
+        defer { inFlight = false }
 
         guard contactsReadable else {
             recipients = []

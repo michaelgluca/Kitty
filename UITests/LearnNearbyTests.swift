@@ -144,10 +144,11 @@ final class LearnNearbyTests: XCTestCase {
         XCTAssertFalse(app.buttons["nearby.refuges"].exists)
     }
 
-    /// Review Focus: the refuge list must name the nation it is filtered to, and the
-    /// screen that explains why there are no addresses must never show a map either.
+    /// Review Focus: the refuge list must name the nation it is filtered to, and must
+    /// never show an address, postcode or map pin — refuge addresses are kept
+    /// confidential to protect people who fled to one (ADR-0013).
     @MainActor
-    func testRefugesScreenNamesTheNationAndNeverShowsAMap() {
+    func testRefugesScreenNamesTheNationAndNeverShowsAnAddressOrMap() {
         let app = launch(["-kitty.stubNearby"])
         app.tabBars.buttons["Nearby"].tap()
         let link = app.buttons["nearby.refuges"]
@@ -156,6 +157,30 @@ final class LearnNearbyTests: XCTestCase {
 
         XCTAssertTrue(anything(containing: "In England", in: app).waitForExistence(timeout: 3),
                       "The refuge list must name the nation it is filtered to")
+
+        // Wait for a known service to be on screen, so the refuge list has genuinely
+        // loaded before the negative checks below run against it — a check made
+        // before anything rendered would pass for the wrong reason.
+        let england = app.staticTexts["National Domestic Abuse Helpline"]
+        app.reveal(england)
+        XCTAssertTrue(england.exists)
+
+        // Non-vacuous: a UK postcode dropped into any refuge text (the "why" note,
+        // a summary, a name) would match this and fail the test. Proved by
+        // temporarily injecting "SW1A 1AA" into refugeNote.text in
+        // uk-content.json, confirming this assertion failed, then reverting —
+        // see the Task 10 fix report.
+        let postcodeShaped = app.staticTexts.matching(NSPredicate(
+            format: "label MATCHES %@",
+            "(?i).*\\b[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}\\b.*"
+        ))
+        XCTAssertEqual(postcodeShaped.count, 0,
+                       "No text on the Refuges screen should read like a UK postcode — refuge addresses are confidential")
+
+        // Unlike the postcode check above, this can currently only ever pass —
+        // RefugesScreen has no Map view in its source at all — but it still guards
+        // against one being added later, which the postcode check would not catch
+        // (a map pin is not text). Kept for that reason, not because it can fail today.
         XCTAssertFalse(app.descendants(matching: .any)["nearby.map"].exists, "Refuges must never show a map")
     }
 

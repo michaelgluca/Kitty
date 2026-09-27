@@ -43,7 +43,9 @@ struct RightsContentTests {
         for topic in p.rights {
             #expect(!topic.points.isEmpty, "\(topic.id) has no points")
             #expect(topic.points.allSatisfy { !$0.nations.isEmpty }, "\(topic.id) has a point with no nation")
-            #expect(!topic.sources.isEmpty, "\(topic.id) has no source")
+            // One to five: enough that every point's own source is on screen, few enough
+            // that each can be kept on the checked allowlist.
+            #expect((1...5).contains(topic.sources.count), "\(topic.id) has \(topic.sources.count) sources, not 1 to 5")
             for source in topic.sources {
                 let host = try #require(URL(string: source.url)?.host())
                 #expect(source.url.hasPrefix("https://"))

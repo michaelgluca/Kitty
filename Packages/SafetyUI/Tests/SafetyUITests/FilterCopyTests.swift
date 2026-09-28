@@ -57,6 +57,13 @@ struct FilterCopyTests {
         #expect(FilterCopy.nationName(nil) == "All of the UK")
     }
 
+    @Test("The no-matches body differs on the iPhone features screen, which has no nation menu or chips to clear")
+    func noMatchesBody() {
+        #expect(FilterCopy.noMatchesBody(.everything) == Strings.localized("filter.noMatches.body"))
+        #expect(FilterCopy.noMatchesBody(.rights) == Strings.localized("filter.noMatches.body"))
+        #expect(FilterCopy.noMatchesBody(.features) == Strings.localized("filter.noMatches.features.body"))
+    }
+
     @Test("Every filter key resolves", arguments: [
         "filter.nation.title", "filter.nation.all", "filter.nation.offer", "filter.nation.couldNotRead",
         "filter.nation.couldNotSave", "refuges.nation.couldNotRead", "refuges.nation.notSaved",
@@ -64,7 +71,7 @@ struct FilterCopyTests {
         "topic.onlineAbuse", "topic.forcedMarriageAndFGM", "topic.housingAndMoney", "topic.work",
         "topic.reportingAndVictimsRights", "filter.search.prompt", "filter.summary", "filter.summary.separator",
         "filter.summary.search", "filter.clear", "filter.clear.hint", "filter.clearFilters",
-        "filter.noMatches.title", "filter.noMatches.rights", "filter.noMatches.body", "rights.elsewhere",
+        "filter.noMatches.title", "filter.noMatches.rights", "filter.noMatches.body", "filter.noMatches.features.body", "rights.elsewhere",
         "filter.resultCount %lld",
     ])
     func keysResolve(key: String) {

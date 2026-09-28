@@ -301,4 +301,56 @@ final class FilterTests: XCTestCase {
         XCTAssertTrue(feature.exists, "Clear must bring the feature list back")
         XCTAssertFalse(element("filter.noMatches", in: app).exists)
     }
+
+    // MARK: - Refuges
+
+    @MainActor
+    func testRefugesAndGetHelpShareTheNation() {
+        let app = launch(["-kitty.stubNearby"])
+        app.tabBars.buttons["Get help"].tap()
+        choose("Scotland", in: app)
+
+        app.tabBars.buttons["Nearby"].tap()
+        let link = app.buttons["nearby.refuges"]
+        app.reveal(link)
+        link.tap()
+        XCTAssertTrue(anything(containing: "In Scotland", in: app).waitForExistence(timeout: 3),
+                      "Refuges must list the nation chosen on Get help")
+        XCTAssertFalse(anything(containing: "Chosen from your location", in: app).exists,
+                       "A nation the person chose is not labelled as from their location")
+
+        app.buttons["refuges.nation"].tap()
+        app.buttons["Wales"].tap()
+        XCTAssertTrue(anything(containing: "In Wales", in: app).waitForExistence(timeout: 3))
+
+        app.tabBars.buttons["Get help"].tap()
+        let summary = element("filter.summary", in: app)
+        app.reveal(summary)
+        XCTAssertTrue(summary.label.contains("Showing Wales"), "Changing it on Refuges must change it on Get help: \(summary.label)")
+    }
+
+    /// Review Focus 1: a person who saved Scotland and is now in England (the stub's
+    /// location) is offered England, visibly, and is never switched without a tap.
+    @MainActor
+    func testAMovedPersonIsOfferedTheNewNationButNeverSwitched() {
+        let app = launch(["-kitty.stubNearby"])
+        app.tabBars.buttons["Get help"].tap()
+        choose("Scotland", in: app)
+
+        app.tabBars.buttons["Nearby"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["nearby.station.test-station"].waitForExistence(timeout: 5))
+
+        app.tabBars.buttons["Get help"].tap()
+        let offer = app.buttons["filter.offer"]
+        XCTAssertTrue(offer.waitForExistence(timeout: 5), "A different detected nation must be offered as a visible row")
+        app.reveal(offer)
+        XCTAssertTrue(offer.label.contains("Use England"), offer.label)
+        let summary = element("filter.summary", in: app)
+        app.reveal(summary)
+        XCTAssertTrue(summary.label.contains("Showing Scotland"), "The saved nation must not change on its own")
+
+        offer.tap()
+        XCTAssertTrue(summary.label.contains("Showing England"), summary.label)
+        XCTAssertFalse(offer.exists, "Nothing left to offer once it is chosen")
+    }
 }

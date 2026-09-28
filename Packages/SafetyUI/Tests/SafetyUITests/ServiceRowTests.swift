@@ -3,7 +3,7 @@ import Testing
 
 @testable import SafetyUI
 
-/// Pins the P8 fix: `help.noPhone` ("This service has no phone line.") must survive
+/// `help.noPhone` ("This service has no phone line.") must survive
 /// for Women's Aid on Get help — the one entry it exists for — and must not appear
 /// for a refuge directory in the refuge list, where a phoneless `.information` entry
 /// was never a phone line to begin with.

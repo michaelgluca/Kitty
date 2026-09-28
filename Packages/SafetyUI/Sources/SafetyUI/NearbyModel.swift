@@ -39,7 +39,8 @@ public final class NearbyModel {
         case locationOff
         case locationRestricted
         /// Precise Location is off. A reading within about 5 km cannot say which
-        /// station is nearest, so it is not used (US-5).
+        /// station is nearest, so it is not used: a wrong "nearest" would send
+        /// someone the wrong way.
         case locationApproximate
         case locating
         case noLocation

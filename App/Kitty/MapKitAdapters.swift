@@ -33,7 +33,7 @@ private extension MKMapItem {
 /// Every step — near or wide — searches by name as well as category: Apple's
 /// `.police` points-of-interest category alone is broader than "police station" and
 /// also covers things like a museum inside a police building or a heritage police
-/// telephone box (confirmed live, near Waterloo — see the Task 9 fix report). There
+/// telephone box (both were returned by a live search near Waterloo). There
 /// is no way to combine a natural-language query with
 /// `MKLocalPointsOfInterestRequest` (it has no query property), so every radius uses
 /// `MKLocalSearch.Request` instead, and every result is also checked against

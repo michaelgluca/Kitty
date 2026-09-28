@@ -84,7 +84,8 @@ extension RefugesScreen {
     ///    A failed pick of "all of the UK" is not a nation to list, so it is treated
     ///    exactly as if there had been no unsaved pick at all, and falls through.
     /// 3. Until they choose, the nation found from their location. It is shown so the
-    ///    list is there at once, labelled as such, and never saved (as in M4).
+    ///    list is there at once, labelled as such, and never saved: a location is
+    ///    offered, never chosen for the person.
     /// 4. Otherwise none, and the screen asks.
     static func nationShown(saved: Nation?, unsavedChoice: NationPreference.UnsavedChoice?, detected: Nation?) -> NationShown {
         if let saved { return NationShown(nation: saved, isFromLocation: false, isUnsavedPick: false) }

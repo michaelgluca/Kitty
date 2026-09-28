@@ -83,7 +83,7 @@ struct AlertScreen: View {
                     // Pinned above the tab bar, outside the scroll content, so it is
                     // always on screen, in thumb reach and one tap from launch —
                     // whatever the text size, the scroll position, or how much the
-                    // Test Mode banner and the location row take up (spec §7, US-1).
+                    // Test Mode banner and the location row take up.
                     // Opaque, so scrolled content never shows through it.
                     PrimaryAlertButton { raise(scrollProxy: proxy) }
                         .disabled(alert.isBusy)

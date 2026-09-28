@@ -6,7 +6,8 @@ import SafetyDomain
 /// One screen's topics and search, owned by that screen as `@State`.
 ///
 /// Only the nation is shared and remembered (`NationPreference`). Topics and search start
-/// empty each launch, as the spec keeps them out of scope for remembering.
+/// empty each launch: a filter left over from last time could hide help from someone
+/// who has forgotten setting it.
 @MainActor
 @Observable
 final class ScreenFilter {

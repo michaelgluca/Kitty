@@ -40,31 +40,40 @@ public enum ContentFilter {
 
     /// Services or reporting routes that match the nation, the topics and the search.
     ///
-    /// - Parameter topicNames: the chip names in the person's language, so a search for
-    ///   "stalking" finds help tagged Stalking & harassment. `general` has no name.
+    /// - Parameter topicTerms: for each topic, its chip name and the other words people
+    ///   use for it, in the person's language. A search for "stalking" then finds help
+    ///   tagged Stalking & harassment, and "domestic violence" finds every domestic abuse
+    ///   helpline, whatever words the helpline's own entry uses. `general` has none.
     public static func services(
-        _ items: [SupportService], matching criteria: FilterCriteria, topicNames: [Topic: String]
+        _ items: [SupportService], matching criteria: FilterCriteria, topicTerms: [Topic: [String]]
     ) -> [SupportService] {
         let words = criteria.words
         return items.filter { item in
-            let fields: [String?] = [item.name, item.summary, item.audience] + item.topics.map { topicNames[$0] }
+            let fields = [item.name, item.summary, item.audience].compactMap { $0 } + terms(for: item.topics, in: topicTerms)
             return serves(item.coverage, in: criteria.nation)
-                && isAbout(item.topics, criteria.topics)
+                && isAbout(item.topics, anyOf: criteria.topics)
                 && SearchText.contains(words, in: fields)
         }
     }
 
     /// Rights topics with at least one point for the nation that match the topics and the
     /// search, each split into the points here and elsewhere.
+    ///
+    /// Search reads every point, not only those for the chosen nation, and what you can
+    /// do: that is where the law's own names are ("coercive control", "Clare's Law", "non-
+    /// molestation order"). A match only in another nation's point still shows the topic,
+    /// with that point under "Different elsewhere in the UK".
     public static func rights(
-        _ topics: [RightsTopic], matching criteria: FilterCriteria, topicNames: [Topic: String]
+        _ topics: [RightsTopic], matching criteria: FilterCriteria, topicTerms: [Topic: [String]]
     ) -> [RightsMatch] {
         let words = criteria.words
         return topics.compactMap { topic in
             let match = split(topic, for: criteria.nation)
-            let fields: [String?] = [topic.title, topic.summary] + topic.topics.map { topicNames[$0] }
+            let fields = [topic.title, topic.summary, topic.whatYouCanDo]
+                + topic.points.map(\.text)
+                + terms(for: topic.topics, in: topicTerms)
             guard !match.here.isEmpty,
-                  isAbout(topic.topics, criteria.topics),
+                  isAbout(topic.topics, anyOf: criteria.topics),
                   SearchText.contains(words, in: fields)
             else { return nil }
             return match
@@ -91,13 +100,17 @@ public enum ContentFilter {
 
     /// No stated coverage shows everywhere: when in doubt, show. `london` counts as
     /// England, through `Coverage.includes(_:)`.
-    static func serves(_ coverage: Coverage?, in nation: Nation?) -> Bool {
+    private static func serves(_ coverage: Coverage?, in nation: Nation?) -> Bool {
         guard let nation, let coverage else { return true }
         return coverage.includes(nation)
     }
 
     /// Any chosen topic (OR), or `general`, which shows under every topic.
-    static func isAbout(_ tags: [Topic], _ chosen: Set<Topic>) -> Bool {
+    private static func isAbout(_ tags: [Topic], anyOf chosen: Set<Topic>) -> Bool {
         chosen.isEmpty || tags.contains(.general) || tags.contains(where: chosen.contains)
+    }
+
+    private static func terms(for tags: [Topic], in topicTerms: [Topic: [String]]) -> [String] {
+        tags.flatMap { topicTerms[$0] ?? [] }
     }
 }

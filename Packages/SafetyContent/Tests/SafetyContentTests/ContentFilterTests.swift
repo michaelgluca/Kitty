@@ -24,19 +24,22 @@ private func service(
     return try JSONDecoder().decode(SupportService.self, from: JSONSerialization.data(withJSONObject: object))
 }
 
+/// Each point's text is `pointTexts[i]` when given, otherwise "Point i".
 private func rightsTopic(
     _ id: String,
     title: String = "Title",
     summary: String = "Summary",
     points: [[Nation]],
+    pointTexts: [String]? = nil,
+    whatYouCanDo: String = "W",
     topics: [Topic] = [.domesticAbuse]
 ) throws -> RightsTopic {
     let pointObjects: [[String: Any]] = points.enumerated().map { index, nations in
-        ["text": "Point \(index)", "nations": nations.map(\.rawValue)]
+        ["text": pointTexts?[index] ?? "Point \(index)", "nations": nations.map(\.rawValue)]
     }
     let object: [String: Any] = [
         "id": id, "title": title, "summary": summary, "points": pointObjects,
-        "whatYouCanDo": "W", "sources": [["title": "GOV.UK", "url": "https://www.gov.uk/"]],
+        "whatYouCanDo": whatYouCanDo, "sources": [["title": "GOV.UK", "url": "https://www.gov.uk/"]],
         "topics": topics.map(\.rawValue),
     ]
     return try JSONDecoder().decode(RightsTopic.self, from: JSONSerialization.data(withJSONObject: object))
@@ -49,12 +52,13 @@ private func guide(_ id: String, title: String, summary: String = "Summary") thr
     return try JSONDecoder().decode(SafetyGuide.self, from: JSONSerialization.data(withJSONObject: object))
 }
 
-/// The chip names as SafetyUI supplies them in English.
-private let names: [Topic: String] = [
-    .domesticAbuse: "Domestic abuse", .sexualViolence: "Sexual violence",
-    .stalkingAndHarassment: "Stalking & harassment", .onlineAbuse: "Online abuse",
-    .forcedMarriageAndFGM: "Forced marriage & FGM", .housingAndMoney: "Housing & money",
-    .work: "Work", .reportingAndVictimsRights: "Reporting & victims' rights",
+/// The chip names as SafetyUI supplies them in English, with one of Domestic abuse's
+/// other search words.
+private let terms: [Topic: [String]] = [
+    .domesticAbuse: ["Domestic abuse", "domestic violence"], .sexualViolence: ["Sexual violence"],
+    .stalkingAndHarassment: ["Stalking & harassment"], .onlineAbuse: ["Online abuse"],
+    .forcedMarriageAndFGM: ["Forced marriage & FGM"], .housingAndMoney: ["Housing & money"],
+    .work: ["Work"], .reportingAndVictimsRights: ["Reporting & victims' rights"],
 ]
 
 private func ids(_ items: [SupportService]) -> [String] { items.map(\.id) }
@@ -84,7 +88,7 @@ struct NationFilterTests {
     func coverage(_ coverage: Coverage) throws {
         let item = try service("s", coverage: coverage)
         for nation in Nation.allCases {
-            let shown = !ContentFilter.services([item], matching: FilterCriteria(nation: nation), topicNames: names).isEmpty
+            let shown = !ContentFilter.services([item], matching: FilterCriteria(nation: nation), topicTerms: terms).isEmpty
             #expect(shown == Self.expected[coverage]?.contains(nation), "\(coverage) in \(nation)")
         }
     }
@@ -93,14 +97,14 @@ struct NationFilterTests {
     func noCoverage() throws {
         let galop = try service("galop", coverage: nil)
         for nation in Nation.allCases {
-            #expect(ids(ContentFilter.services([galop], matching: FilterCriteria(nation: nation), topicNames: names)) == ["galop"])
+            #expect(ids(ContentFilter.services([galop], matching: FilterCriteria(nation: nation), topicTerms: terms)) == ["galop"])
         }
     }
 
     @Test("With no nation chosen, help for every nation shows")
     func allOfTheUK() throws {
         let items = try Coverage.allCases.map { try service($0.rawValue, coverage: $0) }
-        #expect(ContentFilter.services(items, matching: FilterCriteria(), topicNames: names).count == items.count)
+        #expect(ContentFilter.services(items, matching: FilterCriteria(), topicTerms: terms).count == items.count)
     }
 }
 
@@ -114,27 +118,27 @@ struct TopicFilterTests {
             try service("b", topics: [.sexualViolence]),
             try service("c", topics: [.stalkingAndHarassment]),
         ]
-        let shown = ContentFilter.services(items, matching: FilterCriteria(topics: [.domesticAbuse, .sexualViolence]), topicNames: names)
+        let shown = ContentFilter.services(items, matching: FilterCriteria(topics: [.domesticAbuse, .sexualViolence]), topicTerms: terms)
         #expect(ids(shown) == ["a", "b"])
     }
 
     @Test("Help for anyone in distress shows under every topic", arguments: Topic.selectable)
     func general(_ topic: Topic) throws {
         let samaritans = try service("samaritans", topics: [.general])
-        #expect(ids(ContentFilter.services([samaritans], matching: FilterCriteria(topics: [topic]), topicNames: names)) == ["samaritans"])
+        #expect(ids(ContentFilter.services([samaritans], matching: FilterCriteria(topics: [topic]), topicTerms: terms)) == ["samaritans"])
     }
 
     @Test("No topic chosen shows every topic")
     func noneChosen() throws {
         let items = [try service("a", topics: [.work]), try service("b", topics: [.onlineAbuse])]
-        #expect(ContentFilter.services(items, matching: FilterCriteria(), topicNames: names).count == 2)
+        #expect(ContentFilter.services(items, matching: FilterCriteria(), topicTerms: terms).count == 2)
     }
 
     @Test("A rights topic shows when it carries any chosen topic")
     func rights() throws {
         let work = try rightsTopic("work", points: [Nation.allCases], topics: [.work])
         let fm = try rightsTopic("fm", points: [Nation.allCases], topics: [.forcedMarriageAndFGM])
-        #expect(ContentFilter.rights([work, fm], matching: FilterCriteria(topics: [.work]), topicNames: names).map(\.id) == ["work"])
+        #expect(ContentFilter.rights([work, fm], matching: FilterCriteria(topics: [.work]), topicTerms: terms).map(\.id) == ["work"])
     }
 }
 
@@ -142,7 +146,7 @@ struct TopicFilterTests {
 struct SearchFilterTests {
 
     private func finds(_ query: String, _ item: SupportService) -> Bool {
-        !ContentFilter.services([item], matching: FilterCriteria(query: query), topicNames: names).isEmpty
+        !ContentFilter.services([item], matching: FilterCriteria(query: query), topicTerms: terms).isEmpty
     }
 
     @Test("Every word typed must appear, in any field, in any order")
@@ -180,8 +184,16 @@ struct SearchFilterTests {
     func topicNames() throws {
         let item = try service("s", name: "Supportline", summary: "For anyone affected by crime.", topics: [.stalkingAndHarassment])
         #expect(finds("stalking", item))
-        #expect(ContentFilter.services([item], matching: FilterCriteria(query: "stalking"), topicNames: [:]).isEmpty,
+        #expect(ContentFilter.services([item], matching: FilterCriteria(query: "stalking"), topicTerms: [:]).isEmpty,
                 "Found only through the topic's name")
+    }
+
+    @Test("A topic's other search words are searched, so 'domestic violence' finds a helpline that never says 'violence'")
+    func topicSearchTerms() throws {
+        let item = try service("s", name: "Helpline", summary: "For women experiencing domestic abuse.", topics: [.domesticAbuse])
+        #expect(finds("domestic violence", item))
+        #expect(!finds("domestic violence", try service("t", summary: "For women experiencing domestic abuse.", topics: [.work])),
+                "Found only through the topic's search words")
     }
 
     @Test("Spaces or punctuation alone are no search at all")
@@ -208,19 +220,19 @@ struct SearchFilterTests {
     @Test("Search combines with the nation: both must match")
     func withNation() throws {
         let england = try service("e", name: "Stalking line", coverage: .england)
-        #expect(ContentFilter.services([england], matching: FilterCriteria(nation: .scotland, query: "stalking"), topicNames: names).isEmpty)
-        #expect(ids(ContentFilter.services([england], matching: FilterCriteria(nation: .england, query: "stalking"), topicNames: names)) == ["e"])
+        #expect(ContentFilter.services([england], matching: FilterCriteria(nation: .scotland, query: "stalking"), topicTerms: terms).isEmpty)
+        #expect(ids(ContentFilter.services([england], matching: FilterCriteria(nation: .england, query: "stalking"), topicTerms: terms)) == ["e"])
     }
 
     @Test("Search combines with topics: both must match")
     func withTopics() throws {
         let item = try service("s", name: "Stalking line", topics: [.stalkingAndHarassment])
-        #expect(ContentFilter.services([item], matching: FilterCriteria(topics: [.work], query: "stalking"), topicNames: names).isEmpty)
+        #expect(ContentFilter.services([item], matching: FilterCriteria(topics: [.work], query: "stalking"), topicTerms: terms).isEmpty)
     }
 
     @Test("Nothing matching gives nothing, never a guess")
     func noMatches() throws {
-        #expect(ContentFilter.services([try service("s")], matching: FilterCriteria(query: "zzqx"), topicNames: names).isEmpty)
+        #expect(ContentFilter.services([try service("s")], matching: FilterCriteria(query: "zzqx"), topicTerms: terms).isEmpty)
     }
 }
 
@@ -246,17 +258,36 @@ struct RightsFilterTests {
     @Test("A topic shows when any of its points applies in the nation")
     func anyPoint() throws {
         let topic = try rightsTopic("t", points: [[.england], [.northernIreland]])
-        #expect(ContentFilter.rights([topic], matching: FilterCriteria(nation: .northernIreland), topicNames: names).map(\.id) == ["t"])
-        #expect(ContentFilter.rights([topic], matching: FilterCriteria(nation: .scotland), topicNames: names).isEmpty)
+        #expect(ContentFilter.rights([topic], matching: FilterCriteria(nation: .northernIreland), topicTerms: terms).map(\.id) == ["t"])
+        #expect(ContentFilter.rights([topic], matching: FilterCriteria(nation: .scotland), topicTerms: terms).isEmpty)
     }
 
     @Test("Rights are searched by title, summary and topic names")
     func search() throws {
         let topic = try rightsTopic("t", title: "Your rights at work", summary: "Equal pay.", points: [Nation.allCases], topics: [.work, .stalkingAndHarassment])
         for query in ["WORK", "equal", "stalking"] {
-            #expect(!ContentFilter.rights([topic], matching: FilterCriteria(query: query), topicNames: names).isEmpty, "\(query)")
+            #expect(!ContentFilter.rights([topic], matching: FilterCriteria(query: query), topicTerms: terms).isEmpty, "\(query)")
         }
-        #expect(ContentFilter.rights([topic], matching: FilterCriteria(query: "zzqx"), topicNames: names).isEmpty)
+        #expect(ContentFilter.rights([topic], matching: FilterCriteria(query: "zzqx"), topicTerms: terms).isEmpty)
+    }
+
+    @Test("Rights are searched by their points and what you can do, where the law's own names are")
+    func searchPointsAndWhatYouCanDo() throws {
+        let topic = try rightsTopic(
+            "t", points: [Nation.allCases], pointTexts: ["Controlling or coercive behaviour is a crime."],
+            whatYouCanDo: "Apply for a non-molestation order."
+        )
+        for query in ["coercive", "non-molestation"] {
+            #expect(ContentFilter.rights([topic], matching: FilterCriteria(query: query), topicTerms: terms).map(\.id) == ["t"], "\(query)")
+        }
+    }
+
+    @Test("A search that matches only another nation's point still shows the topic, with that point set aside")
+    func searchOtherNationsPoint() throws {
+        let topic = try rightsTopic("t", points: [[.england, .wales], [.scotland]], pointTexts: ["Clare's Law", "DSDAS"])
+        let matches = ContentFilter.rights([topic], matching: FilterCriteria(nation: .scotland, query: "clare's law"), topicTerms: terms)
+        #expect(matches.map(\.id) == ["t"])
+        #expect(matches.first?.elsewhere.map(\.text) == ["Clare's Law"])
     }
 }
 

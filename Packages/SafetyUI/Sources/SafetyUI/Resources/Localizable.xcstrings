@@ -2306,6 +2306,102 @@
           }
         }
       }
+    },
+    "topic.domesticAbuse.searchTerms": {
+      "comment": "Never shown: searched alongside the Domestic abuse chip's name, so a person who types one of these words finds help tagged Domestic abuse. Comma-separated. Translate as the words people in your language actually type for this, not word for word, and add nothing the topic does not cover.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "domestic violence, coercive control, controlling behaviour, abuse at home, abusive partner"
+          }
+        }
+      }
+    },
+    "topic.sexualViolence.searchTerms": {
+      "comment": "Never shown: searched alongside the Sexual violence chip's name, so a person who types one of these words finds help tagged Sexual violence. Comma-separated. Translate as the words people in your language actually type for this, not word for word, and add nothing the topic does not cover.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "rape, sexual assault, sexual abuse"
+          }
+        }
+      }
+    },
+    "topic.stalkingAndHarassment.searchTerms": {
+      "comment": "Never shown: searched alongside the Stalking & harassment chip's name, so a person who types one of these words finds help tagged Stalking & harassment. Comma-separated. Translate as the words people in your language actually type for this, not word for word, and add nothing the topic does not cover.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "stalker, being followed, harassed, unwanted contact"
+          }
+        }
+      }
+    },
+    "topic.onlineAbuse.searchTerms": {
+      "comment": "Never shown: searched alongside the Online abuse chip's name, so a person who types one of these words finds help tagged Online abuse. Comma-separated. Translate as the words people in your language actually type for this, not word for word, and add nothing the topic does not cover.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cyberstalking, intimate images, revenge porn, deepfake, cyberflashing"
+          }
+        }
+      }
+    },
+    "topic.forcedMarriageAndFGM.searchTerms": {
+      "comment": "Never shown: searched alongside the Forced marriage & FGM chip's name, so a person who types one of these words finds help tagged Forced marriage & FGM. Comma-separated. Translate as the words people in your language actually type for this, not word for word, and add nothing the topic does not cover.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "female genital mutilation, honour-based abuse"
+          }
+        }
+      }
+    },
+    "topic.housingAndMoney.searchTerms": {
+      "comment": "Never shown: searched alongside the Housing & money chip's name, so a person who types one of these words finds help tagged Housing & money. Comma-separated. Translate as the words people in your language actually type for this, not word for word, and add nothing the topic does not cover.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "homeless, somewhere to stay, economic abuse, financial abuse"
+          }
+        }
+      }
+    },
+    "topic.work.searchTerms": {
+      "comment": "Never shown: searched alongside the Work chip's name, so a person who types one of these words finds help tagged Work. Comma-separated. Translate as the words people in your language actually type for this, not word for word, and add nothing the topic does not cover.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "job, employer, boss, colleague"
+          }
+        }
+      }
+    },
+    "topic.reportingAndVictimsRights.searchTerms": {
+      "comment": "Never shown: searched alongside the Reporting & victims' rights chip's name, so a person who types one of these words finds help tagged Reporting & victims' rights. Comma-separated. Translate as the words people in your language actually type for this, not word for word, and add nothing the topic does not cover.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "report to the police, court, giving evidence"
+          }
+        }
+      }
     }
   }
 }

@@ -48,10 +48,10 @@ struct HelpContent: Equatable {
     /// Read through the UK gate first (Guideline 1.7), then filtered.
     let reporting: [SupportService]
 
-    init(pack: ContentPack, region: RegionStance, criteria: FilterCriteria, topicNames: [Topic: String]) {
+    init(pack: ContentPack, region: RegionStance, criteria: FilterCriteria, topicTerms: [Topic: [String]]) {
         emergencyRoutes = pack.emergencyRoutes
-        services = ContentFilter.services(pack.services, matching: criteria, topicNames: topicNames)
-        reporting = ContentFilter.services(pack.reporting(for: region), matching: criteria, topicNames: topicNames)
+        services = ContentFilter.services(pack.services, matching: criteria, topicTerms: topicTerms)
+        reporting = ContentFilter.services(pack.reporting(for: region), matching: criteria, topicTerms: topicTerms)
     }
 
     /// Whether the filter left nothing below the 999 routes. The 999 routes do not count:
@@ -69,8 +69,8 @@ struct LearnContent: Equatable {
     /// Search only: iPhone features are the same in every nation and for every topic.
     let guides: [SafetyGuide]
 
-    init(pack: ContentPack, criteria: FilterCriteria, topicNames: [Topic: String]) {
-        rights = ContentFilter.rights(pack.rights, matching: criteria, topicNames: topicNames)
+    init(pack: ContentPack, criteria: FilterCriteria, topicTerms: [Topic: [String]]) {
+        rights = ContentFilter.rights(pack.rights, matching: criteria, topicTerms: topicTerms)
         guides = ContentFilter.guides(pack.guides, matching: criteria)
     }
 

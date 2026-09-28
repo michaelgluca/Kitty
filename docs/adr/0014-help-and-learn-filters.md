@@ -72,10 +72,21 @@ wrong filter hides the line someone needed. These are the rules that keep that f
   strips the straight apostrophe and every curly one the pack or iOS smart punctuation can produce
   (`\u{2018}`, `\u{2019}`, `\u{02BC}`), so a query typed with either finds "Women's Aid" however the
   pack itself spells it. `ContentFilter` requires every word to appear across an item's name or title,
-  summary, audience, and its topics' chip names, and combines the result with the nation and topics
+  summary, audience, and its topics' search terms, and combines the result with the nation and topics
   by AND (`FilterCriteria`). A query of only spaces or punctuation folds to no words, so it is no
   search at all — `FilterCopy.summary` and the no-matches state both check
   `SearchText.words(in:).isEmpty`, not the raw string.
+- **Search finds help by the words people type, not only the words an entry uses.** Each topic's
+  search terms (`TopicCopy.searchTerms`) are its chip name plus a catalogue string of the other words
+  people use for it (`topic.<id>.searchTerms`: "domestic violence, coercive control…" for Domestic
+  abuse). They are passed in beside the criteria, as the chip names were, so `SafetyContent` stays
+  free of localisation and the Kotlin port's JSON is unchanged. A rights topic is also searched by
+  every point, not only the chosen nation's, and by "what you can do", where the law's own names
+  are ("Clare's Law", "non-molestation order"); a match only in another nation's point still shows
+  the topic, with that point under "Different elsewhere in the UK". Without these, "domestic
+  violence" hid the National Domestic Abuse Helpline and Scotland's helpline while other rows still
+  matched, so nothing said anything was missing. Search terms are content claims: each must name
+  something the topic's help covers, and `SearchVocabularyTests` pins the searches that must work.
 - **iPhone features answer only to search.** `ContentFilter.guides` takes no nation or topics: the
   guides are the same for every nation and every situation, so neither can hide one.
 - **Filters are always visible.** `FilterCopy.summary` renders a line such as "Showing Scotland ·

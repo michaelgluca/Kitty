@@ -47,13 +47,14 @@ wrong filter hides the line someone needed. These are the rules that keep that f
   listed is that unsaved pick (`RefugesScreen.NationShown.isUnsavedPick`); every other save
   failure — one made elsewhere, or a failed "all of the UK" that names no nation — shows the neutral
   `refugesCouldNotSaveElsewhere` note instead, which claims nothing about what is on screen. On
-  Refuges, choosing a `nil` pick is ignored (`RefugesScreen.pick`): the nation menu there offers "all
-  of the UK" only until a nation is shown, so choosing on this screen can never reset the nation
-  Get help and Learn share back to all of the UK.
+  Refuges, choosing a `nil` pick is ignored (`RefugesScreen.pick`): the nation picker there has no
+  "all of the UK" entry, only a "Choose" placeholder (`refuges.nation.choose`) until a nation is
+  shown, so choosing on this screen can never reset the nation Get help and Learn share back to all
+  of the UK.
 - **Nation filtering follows coverage.** `ContentFilter.serves(_:in:)` treats a `nil` coverage as
   showing everywhere ("when in doubt, show") and otherwise defers to `Coverage.includes(_:)`, where
   `london` counts as England. A rights topic shows when `ContentFilter.split` leaves at least one
-  point for the chosen nation; the rest are returned as `elsewhere` and shown in `LearnScreens`
+  point for the chosen nation; the rest are returned as `elsewhere` and shown in `RightsTopicScreen`
   collapsed under "Different elsewhere in the UK" (`rights.elsewhere`) — hidden until opened, never
   removed.
 - **Topic tags are content claims.** `Topic` is a fixed, `Codable` set of eight chips — domestic
@@ -97,7 +98,9 @@ wrong filter hides the line someone needed. These are the rules that keep that f
   screen's filtered content is empty, it shows a no-matches state with Clear: on Get help that is
   true even though the 999 routes are still there (`HelpContent.hasNoMatches` does not count them);
   on Learn it is true inside the rights section even while iPhone features are still listed
-  (`NoMatchesScope.rights` has its own title and body).
+  (`NoMatchesScope.rights` has its own title and body). With a nation chosen, the no-matches text
+  also says to choose All of the UK (`filter.noMatches.body.nation`): the nation may be why nothing
+  matches, and Clear keeps it.
 - **Refuges still show the nation found from the location until the person chooses**, labelled with
   a footer and not saved, as in ADR-0013. `RefugesScreen.nationShown` gives the saved nation first,
   then an unsaved pick that named a nation, then the detected one, and only then asks — a saved
@@ -106,7 +109,9 @@ wrong filter hides the line someone needed. These are the rules that keep that f
   (`ChipFlowLayout`, wrapping at any text size, each a `Button` at least `Design.minimumTapTarget`
   (44 pt) carrying `.isSelected` and a checkmark rather than colour alone) and the summary with
   Clear. It scrolls with the content, never covers it, and VoiceOver reaches it before the results;
-  the result count is announced when it changes (`FilterCopy.resultCount`).
+  the result count is announced when it changes (`FilterCopy.resultCount`), and only while its
+  screen is on screen (`ResultCountAnnouncement`): the nation is shared and visited tabs stay alive,
+  so otherwise one tab could announce its count over another's.
 
 ## Consequences
 

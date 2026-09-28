@@ -209,7 +209,7 @@ struct SearchFilterTests {
     @Test("Anything with a word in it is a search")
     func isSearch() {
         #expect(SearchText.isSearch(" stalking "))
-        #expect(SearchText.isSearch("\u{201C}999\u{201D}"))
+        #expect(SearchText.isSearch("\u{201C}refuge\u{201D}"))
     }
 
     @Test("Words are folded, and trimmed of the punctuation around them")

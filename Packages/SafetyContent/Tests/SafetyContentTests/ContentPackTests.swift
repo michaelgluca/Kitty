@@ -9,15 +9,14 @@ import Testing
 // 2023 build or caught during verification. Each one would cause real harm if it
 // regressed.
 
-private func pack() throws -> ContentPack { try ContentLoader.loadUK() }
 private func service(_ id: String) throws -> SupportService {
-    try #require(try pack().services.first { $0.id == id }, "No service \(id)")
+    try #require(try ContentLoader.loadUK().services.first { $0.id == id }, "No service \(id)")
 }
 private func route(_ id: String) throws -> EmergencyRoute {
-    try #require(try pack().emergencyRoutes.first { $0.id == id }, "No route \(id)")
+    try #require(try ContentLoader.loadUK().emergencyRoutes.first { $0.id == id }, "No route \(id)")
 }
 private func guide(_ id: String) throws -> SafetyGuide {
-    try #require(try pack().guides.first { $0.id == id }, "No guide \(id)")
+    try #require(try ContentLoader.loadUK().guides.first { $0.id == id }, "No guide \(id)")
 }
 
 @Suite("Content pack: structure")
@@ -25,7 +24,7 @@ struct ContentStructureTests {
 
     @Test("Loads, and is the current version")
     func loads() throws {
-        let p = try pack()
+        let p = try ContentLoader.loadUK()
         #expect(p.version == 6)
         #expect(!p.services.isEmpty && !p.emergencyRoutes.isEmpty && !p.guides.isEmpty)
     }
@@ -39,7 +38,7 @@ struct ContentStructureTests {
 
     @Test("Identifiers are unique within each section")
     func uniqueIDs() throws {
-        let p = try pack()
+        let p = try ContentLoader.loadUK()
         let reporting = p.reporting(for: .unitedKingdom)
         #expect(Set(reporting.map(\.id)).count == reporting.count)
         #expect(Set(p.services.map(\.id)).count == p.services.count)
@@ -52,7 +51,7 @@ struct ContentStructureTests {
         // The 2023 build listed English services only and presented them as though
         // they were UK-wide, which sends someone in Glasgow or Belfast to the wrong
         // place. Each nation must have its own 24-hour route.
-        let p = try pack()
+        let p = try ContentLoader.loadUK()
         for nation in [Coverage.england, .wales, .scotland, .northernIreland] {
             let found = p.services.contains {
                 $0.coverage == nation && $0.availability == .allHours && $0.phone != nil
@@ -63,7 +62,7 @@ struct ContentStructureTests {
 
     @Test("Round-trips through JSON without losing anything")
     func roundTrips() throws {
-        let original = try pack()
+        let original = try ContentLoader.loadUK()
         let decoded = try JSONDecoder().decode(ContentPack.self, from: JSONEncoder().encode(original))
         #expect(decoded == original)
     }
@@ -74,7 +73,7 @@ struct PhoneNumberContentTests {
 
     @Test("Every phone number is dialable")
     func allDialable() throws {
-        let p = try pack()
+        let p = try ContentLoader.loadUK()
         for s in p.services + p.refuges {
             guard let phone = s.phone else { continue }
             #expect(PhoneNumber(phone) != nil, "\(s.id) has an undialable number: \(phone)")
@@ -88,7 +87,7 @@ struct PhoneNumberContentTests {
         // cannot speak — the exact failure that route exists to prevent. Emergency
         // numbers belong in emergencyRoutes, which have no dialable field at all.
         let forbidden: Set = ["999", "112", "18000", "18001", "61016"]
-        let p = try pack()
+        let p = try ContentLoader.loadUK()
         for s in p.services + p.refuges {
             guard let phone = s.phone, let dialable = PhoneNumber(phone)?.dialable else { continue }
             #expect(!forbidden.contains(dialable), "\(s.id) carries emergency short code \(dialable)")
@@ -98,7 +97,7 @@ struct PhoneNumberContentTests {
     @Test("Numbers are shown in readable groups, not as an unbroken string of digits")
     func readable() throws {
         // "08085002222" is hard to read under stress and easy to misdial by hand.
-        let p = try pack()
+        let p = try ContentLoader.loadUK()
         for s in p.services + p.refuges {
             guard let phone = s.phone, phone.count > 7 else { continue }
             #expect(phone.contains(" "), "\(s.id) number is not grouped: \(phone)")
@@ -251,7 +250,7 @@ struct LinkTests {
 
     @Test("No content references a dead or hijacked emergency domain")
     func noHostileDomains() throws {
-        let everything = try JSONEncoder().encode(try pack())
+        let everything = try JSONEncoder().encode(try ContentLoader.loadUK())
         let text = String(decoding: everything, as: UTF8.self)
         #expect(!text.contains("emergencysms.org.uk"))
         #expect(!text.contains("emergencysms.net"))
@@ -259,7 +258,7 @@ struct LinkTests {
 
     @Test("Every link and source is https and parses")
     func urlsAreSound() throws {
-        let p = try pack()
+        let p = try ContentLoader.loadUK()
         // Built in steps: as one expression it is too much for the type checker.
         var urls: [String] = (p.services + p.reporting(for: .unitedKingdom) + p.refuges).flatMap { [$0.url, $0.source] }
         urls += p.emergencyRoutes.compactMap(\.learnMoreURL)
@@ -274,7 +273,7 @@ struct LinkTests {
 
     @Test("Every URL a person can open is in allURLs, including rights sources and refuge routes")
     func allURLsIsComplete() throws {
-        let p = try pack()
+        let p = try ContentLoader.loadUK()
         let listed = Set(ContentLoader.allURLs(in: p))
         let expected = Set(p.rights.flatMap { $0.sources.map(\.url) } + p.refuges.map(\.url) + [p.refugeNote.source.url])
         #expect(expected.isSubset(of: listed), "Missing: \(expected.subtracting(listed))")
@@ -284,7 +283,7 @@ struct LinkTests {
 @Suite("Content pack: crime reporting")
 struct CrimeReportingTests {
 
-    private func reporting() throws -> [SupportService] { try pack().reporting(for: .unitedKingdom) }
+    private func reporting() throws -> [SupportService] { try ContentLoader.loadUK().reporting(for: .unitedKingdom) }
     private func route(_ id: String) throws -> SupportService {
         try #require(try reporting().first { $0.id == id }, "No reporting route \(id)")
     }
@@ -295,8 +294,8 @@ struct CrimeReportingTests {
         // "can only be offered in countries or regions where such involvement is
         // present". These routes involve only UK police, so outside the UK they are
         // not shown at all — a caveat is not enough.
-        #expect(try pack().reporting(for: .elsewhere(countryCode: "US")).isEmpty)
-        #expect(try pack().reporting(for: .elsewhere(countryCode: nil)).isEmpty)
+        #expect(try ContentLoader.loadUK().reporting(for: .elsewhere(countryCode: "US")).isEmpty)
+        #expect(try ContentLoader.loadUK().reporting(for: .elsewhere(countryCode: nil)).isEmpty)
     }
 
     @Test("Reporting routes are shown in the UK")
@@ -327,7 +326,7 @@ struct CrimeReportingTests {
 
     @Test("Every text number carries a note about cost or failure")
     func textNotes() throws {
-        let p = try pack()
+        let p = try ContentLoader.loadUK()
         for s in p.services + p.reporting(for: .unitedKingdom) where s.textNumber != nil {
             #expect(s.textNote != nil, "\(s.id) offers a text number with no warning")
         }
@@ -372,7 +371,7 @@ struct CrimeReportingTests {
     func noProjectGuardian() throws {
         // The 2023 dissertation cited the 2013 policing operation. The name now
         // belongs to a Year 9 workshop run by the London Transport Museum.
-        let text = String(decoding: try JSONEncoder().encode(try pack()), as: UTF8.self).lowercased()
+        let text = String(decoding: try JSONEncoder().encode(try ContentLoader.loadUK()), as: UTF8.self).lowercased()
         #expect(!text.contains("project guardian"))
     }
 }

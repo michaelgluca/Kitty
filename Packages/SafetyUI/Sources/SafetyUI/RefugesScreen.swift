@@ -32,7 +32,7 @@ struct RefugesScreen: View {
     private var isTestMode: Bool { testMode?.isOn == true }
 
     private var current: NationShown {
-        Self.nationShown(saved: nationPreference.nation, unsaved: nationPreference.unsavedChoice, detected: detected)
+        Self.nationShown(saved: nationPreference.nation, unsavedChoice: nationPreference.unsavedChoice, detected: detected)
     }
 
     var body: some View {
@@ -90,39 +90,49 @@ extension RefugesScreen {
     }
 }
 
-/// Which nation the refuge list is for, and whether it came from the person's location.
+/// Which nation the refuge list is for: where it came from, and — for the problem row's
+/// wording — whether that is a pick that could not be saved. `isUnsavedPick` is set only
+/// by `nationShown` itself, at the one place that actually took the unsaved-pick branch,
+/// rather than left for `problemText` to re-derive by comparing optionals: "the nation
+/// shown happens to equal the failed pick" cannot be told apart, by `==` alone, from "both
+/// happen to be the same nation (or both `nil`) for unrelated reasons".
 struct NationShown: Equatable {
     let nation: Nation?
     let isFromLocation: Bool
+    let isUnsavedPick: Bool
 }
 
 extension RefugesScreen {
 
     /// The order of precedence:
     /// 1. The person's saved choice, shared with Get help and Learn.
-    /// 2. A pick made here that could not be saved.
+    /// 2. A pick made here that could not be saved — but only when it named a nation.
+    ///    A failed pick of "all of the UK" is not a nation to list, so it is treated
+    ///    exactly as if there had been no unsaved pick at all, and falls through.
     /// 3. Until they choose, the nation found from their location. It is shown so the
     ///    list is there at once, labelled as such, and never saved (as in M4).
     /// 4. Otherwise none, and the screen asks.
-    static func nationShown(saved: Nation?, unsaved: Nation?, detected: Nation?) -> NationShown {
-        if let saved { return NationShown(nation: saved, isFromLocation: false) }
-        if let unsaved { return NationShown(nation: unsaved, isFromLocation: false) }
-        return NationShown(nation: detected, isFromLocation: detected != nil)
+    static func nationShown(saved: Nation?, unsavedChoice: NationPreference.UnsavedChoice?, detected: Nation?) -> NationShown {
+        if let saved { return NationShown(nation: saved, isFromLocation: false, isUnsavedPick: false) }
+        if let pick = unsavedChoice?.nation {
+            return NationShown(nation: pick, isFromLocation: false, isUnsavedPick: true)
+        }
+        return NationShown(nation: detected, isFromLocation: detected != nil, isUnsavedPick: false)
     }
 
     /// The problem row's text. The refuges-specific "could not be saved, so it is used on
-    /// this screen only" wording is true only when the nation this screen is actually
-    /// showing is the unsaved pick it would be talking about — otherwise (the failed pick
-    /// belongs to a different nation than the one shown, which `NationPreference` should
-    /// never produce, but this does not trust that silently) it says what Get help and
-    /// Learn say. A read failure has no such pick to misattribute, so it always uses the
-    /// refuges-specific wording.
-    static func problemText(_ problem: NationPreference.Problem, shown nation: Nation?, unsavedChoice: Nation?) -> String {
+    /// this screen only" wording is used only when what is shown is genuinely the pick
+    /// that failed (`shown.isUnsavedPick`) — never merely because a nation, or the lack of
+    /// one, happens to match. Every other save failure — one made elsewhere that named a
+    /// different nation, or one that was "all of the UK" itself — says something that
+    /// claims nothing about what is on screen. A read failure has no pick to misattribute,
+    /// so it always uses the refuges-specific wording.
+    static func problemText(_ problem: NationPreference.Problem, shown: NationShown) -> String {
         switch problem {
         case .couldNotRead:
             FilterCopy.refugesProblem(problem)
         case .couldNotSave:
-            nation == unsavedChoice ? FilterCopy.refugesProblem(problem) : FilterCopy.problem(problem)
+            shown.isUnsavedPick ? FilterCopy.refugesProblem(problem) : FilterCopy.refugesCouldNotSaveElsewhere
         }
     }
 }
@@ -154,7 +164,7 @@ private struct RefugesNationSection: View {
             .accessibilityIdentifier("refuges.nation")
 
             if let problem = preference.problem {
-                NationProblemRow(text: RefugesScreen.problemText(problem, shown: shown.nation, unsavedChoice: preference.unsavedChoice))
+                NationProblemRow(text: RefugesScreen.problemText(problem, shown: shown))
             }
             // The person may have moved since choosing: offered, never applied.
             if let detected, preference.isStale(detected: detected) {

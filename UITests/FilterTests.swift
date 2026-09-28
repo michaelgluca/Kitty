@@ -255,11 +255,13 @@ final class FilterTests: XCTestCase {
     func testLearnSaysWhenNoRightsTopicMatchesEvenWithFeaturesListed() {
         let app = launch()
         app.tabBars.buttons["Learn"].tap()
-        search("check in", in: app)
+        // Matches a feature and no right: "check in" would not do, since a rights point
+        // says police "should finish a check within 28 days".
+        search("crash detection", in: app)
         XCTAssertTrue(anything(containing: "No rights topics match", in: app).waitForExistence(timeout: 3))
         let clear = app.buttons["filter.noMatches.clear"]
         XCTAssertTrue(clear.exists)
-        let feature = app.buttons["learn.feature.check-in"]
+        let feature = app.buttons["learn.feature.crash-detection"]
         app.reveal(feature)
         XCTAssertTrue(feature.exists)
 

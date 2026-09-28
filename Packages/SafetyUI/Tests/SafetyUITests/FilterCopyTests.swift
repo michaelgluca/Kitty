@@ -14,8 +14,16 @@ struct FilterCopyTests {
             "Forced marriage & FGM", "Housing & money", "Work", "Reporting & victims' rights",
         ])
         #expect(TopicCopy.name(.general) == nil)
-        #expect(TopicCopy.names[.general] == nil)
-        #expect(TopicCopy.names.count == 8)
+    }
+
+    @Test("Search finds each chip by its name and its other words; general has none")
+    func searchTerms() {
+        #expect(TopicCopy.searchTerms[.general] == nil)
+        #expect(TopicCopy.searchTerms.count == 8)
+        for chip in TopicCopy.chips {
+            #expect(TopicCopy.searchTerms[chip.topic]?.first == chip.name, "\(chip.topic)")
+        }
+        #expect(TopicCopy.searchTerms[.domesticAbuse]?.last?.contains("domestic violence") == true)
     }
 
     @Test("The summary names the nation, the topics in chip order, and the search")
@@ -74,7 +82,10 @@ struct FilterCopyTests {
         "refuges.nation.couldNotSaveElsewhere",
         "filter.topics.label", "topic.domesticAbuse", "topic.sexualViolence", "topic.stalkingAndHarassment",
         "topic.onlineAbuse", "topic.forcedMarriageAndFGM", "topic.housingAndMoney", "topic.work",
-        "topic.reportingAndVictimsRights", "filter.search.prompt", "filter.summary", "filter.summary.separator",
+        "topic.reportingAndVictimsRights", "topic.domesticAbuse.searchTerms", "topic.sexualViolence.searchTerms",
+        "topic.stalkingAndHarassment.searchTerms", "topic.onlineAbuse.searchTerms", "topic.forcedMarriageAndFGM.searchTerms",
+        "topic.housingAndMoney.searchTerms", "topic.work.searchTerms", "topic.reportingAndVictimsRights.searchTerms",
+        "filter.search.prompt", "filter.summary", "filter.summary.separator",
         "filter.summary.search", "filter.clear", "filter.clear.hint", "filter.clearFilters",
         "filter.noMatches.title", "filter.noMatches.rights", "filter.noMatches.body", "filter.noMatches.features.body", "rights.elsewhere",
         "filter.resultCount %lld",

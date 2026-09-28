@@ -13,17 +13,7 @@ enum TopicCopy {
     /// The chip name, or `nil` for `general`. That tag is never a chip: it marks help open
     /// to anyone, which shows under every topic.
     static func name(_ topic: Topic) -> String? {
-        switch topic {
-        case .domesticAbuse: Strings.localized("topic.domesticAbuse")
-        case .sexualViolence: Strings.localized("topic.sexualViolence")
-        case .stalkingAndHarassment: Strings.localized("topic.stalkingAndHarassment")
-        case .onlineAbuse: Strings.localized("topic.onlineAbuse")
-        case .forcedMarriageAndFGM: Strings.localized("topic.forcedMarriageAndFGM")
-        case .housingAndMoney: Strings.localized("topic.housingAndMoney")
-        case .work: Strings.localized("topic.work")
-        case .reportingAndVictimsRights: Strings.localized("topic.reportingAndVictimsRights")
-        case .general: nil
-        }
+        key(topic).map { Strings.localized(String.LocalizationValue($0)) }
     }
 
     /// The eight chips, in order.
@@ -31,10 +21,30 @@ enum TopicCopy {
         Topic.selectable.compactMap { topic in name(topic).map { TopicChipItem(topic: topic, name: $0) } }
     }
 
-    /// Chip names by topic, for search: typing "stalking" finds help tagged Stalking &
-    /// harassment, in whatever language the chips are in.
-    static var names: [Topic: String] {
-        Dictionary(uniqueKeysWithValues: chips.map { ($0.topic, $0.name) })
+    /// What search finds each topic by, in whatever language the chips are in: its chip
+    /// name, so "stalking" finds help tagged Stalking & harassment, and the other words
+    /// people use for it, so "domestic violence" finds every domestic abuse helpline
+    /// whether or not its own entry says "violence".
+    static var searchTerms: [Topic: [String]] {
+        Dictionary(uniqueKeysWithValues: Topic.selectable.compactMap { topic in
+            key(topic).map { key in
+                (topic, [key, "\(key).searchTerms"].map { Strings.localized(String.LocalizationValue($0)) })
+            }
+        })
+    }
+
+    private static func key(_ topic: Topic) -> String? {
+        switch topic {
+        case .domesticAbuse: "topic.domesticAbuse"
+        case .sexualViolence: "topic.sexualViolence"
+        case .stalkingAndHarassment: "topic.stalkingAndHarassment"
+        case .onlineAbuse: "topic.onlineAbuse"
+        case .forcedMarriageAndFGM: "topic.forcedMarriageAndFGM"
+        case .housingAndMoney: "topic.housingAndMoney"
+        case .work: "topic.work"
+        case .reportingAndVictimsRights: "topic.reportingAndVictimsRights"
+        case .general: nil
+        }
     }
 }
 

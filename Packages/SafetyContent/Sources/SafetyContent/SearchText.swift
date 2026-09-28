@@ -33,9 +33,9 @@ public enum SearchText {
     /// Whether every word appears, as part of any word, in one of the fields. No words
     /// matches everything. Fields are joined with a line break, so one word can never
     /// match across two fields.
-    public static func contains(_ words: [String], in fields: [String?]) -> Bool {
+    public static func contains(_ words: [String], in fields: [String]) -> Bool {
         guard !words.isEmpty else { return true }
-        let haystack = fields.compactMap { $0 }.map(normalise).joined(separator: "\n")
+        let haystack = fields.map(normalise).joined(separator: "\n")
         return words.allSatisfy { haystack.contains($0) }
     }
 }

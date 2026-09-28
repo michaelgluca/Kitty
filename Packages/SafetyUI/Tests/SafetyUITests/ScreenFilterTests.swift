@@ -6,13 +6,8 @@ import Testing
 
 @testable import SafetyUI
 
-/// The chip names in English, as `TopicCopy.names` will supply them (Task 5).
-private let names: [Topic: String] = [
-    .domesticAbuse: "Domestic abuse", .sexualViolence: "Sexual violence",
-    .stalkingAndHarassment: "Stalking & harassment", .onlineAbuse: "Online abuse",
-    .forcedMarriageAndFGM: "Forced marriage & FGM", .housingAndMoney: "Housing & money",
-    .work: "Work", .reportingAndVictimsRights: "Reporting & victims' rights",
-]
+/// The search words the screens use, from the String Catalog.
+private let terms = TopicCopy.searchTerms
 
 @MainActor
 @Suite("Screen filter and what each screen shows")
@@ -30,7 +25,7 @@ struct ScreenFilterTests {
                 for query in ["", "stalking", "zzqx nothing matches this"] {
                     for region in [RegionStance.unitedKingdom, .elsewhere(countryCode: "US")] {
                         let criteria = FilterCriteria(nation: nation, topics: topics, query: query)
-                        let content = HelpContent(pack: p, region: region, criteria: criteria, topicNames: names)
+                        let content = HelpContent(pack: p, region: region, criteria: criteria, topicTerms: terms)
                         #expect(content.emergencyRoutes == p.emergencyRoutes)
                     }
                 }
@@ -41,7 +36,7 @@ struct ScreenFilterTests {
     @Test("Nothing matching is reported even though the 999 routes are still on screen")
     func noMatchesDespite999() throws {
         let p = try pack()
-        let content = HelpContent(pack: p, region: .unitedKingdom, criteria: FilterCriteria(query: "zzqx"), topicNames: names)
+        let content = HelpContent(pack: p, region: .unitedKingdom, criteria: FilterCriteria(query: "zzqx"), topicTerms: terms)
         #expect(content.hasNoMatches)
         #expect(content.resultCount == 0)
         #expect(!content.emergencyRoutes.isEmpty)
@@ -52,16 +47,16 @@ struct ScreenFilterTests {
         let p = try pack()
         for nation in [Nation?.none] + Nation.allCases.map(Optional.some) {
             let criteria = FilterCriteria(nation: nation)
-            #expect(!HelpContent(pack: p, region: .unitedKingdom, criteria: criteria, topicNames: names).hasNoMatches,
+            #expect(!HelpContent(pack: p, region: .unitedKingdom, criteria: criteria, topicTerms: terms).hasNoMatches,
                     "\(String(describing: nation))")
-            #expect(!LearnContent(pack: p, criteria: criteria, topicNames: names).rights.isEmpty,
+            #expect(!LearnContent(pack: p, criteria: criteria, topicTerms: terms).rights.isEmpty,
                     "\(String(describing: nation))")
         }
     }
 
     @Test("Scotland shows Scotland's helpline and not England's; help with no stated coverage stays")
     func scotland() throws {
-        let content = HelpContent(pack: try pack(), region: .unitedKingdom, criteria: FilterCriteria(nation: .scotland), topicNames: names)
+        let content = HelpContent(pack: try pack(), region: .unitedKingdom, criteria: FilterCriteria(nation: .scotland), topicTerms: terms)
         let ids = content.services.map(\.id)
         #expect(ids.contains("scotland-domestic-abuse-forced-marriage-helpline"))
         #expect(!ids.contains("national-domestic-abuse-helpline"))
@@ -72,7 +67,7 @@ struct ScreenFilterTests {
     func reportingGateKept() throws {
         let content = HelpContent(
             pack: try pack(), region: .elsewhere(countryCode: "US"),
-            criteria: FilterCriteria(topics: [.reportingAndVictimsRights]), topicNames: names
+            criteria: FilterCriteria(topics: [.reportingAndVictimsRights]), topicTerms: terms
         )
         #expect(content.reporting.isEmpty)
     }
@@ -80,10 +75,10 @@ struct ScreenFilterTests {
     @Test("Learn's iPhone features ignore the nation and topics, and answer only to search")
     func guidesSearchOnly() throws {
         let p = try pack()
-        #expect(LearnContent(pack: p, criteria: FilterCriteria(nation: .northernIreland, topics: [.work]), topicNames: names).guides == p.guides)
-        let searched = LearnContent(pack: p, criteria: FilterCriteria(query: "check in"), topicNames: names)
-        #expect(searched.guides.map(\.id).contains("check-in"))
-        #expect(searched.rights.isEmpty, "No right mentions checking in")
+        #expect(LearnContent(pack: p, criteria: FilterCriteria(nation: .northernIreland, topics: [.work]), topicTerms: terms).guides == p.guides)
+        let searched = LearnContent(pack: p, criteria: FilterCriteria(query: "crash detection"), topicTerms: terms)
+        #expect(searched.guides.map(\.id) == ["crash-detection"])
+        #expect(searched.rights.isEmpty, "No right mentions crash detection")
         #expect(!searched.hasNoMatches, "Features still match, so the screen is not empty")
     }
 

@@ -20,7 +20,7 @@ struct LearnScreen: View {
     /// What the filter leaves. `nil` only without a pack.
     private var content: LearnContent? {
         pack.map {
-            LearnContent(pack: $0, criteria: filter.criteria(nation: nationPreference.nation), topicNames: TopicCopy.names)
+            LearnContent(pack: $0, criteria: filter.criteria(nation: nationPreference.nation), topicTerms: TopicCopy.searchTerms)
         }
     }
 

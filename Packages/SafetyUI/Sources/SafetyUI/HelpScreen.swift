@@ -35,7 +35,7 @@ public struct HelpScreen: View {
     /// What the filter leaves. `nil` only without a pack.
     private var content: HelpContent? {
         pack.map {
-            HelpContent(pack: $0, region: region, criteria: filter.criteria(nation: nationPreference.nation), topicNames: TopicCopy.names)
+            HelpContent(pack: $0, region: region, criteria: filter.criteria(nation: nationPreference.nation), topicTerms: TopicCopy.searchTerms)
         }
     }
 

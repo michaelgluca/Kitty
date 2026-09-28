@@ -83,20 +83,12 @@ struct NearbyScreen: View {
                 // blanking, but say plainly, above it, that it is from the last
                 // search. The model drops it the moment the refresh ends, so a
                 // failure replaces it rather than leaving it looking current.
-                HStack(spacing: Design.Space.tight) {
-                    ProgressView()
-                    Text(NearbyCopy.updating).fixedSize(horizontal: false, vertical: true)
-                }
-                .accessibilityElement(children: .combine)
-                .accessibilityIdentifier("nearby.updating")
+                progressRow(NearbyCopy.updating)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityIdentifier("nearby.updating")
                 results(previous)
             } else {
-                HStack(spacing: Design.Space.tight) {
-                    ProgressView()
-                    if let message = NearbyCopy.message(for: model.state) {
-                        Text(message)
-                    }
-                }
+                progressRow(NearbyCopy.message(for: model.state))
             }
         default:
             VStack(alignment: .leading, spacing: Design.Space.tight) {
@@ -111,6 +103,15 @@ struct NearbyScreen: View {
             .padding(.vertical, 2)
             if NearbyCopy.showsCounterNote(in: model.state) {
                 PoliceCounterNote(isUnitedKingdom: region.isUnitedKingdom)
+            }
+        }
+    }
+
+    private func progressRow(_ text: String?) -> some View {
+        HStack(spacing: Design.Space.tight) {
+            ProgressView()
+            if let text {
+                Text(text).fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -176,14 +177,10 @@ private struct StationMap: View {
         Map(initialPosition: .automatic) {
             UserAnnotation()
             ForEach(found.stations) { station in
-                Marker(
-                    station.name ?? Strings.localized("nearby.station.unnamed"),
-                    systemImage: "shield.lefthalf.filled",
-                    coordinate: CLLocationCoordinate2D(latitude: station.coordinate.latitude, longitude: station.coordinate.longitude)
-                )
+                Marker(NearbyCopy.name(of: station), systemImage: "shield.lefthalf.filled", coordinate: station.coordinate.clCoordinate)
             }
             if let route = found.route {
-                MapPolyline(coordinates: route.path.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) })
+                MapPolyline(coordinates: route.path.map(\.clCoordinate))
                     .stroke(.blue, lineWidth: 5)
             }
         }
@@ -228,7 +225,7 @@ private struct StationRow: View {
             // which then loses its own more specific identifier. Keeping it on a
             // single non-interactive leaf still lets a UI test find "this station's
             // row" without swallowing the button's identity.
-            Text(station.name ?? Strings.localized("nearby.station.unnamed"))
+            Text(NearbyCopy.name(of: station))
                 .font(.headline)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("nearby.station.\(station.id)")
@@ -256,4 +253,8 @@ private struct StationRow: View {
         }
         .padding(.vertical, 2)
     }
+}
+
+private extension Coordinate {
+    var clCoordinate: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: latitude, longitude: longitude) }
 }

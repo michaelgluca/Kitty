@@ -79,7 +79,7 @@ final class LearnNearbyTests: XCTestCase {
         let link = app.buttons["nearby.refuges"]
         app.reveal(link)
         link.tap()
-        XCTAssertTrue(app.staticTexts["Information could not be loaded"].waitForExistence(timeout: 3),
+        XCTAssertTrue(app.staticTexts["Refuge information could not be loaded"].waitForExistence(timeout: 3),
                       "Refuges must say content could not be loaded, never show an empty list")
     }
 

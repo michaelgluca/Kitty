@@ -46,32 +46,27 @@ final class NationPreference {
 
     func load() {
         unsavedChoice = nil
+        (nation, problem) = Self.saved(in: store)
+    }
+
+    private static func saved(in store: any NationStoring) -> (Nation?, Problem?) {
         do {
-            guard let id = try store.load() else {
-                nation = nil
-                problem = nil
-                return
-            }
+            guard let id = try store.load() else { return (nil, nil) }
             // An id this version does not know, perhaps written by a later one, is not
             // mapped to the nearest thing: it is reported.
-            guard let saved = Nation(rawValue: id) else {
-                nation = nil
-                problem = .couldNotRead
-                return
-            }
-            nation = saved
-            problem = nil
+            guard let saved = Nation(rawValue: id) else { return (nil, .couldNotRead) }
+            return (saved, nil)
         } catch {
-            nation = nil
-            problem = .couldNotRead
+            return (nil, .couldNotRead)
         }
     }
 
     /// Saves the person's choice. If it cannot be saved, the screens show all of the UK
-    /// and say so, rather than the old nation (which is no longer what they want) or the
-    /// new one (which would silently be lost at the next launch). Every call, whether it
-    /// succeeds or fails, replaces whatever `unsavedChoice` held before — a failure never
-    /// outlives itself by attaching to a later, unrelated one.
+    /// and say so, rather than the old nation (which is no longer what they want, though
+    /// the store still holds it, so it returns at the next launch) or the new one (which
+    /// would silently be lost at the next launch). Every call, whether it succeeds or
+    /// fails, replaces whatever `unsavedChoice` held before — a failure never outlives
+    /// itself by attaching to a later, unrelated one.
     func choose(_ newNation: Nation?) {
         do {
             try store.save(newNation?.rawValue)
@@ -101,8 +96,8 @@ final class NationPreference {
     /// Whether a saved nation differs from where Nearby last found the person: they may
     /// have moved. Flagged as a visible row rather than only inside the menu, and never
     /// applied without a tap.
-    func isStale(detected: Nation?) -> Bool {
-        guard let nation, let detected else { return false }
+    func isStale(detected: Nation) -> Bool {
+        guard let nation else { return false }
         return nation != detected
     }
 }

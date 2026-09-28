@@ -18,14 +18,10 @@ struct FilterSection: View {
     var body: some View {
         Section {
             NationMenu(preference: preference, detected: detected)
-            if let problem = preference.problem {
-                NationProblemRow(text: FilterCopy.problem(problem))
-            }
-            // The person may have moved since choosing. Shown as a row, not only inside the
-            // menu, so it is seen; never applied without a tap.
-            if let detected, preference.isStale(detected: detected) {
-                NationOfferButton(nation: detected) { preference.choose(detected) }
-            }
+            NationStatusRows(
+                preference: preference, detected: detected,
+                problemText: FilterCopy.problem, onUseDetected: preference.choose
+            )
             TopicChips(selected: filter.topics) { filter.toggle($0) }
             if let summary = FilterCopy.summary(nation: preference.nation, topics: filter.topics, query: filter.query) {
                 FilterSummary(text: summary, onClear: filter.canClear ? { filter.clear() } : nil)
@@ -73,7 +69,7 @@ struct NationMenu: View {
                 Image(systemName: "mappin.and.ellipse")
             }
             .foregroundStyle(.primary)
-            if !typeSize.isAccessibilitySize { Spacer(minLength: Design.Space.tight) }
+            Design.adaptiveSpacer(at: typeSize)
             Text(FilterCopy.nationName(preference.nation))
                 .fontWeight(.semibold)
                 .fixedSize(horizontal: false, vertical: true)
@@ -83,6 +79,27 @@ struct NationMenu: View {
         // Otherwise VoiceOver reads "Where you are" and the chosen nation as two
         // separate swipes inside what is really one control (the menu's label).
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// The rows under a nation picker: a store failure, then the nation Nearby detected if
+/// the person may have moved since choosing. Shown as rows, not only inside a menu, so
+/// they are seen; the detected nation is never applied without a tap.
+struct NationStatusRows: View {
+
+    let preference: NationPreference
+    let detected: Nation?
+    /// Each screen words the failure for what it shows instead.
+    let problemText: (NationPreference.Problem) -> String
+    let onUseDetected: (Nation) -> Void
+
+    var body: some View {
+        if let problem = preference.problem {
+            NationProblemRow(text: problemText(problem))
+        }
+        if let detected, preference.isStale(detected: detected) {
+            NationOfferButton(nation: detected) { onUseDetected(detected) }
+        }
     }
 }
 
@@ -209,7 +226,7 @@ struct FilterSummary: View {
             // swipes inside what is really one line, the way NationMenu's label does.
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("filter.summary")
-            if !typeSize.isAccessibilitySize { Spacer(minLength: Design.Space.tight) }
+            Design.adaptiveSpacer(at: typeSize)
             if let onClear {
                 Button(action: onClear) {
                     Text("filter.clear", bundle: .module)

@@ -13,12 +13,11 @@ struct ChipFlowLayout: Layout {
         let width = proposal.width ?? .infinity
         let sizes = measure(subviews, width: width)
         let rows = Self.rows(for: sizes, width: width, spacing: spacing)
-        let rowHeights = rows.map { row in row.map { sizes[$0].height }.max() ?? 0 }
-        let height = rowHeights.reduce(0, +) + spacing * CGFloat(max(rows.count - 1, 0))
-        let rowWidths: [CGFloat] = rows.map { row -> CGFloat in
+        let height = rows.map { Self.height(of: $0, in: sizes) }.reduce(0, +) + spacing * CGFloat(max(rows.count - 1, 0))
+        let rowWidths = rows.map { row in
             row.map { sizes[$0].width }.reduce(0, +) + spacing * CGFloat(max(row.count - 1, 0))
         }
-        let usedWidth: CGFloat = rowWidths.max() ?? 0
+        let usedWidth = rowWidths.max() ?? 0
         return CGSize(width: min(usedWidth, proposal.width ?? usedWidth), height: height)
     }
 
@@ -31,8 +30,12 @@ struct ChipFlowLayout: Layout {
                 subviews[index].place(at: CGPoint(x: x, y: y), anchor: .topLeading, proposal: ProposedViewSize(sizes[index]))
                 x += sizes[index].width + spacing
             }
-            y += (row.map { sizes[$0].height }.max() ?? 0) + spacing
+            y += Self.height(of: row, in: sizes) + spacing
         }
+    }
+
+    private static func height(of row: [Int], in sizes: [CGSize]) -> CGFloat {
+        row.map { sizes[$0].height }.max() ?? 0
     }
 
     private func measure(_ subviews: Subviews, width: CGFloat) -> [CGSize] {

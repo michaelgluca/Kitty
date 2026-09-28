@@ -1,6 +1,12 @@
 import Foundation
+import SafetyDomain
 
 enum NearbyCopy {
+
+    /// A station's name, or words saying it has none rather than a blank.
+    static func name(of station: NearbyPlace) -> String {
+        station.name ?? Strings.localized("nearby.station.unnamed")
+    }
 
     /// Words for every state except `.idle` and `.found`, which the screen draws itself.
     static func message(for state: NearbyModel.State) -> String? {

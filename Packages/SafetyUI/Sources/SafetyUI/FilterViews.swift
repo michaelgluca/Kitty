@@ -66,10 +66,7 @@ struct NationMenu: View {
 
     /// Side by side at normal sizes, and stacked at accessibility sizes, like `ServiceRow`.
     private var label: some View {
-        let layout = typeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: Design.Space.tight))
-            : AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: Design.Space.tight))
-        return layout {
+        (Design.adaptiveStack(at: typeSize)) {
             Label {
                 Text("filter.nation.title", bundle: .module)
             } icon: {
@@ -83,6 +80,9 @@ struct NationMenu: View {
         }
         .frame(minHeight: Design.minimumTapTarget)
         .contentShape(Rectangle())
+        // Otherwise VoiceOver reads "Where you are" and the chosen nation as two
+        // separate swipes inside what is really one control (the menu's label).
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -195,10 +195,7 @@ struct FilterSummary: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        let layout = typeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: Design.Space.tight))
-            : AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: Design.Space.tight))
-        layout {
+        (Design.adaptiveStack(at: typeSize)) {
             Label {
                 Text(text).fixedSize(horizontal: false, vertical: true)
             } icon: {

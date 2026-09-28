@@ -65,6 +65,7 @@ struct FilterCopyTests {
         "topic.reportingAndVictimsRights", "filter.search.prompt", "filter.summary", "filter.summary.separator",
         "filter.summary.search", "filter.clear", "filter.clear.hint", "filter.clearFilters",
         "filter.noMatches.title", "filter.noMatches.rights", "filter.noMatches.body", "rights.elsewhere",
+        "filter.resultCount %lld",
     ])
     func keysResolve(key: String) {
         #expect(Strings.localized(String.LocalizationValue(key)) != key, "Missing catalogue entry: \(key)")

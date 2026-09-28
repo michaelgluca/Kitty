@@ -33,24 +33,7 @@ final class AlertFlowTests: XCTestCase {
 
     @MainActor
     private func turnOnTestMode(in app: XCUIApplication) {
-        app.tabBars.buttons["Settings"].tap()
-        let toggle = app.switches["settings.testMode"]
-        XCTAssertTrue(toggle.waitForExistence(timeout: 3))
-        // Tap the switch itself: tapping a Form row's label does not flip a Toggle
-        // on iOS 17 and later.
-        let knob = toggle.switches.firstMatch
-        (knob.exists ? knob : toggle).tap()
-        if toggle.value as? String != "1" {
-            // On iOS 26/27's Liquid Glass switch, a very short synthetic tap can be
-            // swallowed without flipping the control. Fall back to a coordinate
-            // press-and-drag across the switch, which reliably reproduces a real
-            // finger dragging the knob across.
-            let target = knob.exists ? knob : toggle
-            target.coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.5))
-                .press(forDuration: 0.1, thenDragTo: target.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)))
-        }
-        XCTAssertEqual(toggle.value as? String, "1", "Test Mode did not switch on")
-        app.tabBars.buttons["Alert"].tap()
+        app.turnOnTestMode()
     }
 
     @MainActor

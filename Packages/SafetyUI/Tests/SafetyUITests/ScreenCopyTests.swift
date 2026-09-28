@@ -119,6 +119,7 @@ struct ScreenCopyTests {
         "alert.contacts.open",
         "alert.result.dismiss", "alert.result.sent.combined", "alert.location.allow", "alert.location.openSettings", "alert.location.settingsFailed",
         "emergency.call.hint", "emergency.unavailable",
+        "help.unavailable.title", "help.unavailable.body",
         "contacts.title", "contacts.explainer", "contacts.add", "contacts.empty",
         "contacts.remove.action", "contacts.remove.title", "contacts.remove.message", "contacts.remove.confirm",
         "contacts.remove.row",

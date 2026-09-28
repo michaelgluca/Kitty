@@ -342,6 +342,30 @@
         }
       }
     },
+    "help.unavailable.title": {
+      "comment": "Shown only if the bundled content failed to load.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Safety information could not be loaded"
+          }
+        }
+      }
+    },
+    "help.unavailable.body": {
+      "comment": "Shown only if the bundled content failed to load. Names 999 because, unlike Learn, this is the tab that would otherwise show how to reach it.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please reinstall Kitty G. In an emergency, call 999."
+          }
+        }
+      }
+    },
     "help.callConfirm.title": {
       "extractionState": "manual",
       "localizations": {

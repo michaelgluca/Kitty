@@ -8,6 +8,12 @@ import SwiftUI
 /// Entirely offline: the content pack is bundled, so this screen works with no
 /// signal, no permission and no network. That is the point — it is the part of the
 /// app most likely to be needed when everything else has failed.
+///
+/// Everything below the 999 routes can be narrowed by nation, topic and search
+/// (ADR-0014). The 999 routes and the Test Mode banner never are.
+///
+/// `RootView` must inject the `NationPreference` and `NearbyModel` this screen reads
+/// from the Environment.
 public struct HelpScreen: View {
 
     @Environment(\.services) private var services
@@ -15,8 +21,11 @@ public struct HelpScreen: View {
     // Optional: returns nil rather than crashing when no session is supplied, such as
     // in a preview. No session in the environment means Test Mode is off.
     @Environment(TestModeSession.self) private var testMode: TestModeSession?
+    @Environment(NationPreference.self) private var nationPreference
+    @Environment(NearbyModel.self) private var nearby
 
     @State private var contact = ServiceContactActions()
+    @State private var filter = ScreenFilter()
 
     private var isTestMode: Bool { testMode?.isOn == true }
 
@@ -24,6 +33,13 @@ public struct HelpScreen: View {
 
     public init(pack: ContentPack?) {
         self.pack = pack
+    }
+
+    /// What the filter leaves. `nil` only without a pack.
+    private var content: HelpContent? {
+        pack.map {
+            HelpContent(pack: $0, region: region, criteria: filter.criteria(nation: nationPreference.nation), topicNames: TopicCopy.names)
+        }
     }
 
     public var body: some View {
@@ -37,61 +53,95 @@ public struct HelpScreen: View {
                     Section { NonUKNotice() }
                 }
 
-                if let pack {
-                    Section {
-                        ForEach(pack.emergencyRoutes) { EmergencyRouteRow(route: $0) }
-                    } header: {
-                        Text("help.section.emergency", bundle: .module)
-                    }
-
-                    Section {
-                        ForEach(pack.services) { service in
-                            ServiceRow(service: service, now: services.time.now, onCall: call, onText: text)
-                        }
-                    } header: {
-                        Text("help.section.services", bundle: .module)
-                    }
-
-                    // Read through the gate, never the raw list: outside the UK this
-                    // is empty and the section does not render at all (Guideline 1.7).
-                    let reporting = pack.reporting(for: region)
-                    if !reporting.isEmpty {
-                        Section {
-                            ForEach(reporting) { route in
-                                ServiceRow(service: route, now: services.time.now, onCall: call, onText: text)
-                            }
-                        } header: {
-                            Text("help.section.reporting", bundle: .module)
-                        } footer: {
-                            Text("help.reporting.footer", bundle: .module)
-                        }
-                    }
-
-                    Section {
-                        NavigationLink {
-                            SafetyFeaturesScreen(pack: pack)
-                        } label: {
-                            Label {
-                                Text("help.features.link", bundle: .module)
-                            } icon: {
-                                Image(systemName: "iphone.gen3")
-                            }
-                        }
-                        .accessibilityIdentifier("help.features.link")
-                    }
+                if let pack, let content {
+                    HelpSections(
+                        pack: pack, content: content, nationPreference: nationPreference,
+                        detected: nearby.detectedNation, filter: filter,
+                        now: services.time.now, onCall: call, onText: text
+                    )
                 } else {
                     // The pack is bundled, so this should be unreachable — but it is
                     // shown rather than swallowed, because an empty list would read
                     // as "there is no help available".
-                    ContentUnavailableView(
-                        "Safety information could not be loaded",
-                        systemImage: "exclamationmark.triangle.fill",
-                        description: Text(verbatim: "Please reinstall Kitty G. In an emergency, call 999.")
-                    )
+                    ContentUnavailableView {
+                        Label { Text("help.unavailable.title", bundle: .module) } icon: { Image(systemName: "exclamationmark.triangle.fill") }
+                    } description: {
+                        Text("help.unavailable.body", bundle: .module)
+                    }
                 }
             }
             .navigationTitle(Text("help.title", bundle: .module))
+            .filterSearchable(text: $filter.query)
+            .announcesResultCount(content?.resultCount ?? 0)
             .serviceContactDialogs(contact, dialler: services.dialler)
+        }
+    }
+}
+
+/// The 999 routes, the filter, and everything the filter can narrow. Extracted so
+/// `HelpScreen.body` reads as one screen; the 999 routes still come first and outside
+/// the filter, exactly as `HelpScreen`'s own doc comment promises.
+private struct HelpSections: View {
+
+    let pack: ContentPack
+    let content: HelpContent
+    let nationPreference: NationPreference
+    let detected: Nation?
+    let filter: ScreenFilter
+    let now: Date
+    let onCall: (PhoneNumber, String) -> Void
+    let onText: (PhoneNumber) -> Void
+
+    var body: some View {
+        // First, and outside the filter: whatever is chosen or typed below, every way
+        // to reach 999 stays on screen.
+        Section {
+            ForEach(content.emergencyRoutes) { EmergencyRouteRow(route: $0) }
+        } header: {
+            Text("help.section.emergency", bundle: .module)
+        }
+
+        FilterSection(preference: nationPreference, detected: detected, filter: filter)
+
+        if content.hasNoMatches {
+            Section { NoMatchesView(scope: .everything) { filter.clear() } }
+        }
+
+        if !content.services.isEmpty {
+            Section {
+                ForEach(content.services) { service in
+                    ServiceRow(service: service, now: now, onCall: onCall, onText: onText)
+                }
+            } header: {
+                Text("help.section.services", bundle: .module)
+            }
+        }
+
+        // `HelpContent` reads reporting through the gate, never the raw list: outside
+        // the UK it is empty and the section does not render at all (Guideline 1.7).
+        if !content.reporting.isEmpty {
+            Section {
+                ForEach(content.reporting) { route in
+                    ServiceRow(service: route, now: now, onCall: onCall, onText: onText)
+                }
+            } header: {
+                Text("help.section.reporting", bundle: .module)
+            } footer: {
+                Text("help.reporting.footer", bundle: .module)
+            }
+        }
+
+        Section {
+            NavigationLink {
+                SafetyFeaturesScreen(pack: pack)
+            } label: {
+                Label {
+                    Text("help.features.link", bundle: .module)
+                } icon: {
+                    Image(systemName: "iphone.gen3")
+                }
+            }
+            .accessibilityIdentifier("help.features.link")
         }
     }
 }

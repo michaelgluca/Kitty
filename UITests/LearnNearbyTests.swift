@@ -16,11 +16,6 @@ final class LearnNearbyTests: XCTestCase {
         return app
     }
 
-    @MainActor
-    private func anything(containing fragment: String, in app: XCUIApplication) -> XCUIElement {
-        app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", fragment)).firstMatch
-    }
-
     // MARK: - Learn
 
     @MainActor
@@ -31,9 +26,9 @@ final class LearnNearbyTests: XCTestCase {
         app.reveal(topic)
         topic.tap()
 
-        XCTAssertTrue(anything(containing: "Applies ", in: app).waitForExistence(timeout: 3),
+        XCTAssertTrue(app.element(containing: "Applies ").waitForExistence(timeout: 3),
                       "Every point must say which nations it applies in")
-        let disclaimer = anything(containing: "not legal advice", in: app)
+        let disclaimer = app.element(containing: "not legal advice")
         app.reveal(disclaimer)
         XCTAssertTrue(disclaimer.exists)
     }
@@ -50,16 +45,13 @@ final class LearnNearbyTests: XCTestCase {
         // key, not from a bare "1" static text: a bare Label whose icon is
         // just the step number is not read out by VoiceOver on its own, and the
         // number is not exposed as its own static text once the label is set.
-        XCTAssertTrue(anything(containing: "Step 1: ", in: app).waitForExistence(timeout: 3), "Steps are numbered")
+        XCTAssertTrue(app.element(containing: "Step 1: ").waitForExistence(timeout: 3), "Steps are numbered")
     }
 
     @MainActor
     func testHelpLinksToTheIPhoneFeatures() {
         let app = launch()
-        app.tabBars.buttons["Get help"].tap()
-        let link = app.buttons["help.features.link"]
-        app.reveal(link)
-        link.tap()
+        app.openIPhoneFeatures()
         XCTAssertTrue(app.buttons["learn.feature.emergency-sos"].waitForExistence(timeout: 3))
     }
 
@@ -75,10 +67,7 @@ final class LearnNearbyTests: XCTestCase {
                       "Learn must say content could not be loaded, never show an empty list")
         XCTAssertFalse(app.buttons["learn.rights.what-counts-as-domestic-abuse"].exists)
 
-        app.tabBars.buttons["Nearby"].tap()
-        let link = app.buttons["nearby.refuges"]
-        app.reveal(link)
-        link.tap()
+        app.openRefuges()
         XCTAssertTrue(app.staticTexts["Refuge information could not be loaded"].waitForExistence(timeout: 3),
                       "Refuges must say content could not be loaded, never show an empty list")
     }
@@ -99,12 +88,12 @@ final class LearnNearbyTests: XCTestCase {
         app.tabBars.buttons["Nearby"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["nearby.station.test-station"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["Test Police Station"].exists)
-        XCTAssertTrue(anything(containing: "on foot", in: app).exists)
-        XCTAssertTrue(anything(containing: "away in a straight line", in: app).exists,
+        XCTAssertTrue(app.element(containing: "on foot").exists)
+        XCTAssertTrue(app.element(containing: "away in a straight line").exists,
                       "A station's distance is a straight line and must say so")
         XCTAssertTrue(app.buttons["nearby.directions.test-station"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["nearby.map"].exists)
-        XCTAssertTrue(anything(containing: "front counters", in: app).exists)
+        XCTAssertTrue(app.element(containing: "front counters").exists)
         XCTAssertTrue(app.staticTexts["nearby.counterNote"].label.contains("call 999"))
     }
 
@@ -115,7 +104,7 @@ final class LearnNearbyTests: XCTestCase {
         let app = launch(["-kitty.stubNearby", "-kitty.stubNearbySearchFails"])
         app.tabBars.buttons["Nearby"].tap()
         XCTAssertTrue(app.buttons["nearby.retry"].waitForExistence(timeout: 5), "A failed search offers a retry")
-        XCTAssertTrue(anything(containing: "could not search", in: app).exists, "The failure says what happened")
+        XCTAssertTrue(app.element(containing: "could not search").exists, "The failure says what happened")
         XCTAssertFalse(app.descendants(matching: .any)["nearby.map"].exists, "No map without a result")
         let note = app.staticTexts["nearby.counterNote"]
         XCTAssertTrue(note.exists, "The front-counter note must show when no station is found")
@@ -125,14 +114,11 @@ final class LearnNearbyTests: XCTestCase {
     @MainActor
     func testRefugesListServicesForTheNationNeverAddresses() {
         let app = launch(["-kitty.stubNearby"])
-        app.tabBars.buttons["Nearby"].tap()
-        let link = app.buttons["nearby.refuges"]
-        app.reveal(link)
-        link.tap()
+        app.openRefuges()
 
         XCTAssertTrue(app.descendants(matching: .any)["refuges.why"].waitForExistence(timeout: 3),
                       "The reason there are no addresses must be on screen")
-        XCTAssertTrue(anything(containing: "Chosen from your location", in: app).exists)
+        XCTAssertTrue(app.element(containing: "Chosen from your location").exists)
         let england = app.staticTexts["National Domestic Abuse Helpline"]
         app.reveal(england)
         XCTAssertTrue(england.exists)
@@ -147,7 +133,7 @@ final class LearnNearbyTests: XCTestCase {
         // The "chosen from your location" note is seeded from the
         // stub's location, not from whatever is picked afterwards — it must not
         // survive picking a different nation by hand.
-        XCTAssertFalse(anything(containing: "Chosen from your location", in: app).exists,
+        XCTAssertFalse(app.element(containing: "Chosen from your location").exists,
                        "Picking a nation by hand must clear the from-your-location note")
     }
 
@@ -165,12 +151,9 @@ final class LearnNearbyTests: XCTestCase {
     @MainActor
     func testRefugesScreenNamesTheNationAndNeverShowsAnAddressOrMap() {
         let app = launch(["-kitty.stubNearby"])
-        app.tabBars.buttons["Nearby"].tap()
-        let link = app.buttons["nearby.refuges"]
-        app.reveal(link)
-        link.tap()
+        app.openRefuges()
 
-        XCTAssertTrue(anything(containing: "In England", in: app).waitForExistence(timeout: 3),
+        XCTAssertTrue(app.element(containing: "In England").waitForExistence(timeout: 3),
                       "The refuge list must name the nation it is filtered to")
 
         // Wait for a known service to be on screen, so the refuge list has genuinely
@@ -206,16 +189,13 @@ final class LearnNearbyTests: XCTestCase {
     func testNoPhoneLineNoticeShowsOnHelpButNeverOnRefuges() {
         let app = launch(["-kitty.stubNearby"])
         app.tabBars.buttons["Get help"].tap()
-        let noPhoneOnHelp = anything(containing: "This service has no phone line.", in: app)
+        let noPhoneOnHelp = app.element(containing: "This service has no phone line.")
         app.reveal(noPhoneOnHelp)
         XCTAssertTrue(noPhoneOnHelp.exists, "Women's Aid must still show it has no phone line on Get help")
 
-        app.tabBars.buttons["Nearby"].tap()
-        let link = app.buttons["nearby.refuges"]
-        app.reveal(link)
-        link.tap()
+        app.openRefuges()
         XCTAssertTrue(app.descendants(matching: .any)["refuges.why"].waitForExistence(timeout: 3))
-        XCTAssertFalse(anything(containing: "This service has no phone line.", in: app).exists,
+        XCTAssertFalse(app.element(containing: "This service has no phone line.").exists,
                        "No refuge directory shows a no-phone-line notice on the Refuges screen")
     }
 }

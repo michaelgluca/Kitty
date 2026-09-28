@@ -48,7 +48,7 @@ struct LearnCopyTests {
         "learn.features.footer", "feature.step",
     ])
     func keysResolve(key: String) {
-        #expect(Strings.localized(String.LocalizationValue(key)) != key, "Missing catalogue entry: \(key)")
+        expectCatalogueEntry(key)
     }
 
     // VoiceOver: a Label whose icon is a plain number is not read as "step one" on

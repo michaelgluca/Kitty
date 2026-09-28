@@ -296,12 +296,19 @@ public final class InMemoryNationStore: NationStoring, @unchecked Sendable {
     private var stored: String?
     private var _saveCount = 0
     private let loadFailure: (any Error)?
-    private let saveFailure: (any Error)?
+    private var _saveFailure: (any Error)?
 
     public init(saved: String? = nil, loadFailure: (any Error)? = nil, saveFailure: (any Error)? = nil) {
         self.stored = saved
         self.loadFailure = loadFailure
-        self.saveFailure = saveFailure
+        self._saveFailure = saveFailure
+    }
+
+    /// Thrown by every `save` from now on; `nil` lets saves succeed again, so a test can
+    /// show a failure, then a success, then another failure.
+    public var saveFailure: (any Error)? {
+        get { lock.withLock { _saveFailure } }
+        set { lock.withLock { _saveFailure = newValue } }
     }
 
     /// What is stored now.

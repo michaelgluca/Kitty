@@ -12,11 +12,9 @@ import Testing
 @Suite("Search vocabulary")
 struct SearchVocabularyTests {
 
-    private func pack() throws -> ContentPack { try ContentLoader.loadUK() }
-
     private func helpIDs(_ query: String, in nation: Nation?) throws -> [String] {
         let criteria = FilterCriteria(nation: nation, query: query)
-        let content = HelpContent(pack: try pack(), region: .unitedKingdom, criteria: criteria, topicTerms: TopicCopy.searchTerms)
+        let content = HelpContent(pack: try ContentLoader.loadUK(), region: .unitedKingdom, criteria: criteria, topicTerms: TopicCopy.searchTerms)
         return (content.services + content.reporting).map(\.id)
     }
 
@@ -48,7 +46,7 @@ struct SearchVocabularyTests {
         ("cyberflashing", "online-abuse"),
     ])
     func lawNamesFindTheirTopic(query: String, topic: String) throws {
-        let learn = LearnContent(pack: try pack(), criteria: FilterCriteria(query: query), topicTerms: TopicCopy.searchTerms)
+        let learn = LearnContent(pack: try ContentLoader.loadUK(), criteria: FilterCriteria(query: query), topicTerms: TopicCopy.searchTerms)
         #expect(learn.rights.map(\.id).contains(topic))
     }
 }

@@ -9,36 +9,21 @@ private typealias UnsavedChoice = NationPreference.UnsavedChoice
 @Suite("Refuges: which nation is listed")
 struct RefugesNationTests {
 
-    @Test("The nation chosen on Get help or Learn is the one listed, even after a move")
-    func savedBeatsDetected() {
-        #expect(RefugesScreen.nationShown(saved: .scotland, unsavedChoice: nil, detected: .england)
-                == NationShown(nation: .scotland, isFromLocation: false, isUnsavedPick: false))
-    }
-
-    @Test("Until the person chooses, the nation found from their location is listed and labelled")
-    func detectedWhenNothingChosen() {
-        #expect(RefugesScreen.nationShown(saved: nil, unsavedChoice: nil, detected: .england)
-                == NationShown(nation: .england, isFromLocation: true, isUnsavedPick: false))
-    }
-
-    @Test("A pick that could not be saved is kept for this screen, and not labelled as from the location")
-    func unsavedPickIsKept() {
-        #expect(RefugesScreen.nationShown(saved: nil, unsavedChoice: UnsavedChoice(nation: .wales), detected: .england)
-                == NationShown(nation: .wales, isFromLocation: false, isUnsavedPick: true))
-    }
-
-    @Test("A failed pick of 'all of the UK' is not a nation to list: it falls through exactly as if there had been no failed pick")
-    func failedAllOfTheUKPickFallsThrough() {
-        #expect(RefugesScreen.nationShown(saved: nil, unsavedChoice: UnsavedChoice(nation: nil), detected: .england)
-                == NationShown(nation: .england, isFromLocation: true, isUnsavedPick: false))
-        #expect(RefugesScreen.nationShown(saved: nil, unsavedChoice: UnsavedChoice(nation: nil), detected: nil)
-                == NationShown(nation: nil, isFromLocation: false, isUnsavedPick: false))
-    }
-
-    @Test("With nothing chosen and nothing detected, the screen asks")
-    func nothing() {
-        #expect(RefugesScreen.nationShown(saved: nil, unsavedChoice: nil, detected: nil)
-                == NationShown(nation: nil, isFromLocation: false, isUnsavedPick: false))
+    @Test("Refuges lists the saved nation, then a pick of a nation that could not be saved, then the detected one, and otherwise asks", arguments: [
+        // The nation chosen on Get help or Learn is the one listed, even after a move.
+        (Nation?.some(.scotland), UnsavedChoice?.none, Nation?.some(.england), NationShown(nation: .scotland, isFromLocation: false, isUnsavedPick: false)),
+        // Until the person chooses, the nation found from their location is listed and labelled.
+        (nil, nil, .england, NationShown(nation: .england, isFromLocation: true, isUnsavedPick: false)),
+        // A pick that could not be saved is kept for this screen, not labelled as from the location.
+        (nil, UnsavedChoice(nation: .wales), .england, NationShown(nation: .wales, isFromLocation: false, isUnsavedPick: true)),
+        // A failed pick of "all of the UK" is not a nation to list: it falls through.
+        (nil, UnsavedChoice(nation: nil), .england, NationShown(nation: .england, isFromLocation: true, isUnsavedPick: false)),
+        (nil, UnsavedChoice(nation: nil), nil, NationShown(nation: nil, isFromLocation: false, isUnsavedPick: false)),
+        // With nothing chosen and nothing detected, the screen asks.
+        (nil, nil, nil, NationShown(nation: nil, isFromLocation: false, isUnsavedPick: false)),
+    ])
+    func nationShown(saved: Nation?, unsavedChoice: NationPreference.UnsavedChoice?, detected: Nation?, expected: NationShown) {
+        #expect(RefugesScreen.nationShown(saved: saved, unsavedChoice: unsavedChoice, detected: detected) == expected)
     }
 
     @Test("A read failure always uses the refuges-specific wording: it has no pick to misattribute")

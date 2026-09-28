@@ -16,25 +16,38 @@ private func station(_ id: String, north metres: Double) -> NearbyPlace {
 
 private let route = WalkingRoute(distanceMetres: 450, expectedSeconds: 360, path: [here, station("a", north: 400).coordinate])
 
+private let fixedAtStart = Date(timeIntervalSinceReferenceDate: 812_000_000)
+
+/// Services that find one station in England, with a route to it, at `fixedAtStart`
+/// unless told otherwise.
+private func services(
+    location: any LocationProviding = StubLocationProvider(fix: fix),
+    places: any PlaceSearching = StubPlaceSearch([.found([station("a", north: 400)])]),
+    routes: any RouteFinding = StubRouteFinder(.found(route)),
+    maps: SpyMapsOpener = SpyMapsOpener(),
+    area: GeocodedArea? = GeocodedArea(countryCode: "GB", names: ["England"]),
+    time: any TimeSource = AdvancingTime(fixedAtStart)
+) -> Services {
+    var s = Services.unavailable
+    s.location = location
+    s.places = places
+    s.routes = routes
+    s.maps = maps
+    s.areas = StubAreaNamer(area)
+    s.time = time
+    return s
+}
+
+/// Lets other tasks run until `condition` holds, or gives up after a bounded number of
+/// turns so a broken test fails rather than hangs.
+@MainActor
+private func yield(until condition: () -> Bool) async {
+    for _ in 0..<10_000 where !condition() { await Task.yield() }
+}
+
 @MainActor
 @Suite("Nearby model")
 struct NearbyModelTests {
-
-    private func services(
-        location: any LocationProviding = StubLocationProvider(fix: fix),
-        places: StubPlaceSearch = StubPlaceSearch([.found([station("a", north: 400)])]),
-        routes: any RouteFinding = StubRouteFinder(.found(route)),
-        maps: SpyMapsOpener = SpyMapsOpener(),
-        area: GeocodedArea? = GeocodedArea(countryCode: "GB", names: ["England"])
-    ) -> Services {
-        var s = Services.unavailable
-        s.location = location
-        s.places = places
-        s.routes = routes
-        s.maps = maps
-        s.areas = StubAreaNamer(area)
-        return s
-    }
 
     @Test("Each location state is its own visible state, and none of them prompts or searches", arguments: [
         (LocationAuthorization.notDetermined, NearbyModel.State.needsPermission),
@@ -86,7 +99,7 @@ struct NearbyModelTests {
     func noneFound() async {
         let m = NearbyModel(services: services(places: StubPlaceSearch([])))
         await m.refresh()
-        #expect(m.state == .noneFound(searchedMetres: 25_000))
+        #expect(m.state == .noneFound(searchedMetres: NearbyModel.widestRadius))
     }
 
     @Test("A search that cannot run is reported as such, not as nothing nearby, and is not retried wider")
@@ -218,7 +231,7 @@ struct NearbyModelTests {
         // Wait for the actual request, not just the `.searching` state: the state
         // flips synchronously the moment the fix arrives, a moment before the search
         // loop's first `firstResult` call actually reaches the double.
-        for _ in 0..<10_000 where hanging.requestedRadii.isEmpty { await Task.yield() }
+        await yield { !hanging.requestedRadii.isEmpty }
         #expect(m.state == .searching)
         #expect(m.isBusy)
 
@@ -248,9 +261,8 @@ struct NearbyModelTests {
         let m = NearbyModel(services: s)
 
         let first = Task { await m.refresh() }
-        for _ in 0..<10_000 {
-            if case .found = m.state { break }
-            await Task.yield()
+        await yield {
+            if case .found = m.state { true } else { false }
         }
         guard case .found = m.state else { Issue.record("Expected the first refresh to reach found"); return }
 
@@ -337,8 +349,6 @@ struct NearbyModelTests {
 
 // MARK: - Staying current
 
-private let fixedAtStart = Date(timeIntervalSinceReferenceDate: 812_000_000)
-
 /// A result that is stale at `now`, or not, by the model's own rule.
 private func found(fixedAt: Date) -> NearbyModel.Found {
     NearbyModel.Found(origin: here, fixedAt: fixedAt, stations: [station("a", north: 400)], route: nil)
@@ -347,21 +357,6 @@ private func found(fixedAt: Date) -> NearbyModel.Found {
 @MainActor
 @Suite("Nearby model: staying current")
 struct NearbyModelCurrencyTests {
-
-    private func services(
-        location: any LocationProviding = StubLocationProvider(fix: fix),
-        places: any PlaceSearching = StubPlaceSearch([.found([station("a", north: 400)]), .found([station("b", north: 300)])]),
-        time: AdvancingTime = AdvancingTime(fixedAtStart)
-    ) -> Services {
-        var s = Services.unavailable
-        s.location = location
-        s.places = places
-        s.routes = StubRouteFinder(.found(route))
-        s.maps = SpyMapsOpener()
-        s.areas = StubAreaNamer(GeocodedArea(countryCode: "GB", names: ["England"]))
-        s.time = time
-        return s
-    }
 
     @Test("A result records when its location was read, from the injected time source")
     func recordsFixedAt() async {
@@ -473,7 +468,7 @@ struct NearbyModelCurrencyTests {
 
         time.advance(by: NearbyModel.resultMaximumAge)
         let second = Task { await m.refreshIfNeeded() }
-        for _ in 0..<10_000 where places.requestedRadii.count < 2 { await Task.yield() }
+        await yield { places.requestedRadii.count >= 2 }
         #expect(m.isBusy)
         #expect(m.previousResult == old, "The old result stays visible while updating")
         #expect(m.detectedNation == nil, "A nation from the old reading is not offered as from your location while it is replaced")

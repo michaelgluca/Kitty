@@ -57,11 +57,13 @@ struct FilterCopyTests {
         #expect(FilterCopy.nationName(nil) == "All of the UK")
     }
 
-    @Test("The no-matches body differs on the iPhone features screen, which has no nation menu or chips to clear")
-    func noMatchesBody() {
-        #expect(FilterCopy.noMatchesBody(.everything) == Strings.localized("filter.noMatches.body"))
-        #expect(FilterCopy.noMatchesBody(.rights) == Strings.localized("filter.noMatches.body"))
-        #expect(FilterCopy.noMatchesBody(.features) == Strings.localized("filter.noMatches.features.body"))
+    @Test("The no-matches body differs on the iPhone features screen, which has no nation menu or chips to clear", arguments: [
+        (NoMatchesScope.everything, "filter.noMatches.body"),
+        (NoMatchesScope.rights, "filter.noMatches.body"),
+        (NoMatchesScope.features, "filter.noMatches.features.body"),
+    ])
+    func noMatchesBody(scope: NoMatchesScope, key: String) {
+        #expect(FilterCopy.noMatchesBody(scope) == Strings.localized(String.LocalizationValue(key)))
     }
 
     @Test("Every filter key resolves", arguments: [

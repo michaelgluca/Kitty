@@ -52,9 +52,9 @@ public struct HelpScreen: View {
                         Section { NonUKNotice() }
                     }
 
-                    if let pack, let content {
+                    if let content {
                         HelpSections(
-                            pack: pack, content: content, nationPreference: nationPreference,
+                            content: content, nationPreference: nationPreference,
                             detected: nearby.detectedNation, filter: filter,
                             now: services.time.now, contact: contact
                         )
@@ -75,7 +75,6 @@ public struct HelpScreen: View {
 /// the filter, exactly as `HelpScreen`'s own doc comment promises.
 private struct HelpSections: View {
 
-    let pack: ContentPack
     let content: HelpContent
     let nationPreference: NationPreference
     let detected: Nation?
@@ -124,7 +123,7 @@ private struct HelpSections: View {
 
         Section {
             NavigationLink {
-                SafetyFeaturesScreen(pack: pack)
+                SafetyFeaturesScreen(guides: content.guides)
             } label: {
                 Label {
                     Text("help.features.link", bundle: .module)
@@ -200,26 +199,13 @@ struct ServiceRow: View {
         showsNoPhoneLine && kind != .reporting
     }
 
-    /// Side by side at normal sizes; stacked at accessibility sizes.
-    ///
-    /// Found by checking on device at AX5: side by side, the badge took half the
-    /// width and squeezed "National Domestic Abuse Helpline" into a narrow column
-    /// that broke mid-word — "Helplin / e", with no hyphen. That is worst for exactly
-    /// the people who use the largest text, so the layout changes rather than the
-    /// text shrinking.
-    private var headerLayout: AnyLayout {
-        Design.adaptiveStack(at: typeSize)
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: Design.Space.tight) {
-            headerLayout {
+            (Design.adaptiveStack(at: typeSize)) {
                 Text(service.name)
                     .font(.headline)
                     .fixedSize(horizontal: false, vertical: true)
-                if !typeSize.isAccessibilitySize {
-                    Spacer(minLength: Design.Space.tight)
-                }
+                Design.adaptiveSpacer(at: typeSize)
                 // No badge when the operator does not state its coverage. Showing a
                 // nation it has not claimed would be inventing a fact.
                 if let coverage = service.coverage {
@@ -259,16 +245,8 @@ struct ServiceRow: View {
             if let phone = service.phone, let number = PhoneNumber(phone) {
                 CallButton(number: number, serviceName: service.name) { contact.call(number, service.name) }
             } else if Self.shouldShowNoPhoneLine(kind: service.kind, showsNoPhoneLine: showsNoPhoneLine) {
-                // Only where someone might go looking for a number that does not
-                // exist — Women's Aid, on Get help. A web-only reporting route such
-                // as GOV.UK does not need telling, and `showsNoPhoneLine` is false in
-                // the refuge list, where a phoneless `.information` entry is a
-                // directory or council route that was never a phone line to begin
-                // with — the same sentence there would be stating a fact about the
-                // wrong kind of entry.
-                // Stated explicitly. Women's Aid runs no telephone line, and leaving
-                // that blank invites someone to go looking for a number that does
-                // not exist.
+                // Only where someone might look for a number that does not exist
+                // (see `showsNoPhoneLine`); a web-only reporting route needs no telling.
                 Text("help.noPhone", bundle: .module)
                     .font(.footnote)
                     .foregroundStyle(.secondary)

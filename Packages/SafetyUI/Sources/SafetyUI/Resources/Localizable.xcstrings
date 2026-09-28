@@ -2414,6 +2414,30 @@
           }
         }
       }
+    },
+    "refuges.unavailable.title": {
+      "comment": "Refuges: shown only if the bundled content failed to load. Never an empty list, which would read as 'there are no refuges'.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refuge information could not be loaded"
+          }
+        }
+      }
+    },
+    "refuges.unavailable.body": {
+      "comment": "Refuges: shown only if the bundled content failed to load.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please reinstall Kitty G."
+          }
+        }
+      }
     }
   }
 }

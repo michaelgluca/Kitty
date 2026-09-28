@@ -44,9 +44,8 @@ struct RefugesScreen: View {
                     // The pack is bundled, so this should be unreachable in a real
                     // install — but reachable in DEBUG (-kitty.withoutContent), and a
                     // silent empty screen would read as "there are no refuges", which is
-                    // both false and dangerous. Shown rather than swallowed, matching
-                    // `LearnScreen`.
-                    ContentUnavailableNotice(titleKey: "learn.unavailable.title", bodyKey: "learn.unavailable.body")
+                    // both false and dangerous.
+                    ContentUnavailableNotice(titleKey: "refuges.unavailable.title", bodyKey: "refuges.unavailable.body")
                 }
             }
         }
@@ -64,12 +63,8 @@ struct RefugesScreen: View {
     }
 }
 
-/// Which nation the refuge list is for: where it came from, and — for the problem row's
-/// wording — whether that is a pick that could not be saved. `isUnsavedPick` is set only
-/// by `nationShown` itself, at the one place that actually took the unsaved-pick branch,
-/// rather than left for `problemText` to re-derive by comparing optionals: "the nation
-/// shown happens to equal the failed pick" cannot be told apart, by `==` alone, from "both
-/// happen to be the same nation (or both `nil`) for unrelated reasons".
+/// Which nation the refuge list is for, and where it came from. `isUnsavedPick` is true
+/// only when the list shows a pick that could not be saved.
 struct NationShown: Equatable {
     let nation: Nation?
     let isFromLocation: Bool
@@ -95,13 +90,9 @@ extension RefugesScreen {
         return NationShown(nation: detected, isFromLocation: detected != nil, isUnsavedPick: false)
     }
 
-    /// The problem row's text. The refuges-specific "could not be saved, so it is used on
-    /// this screen only" wording is used only when what is shown is genuinely the pick
-    /// that failed (`shown.isUnsavedPick`) — never merely because a nation, or the lack of
-    /// one, happens to match. Every other save failure — one made elsewhere that named a
-    /// different nation, or one that was "all of the UK" itself — says something that
-    /// claims nothing about what is on screen. A read failure has no pick to misattribute,
-    /// so it always uses the refuges-specific wording.
+    /// The problem row's text. "Used on this screen only" is said only for the unsaved
+    /// pick the list is showing; any other save failure gets wording that claims nothing
+    /// about what is on screen.
     static func problemText(_ problem: NationPreference.Problem, shown: NationShown) -> String {
         switch problem {
         case .couldNotRead:
@@ -138,13 +129,10 @@ private struct RefugesNationSection: View {
             }
             .accessibilityIdentifier("refuges.nation")
 
-            if let problem = preference.problem {
-                NationProblemRow(text: RefugesScreen.problemText(problem, shown: shown))
-            }
-            // The person may have moved since choosing: offered, never applied.
-            if let detected, preference.isStale(detected: detected) {
-                NationOfferButton(nation: detected) { pick(detected) }
-            }
+            NationStatusRows(
+                preference: preference, detected: detected,
+                problemText: { RefugesScreen.problemText($0, shown: shown) }, onUseDetected: pick
+            )
         } footer: {
             if shown.isFromLocation {
                 Text("refuges.nation.fromLocation", bundle: .module)

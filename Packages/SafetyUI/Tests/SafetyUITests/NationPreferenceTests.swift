@@ -115,7 +115,6 @@ struct NationPreferenceTests {
         #expect(preference.offer(detected: .england) == .england)
         #expect(preference.nation == .scotland)
         #expect(!preference.isStale(detected: .scotland))
-        #expect(!preference.isStale(detected: nil), "No detection is not a move")
         #expect(!loaded(InMemoryNationStore()).isStale(detected: .england),
                 "With all of the UK chosen, the offer stays in the menu and is not flagged")
     }

@@ -44,7 +44,7 @@ struct LearnCopyTests {
         "tab.learn", "learn.rights.header", "learn.rights.footer", "learn.features.header",
         "rights.whatTheLawSays", "rights.whatYouCanDo", "rights.differences", "rights.sources", "rights.disclaimer",
         "feature.setUp", "feature.use", "feature.caution", "feature.requirements",
-        "help.features.link", "learn.unavailable.title", "learn.unavailable.body",
+        "help.features.link", "learn.unavailable.title", "learn.unavailable.body", "refuges.unavailable.title", "refuges.unavailable.body",
         "learn.features.footer", "feature.step",
     ])
     func keysResolve(key: String) {

@@ -48,9 +48,13 @@ struct HelpContent: Equatable {
     let services: [SupportService]
     /// Read through the UK gate first (Guideline 1.7), then filtered.
     let reporting: [SupportService]
+    /// Every iPhone feature, behind a link rather than listed: the features screen has
+    /// its own search, and neither the nation nor a topic narrows them.
+    let guides: [SafetyGuide]
 
     init(pack: ContentPack, region: RegionStance, criteria: FilterCriteria, topicTerms: [Topic: [String]]) {
         emergencyRoutes = pack.emergencyRoutes
+        guides = pack.guides
         services = ContentFilter.services(pack.services, matching: criteria, topicTerms: topicTerms)
         reporting = ContentFilter.services(pack.reporting(for: region), matching: criteria, topicTerms: topicTerms)
     }

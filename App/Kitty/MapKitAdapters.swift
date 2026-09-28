@@ -8,6 +8,10 @@ import SafetyServices
 nonisolated private let nearbyLog = Logger(subsystem: "uk.co.example.safety", category: "nearby")
 
 private extension Coordinate {
+    init(_ coordinate: CLLocationCoordinate2D) {
+        self.init(latitude: coordinate.latitude, longitude: coordinate.longitude)
+    }
+
     var clCoordinate: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: latitude, longitude: longitude) }
     var clLocation: CLLocation { CLLocation(latitude: latitude, longitude: longitude) }
 }
@@ -22,7 +26,7 @@ private extension MKMapItem {
         return NearbyPlace(
             id: identifier?.rawValue ?? fallback,
             name: name,
-            coordinate: Coordinate(latitude: c.latitude, longitude: c.longitude),
+            coordinate: Coordinate(c),
             phone: phoneNumber
         )
     }
@@ -101,7 +105,7 @@ struct MapKitRouteFinder: RouteFinding {
             return .found(WalkingRoute(
                 distanceMetres: route.distance,
                 expectedSeconds: route.expectedTravelTime,
-                path: points.map { Coordinate(latitude: $0.latitude, longitude: $0.longitude) }
+                path: points.map(Coordinate.init)
             ))
         } catch {
             nearbyLog.error("Walking route failed")

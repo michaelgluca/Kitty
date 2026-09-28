@@ -24,27 +24,29 @@ public enum Design {
         public static let card: CGFloat = 20
     }
 
-    /// Whether an adaptive stack should lay its content vertically, rather than side by
-    /// side, at this Dynamic Type size. Extracted from `adaptiveStack` so the
-    /// accessibility threshold is tested without rendering a view.
-    public static func stacksVertically(at typeSize: DynamicTypeSize) -> Bool {
-        typeSize.isAccessibilitySize
-    }
-
     /// Side by side at normal text sizes; stacked at accessibility sizes, so a long
     /// value is never squeezed into a narrow column that breaks mid-word. Found by
-    /// checking `ServiceRow` on device at AX5 (see its own comment) and shared by every
-    /// view with the same "label and value" shape: `ServiceRow`'s header, `NationMenu`'s
-    /// label and `FilterSummary`.
+    /// checking `ServiceRow` on device at AX5: side by side, the coverage badge took
+    /// half the width and broke "National Domestic Abuse Helpline" mid-word, which is
+    /// worst for exactly the people who use the largest text. Shared by every view with
+    /// the same "label and value" shape: `ServiceRow`'s header, `NationMenu`'s label and
+    /// `FilterSummary`. Pair it with `adaptiveSpacer(at:)`.
     public static func adaptiveStack(
         at typeSize: DynamicTypeSize,
         stackedAlignment: HorizontalAlignment = .leading,
         inlineAlignment: VerticalAlignment = .firstTextBaseline,
         spacing: CGFloat = Space.tight
     ) -> AnyLayout {
-        stacksVertically(at: typeSize)
+        typeSize.isAccessibilitySize
             ? AnyLayout(VStackLayout(alignment: stackedAlignment, spacing: spacing))
             : AnyLayout(HStackLayout(alignment: inlineAlignment, spacing: spacing))
+    }
+
+    /// Pushes the value to the trailing edge in an `adaptiveStack` laid out side by
+    /// side; nothing when it is stacked.
+    @ViewBuilder
+    public static func adaptiveSpacer(at typeSize: DynamicTypeSize) -> some View {
+        if !typeSize.isAccessibilitySize { Spacer(minLength: Space.tight) }
     }
 }
 

@@ -120,7 +120,7 @@ https://www.nidirect.gov.uk/articles/victim-charter | Victim Charter
 https://www.nidirect.gov.uk/articles/victim-personal-statements | Victim personal statements
 https://www.nidirect.gov.uk/domestic-abuse | Domestic abuse
 https://www.nidirect.gov.uk/stalking | Stalking
-https://www.nihe.gov.uk/DomesticAbuseSupport | Domestic Abuse Support - Northern Ireland Housing Executive
+https://www.nihe.gov.uk/DomesticAbuseSupport | Domestic Abuse Support - Northern Ireland Housing Executive | manual 2026-09-28
 https://www.scotland.police.uk/advice/domestic-abuse/disclosure-scheme-for-domestic-abuse-scotland/ | history of domestic abuse - Police Scotland
 https://www.scotland.police.uk/advice/forced-marriage/ | Forced marriage - Police Scotland
 https://www.scotland.police.uk/advice/rape-and-sexual-crime/ | Rape and sexual crime - Police Scotland
@@ -134,7 +134,7 @@ https://southallblacksisters.org.uk/our-services/domestic-abuse-helpline/ | Dome
 https://welshwomensaid.org.uk/information-support/find-your-local-service/ | Find your local service : Welsh Women's Aid
 https://womensaid.org.uk/information-support/the-survivors-handbook/i-want-to-leave-my-relationship-safely/ | I want to leave my relationship safely - Women’s Aid
 https://womensaid.org.uk/information-support/womens-aid-directory/ | Women's Aid Directory - Women’s Aid
-https://womensaid.scot/find-nearest-wa-group/ | Find your nearest WA group
+https://womensaid.scot/find-nearest-wa-group/ | Find your nearest WA group | manual 2026-09-28
 https://www.gov.wales/live-fear-free/domestic-abuse-wales | Domestic abuse
 https://www.sdafmh.org.uk/en/information-support/your-rights-practical-information/refuge/ | Refuge - Scotland's Domestic Abuse and Forced Marriage Helpline
 https://www.womensaidni.org/get-help/local-groups/ | Local groups - Women’s Aid Federation Northern Ireland

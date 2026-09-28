@@ -88,6 +88,8 @@ jobs:
     # when the app is left; and removing a contact is confirmed and remembered.
     # The Learn and Nearby tabs: nation-tagged rights, iPhone feature steps, the nearest station with
     # directions, and refuge services per nation that are never shown as addresses.
+    # Filters: 999 is never filtered, the chosen nation is remembered and shared with Refuges, and a
+    # filter that leaves nothing says so rather than showing an empty list.
     runs-on: xcode-27
     # A hang fails the job here, not after GitHub's six-hour default.
     timeout-minutes: 45

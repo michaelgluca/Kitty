@@ -19,3 +19,4 @@ and update the status of the old.
 | [0011](0011-crime-map.md) | Crime map: scope and privacy | Open |
 | [0012](0012-alert-flow-and-test-mode.md) | The alert flow and Test Mode | Accepted |
 | [0013](0013-learn-and-nearby.md) | Learn and Nearby: rights, iPhone features, police stations, refuges | Accepted |
+| [0014](0014-help-and-learn-filters.md) | Filtering Get help and Learn: nation, topics and search | Accepted |

@@ -79,14 +79,14 @@ final class HelpCallTests: XCTestCase {
         // "Not found" means nothing unless the whole list was scrolled. The iPhone
         // features link comes after where reporting would sit, so reaching it proves
         // the test looked everywhere reporting could have been.
-        let lastGuide = app.buttons["help.features.link"]
+        let featuresLink = app.buttons["help.features.link"]
         var attempts = 0
-        while !(lastGuide.exists && lastGuide.isHittable) && attempts < 40 {
+        while !(featuresLink.exists && featuresLink.isHittable) && attempts < 40 {
             XCTAssertFalse(app.buttons[reportingMarker].exists, "Crime reporting shown outside the UK")
             app.swipeUp(velocity: .slow)
             attempts += 1
         }
-        XCTAssertTrue(lastGuide.isHittable, "Never reached the end of the list, so the check proves nothing")
+        XCTAssertTrue(featuresLink.isHittable, "Never reached the end of the list, so the check proves nothing")
         XCTAssertFalse(app.buttons[reportingMarker].exists, "Crime reporting shown outside the UK")
     }
 

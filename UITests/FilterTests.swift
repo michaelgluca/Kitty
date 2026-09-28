@@ -17,11 +17,6 @@ final class FilterTests: XCTestCase {
     }
 
     @MainActor
-    private func anything(containing fragment: String, in app: XCUIApplication) -> XCUIElement {
-        app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", fragment)).firstMatch
-    }
-
-    @MainActor
     private func element(_ identifier: String, in app: XCUIApplication) -> XCUIElement {
         app.descendants(matching: .any)[identifier]
     }
@@ -75,10 +70,10 @@ final class FilterTests: XCTestCase {
         let banner = element("testMode.banner", in: app)
         app.reveal(banner, towardsTop: true)
         XCTAssertTrue(banner.exists, "The Test Mode banner must never be filtered")
-        let firstRoute = anything(containing: "Call 999 or 112", in: app)
+        let firstRoute = app.element(containing: "Call 999 or 112")
         app.reveal(firstRoute)
         XCTAssertTrue(firstRoute.exists, "The 999 routes must never be filtered")
-        let lastRoute = anything(containing: "Relay UK", in: app)
+        let lastRoute = app.element(containing: "Relay UK")
         app.reveal(lastRoute)
         XCTAssertTrue(lastRoute.exists, "Every 999 route must stay, not only the first")
     }
@@ -229,15 +224,15 @@ final class FilterTests: XCTestCase {
         let topic = app.buttons["learn.rights.what-counts-as-domestic-abuse"]
         app.reveal(topic)
         topic.tap()
-        XCTAssertTrue(anything(containing: "Applies in Scotland", in: app).waitForExistence(timeout: 3))
-        XCTAssertFalse(anything(containing: "Applies in England and Wales", in: app).exists,
+        XCTAssertTrue(app.element(containing: "Applies in Scotland").waitForExistence(timeout: 3))
+        XCTAssertFalse(app.element(containing: "Applies in England and Wales").exists,
                        "Other nations' points start collapsed")
         // The identifier, not the English label: proves it lands on the disclosure
         // row itself, not on every row it expands to reveal.
         let elsewhere = app.buttons["rights.elsewhere"]
         app.reveal(elsewhere)
         elsewhere.tap()
-        let englandAndWales = anything(containing: "Applies in England and Wales", in: app)
+        let englandAndWales = app.element(containing: "Applies in England and Wales")
         app.reveal(englandAndWales)
         XCTAssertTrue(englandAndWales.exists, "Other nations' points are hidden until opened, never removed")
     }
@@ -259,7 +254,7 @@ final class FilterTests: XCTestCase {
         // Matches a feature and no right: "check in" would not do, since a rights point
         // says police "should finish a check within 28 days".
         search("crash detection", in: app)
-        XCTAssertTrue(anything(containing: "No rights topics match", in: app).waitForExistence(timeout: 3))
+        XCTAssertTrue(app.element(containing: "No rights topics match").waitForExistence(timeout: 3))
         let clear = app.buttons["filter.noMatches.clear"]
         XCTAssertTrue(clear.exists)
         let feature = app.buttons["learn.feature.crash-detection"]
@@ -271,16 +266,13 @@ final class FilterTests: XCTestCase {
         let topic = app.buttons["learn.rights.what-counts-as-domestic-abuse"]
         app.reveal(topic, towardsTop: true)
         XCTAssertTrue(topic.exists, "Clear must bring the rights list back")
-        XCTAssertFalse(anything(containing: "No rights topics match", in: app).exists)
+        XCTAssertFalse(app.element(containing: "No rights topics match").exists)
     }
 
     @MainActor
     func testIPhoneFeaturesCanBeSearched() {
         let app = launch()
-        app.tabBars.buttons["Get help"].tap()
-        let link = app.buttons["help.features.link"]
-        app.reveal(link)
-        link.tap()
+        app.openIPhoneFeatures()
         search("check in", in: app)
         XCTAssertTrue(app.buttons["learn.feature.check-in"].waitForExistence(timeout: 3))
         XCTAssertFalse(app.buttons["learn.feature.emergency-sos"].exists)
@@ -290,10 +282,7 @@ final class FilterTests: XCTestCase {
     @MainActor
     func testIPhoneFeaturesSayWhenNothingMatchesAndClearRestoresTheList() {
         let app = launch()
-        app.tabBars.buttons["Get help"].tap()
-        let link = app.buttons["help.features.link"]
-        app.reveal(link)
-        link.tap()
+        app.openIPhoneFeatures()
         search("zzqx", in: app)
         let clear = app.buttons["filter.noMatches.clear"]
         app.reveal(clear)
@@ -313,18 +302,15 @@ final class FilterTests: XCTestCase {
         app.tabBars.buttons["Get help"].tap()
         choose("Scotland", in: app)
 
-        app.tabBars.buttons["Nearby"].tap()
-        let link = app.buttons["nearby.refuges"]
-        app.reveal(link)
-        link.tap()
-        XCTAssertTrue(anything(containing: "In Scotland", in: app).waitForExistence(timeout: 3),
+        app.openRefuges()
+        XCTAssertTrue(app.element(containing: "In Scotland").waitForExistence(timeout: 3),
                       "Refuges must list the nation chosen on Get help")
-        XCTAssertFalse(anything(containing: "Chosen from your location", in: app).exists,
+        XCTAssertFalse(app.element(containing: "Chosen from your location").exists,
                        "A nation the person chose is not labelled as from their location")
 
         app.buttons["refuges.nation"].tap()
         app.buttons["Wales"].tap()
-        XCTAssertTrue(anything(containing: "In Wales", in: app).waitForExistence(timeout: 3))
+        XCTAssertTrue(app.element(containing: "In Wales").waitForExistence(timeout: 3))
 
         app.tabBars.buttons["Get help"].tap()
         let summary = element("filter.summary", in: app)

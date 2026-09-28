@@ -34,6 +34,31 @@ extension XCUIApplication {
         XCTAssertTrue(element.isHittable, "Could not reach \(element)", file: file, line: line)
     }
 
+    /// The first element of any type whose label contains `fragment`, for text a test
+    /// knows only part of, or whose element type it should not depend on.
+    @MainActor
+    func element(containing fragment: String) -> XCUIElement {
+        descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", fragment)).firstMatch
+    }
+
+    /// Opens Refuges from the Nearby tab.
+    @MainActor
+    func openRefuges(file: StaticString = #filePath, line: UInt = #line) {
+        tabBars.buttons["Nearby"].tap()
+        let link = buttons["nearby.refuges"]
+        reveal(link, file: file, line: line)
+        link.tap()
+    }
+
+    /// Opens the iPhone features from the link at the foot of Get help.
+    @MainActor
+    func openIPhoneFeatures(file: StaticString = #filePath, line: UInt = #line) {
+        tabBars.buttons["Get help"].tap()
+        let link = buttons["help.features.link"]
+        reveal(link, file: file, line: line)
+        link.tap()
+    }
+
     /// Closes a confirmation WITHOUT confirming it. Prefers an explicit Cancel (the
     /// action-sheet presentation); otherwise uses the popover's own dismiss region,
     /// which is what tapping outside a popover hits. Tapping the navigation bar does

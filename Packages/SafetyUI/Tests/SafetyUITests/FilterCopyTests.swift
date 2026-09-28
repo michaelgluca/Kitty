@@ -75,13 +75,23 @@ struct FilterCopyTests {
         #expect(FilterCopy.nationName(nil) == "All of the UK")
     }
 
-    @Test("The no-matches body differs on the iPhone features screen, which has no nation menu or chips to clear", arguments: [
-        (NoMatchesScope.everything, "filter.noMatches.body"),
-        (NoMatchesScope.rights, "filter.noMatches.body"),
-        (NoMatchesScope.features, "filter.noMatches.features.body"),
-    ])
-    func noMatchesBody(scope: NoMatchesScope, key: String) {
-        #expect(FilterCopy.noMatchesBody(scope) == Strings.localized(String.LocalizationValue(key)))
+    @Test(
+        "The no-matches body suggests All of the UK when a nation is chosen, and differs on the iPhone features screen, which has no nation menu or chips to clear",
+        arguments: [
+            (NoMatchesScope.everything, Nation?.none, "filter.noMatches.body"),
+            (.rights, nil, "filter.noMatches.body"),
+            (.everything, .scotland, "filter.noMatches.body.nation"),
+            (.rights, .wales, "filter.noMatches.body.nation"),
+            (.features, nil, "filter.noMatches.features.body"),
+        ]
+    )
+    func noMatchesBody(scope: NoMatchesScope, nation: Nation?, key: String) {
+        #expect(FilterCopy.noMatchesBody(scope, nation: nation) == Strings.localized(String.LocalizationValue(key)))
+    }
+
+    @Test("With a nation chosen, the no-matches body names All of the UK exactly as the nation menu does")
+    func noMatchesNamesAllOfTheUK() {
+        #expect(FilterCopy.noMatchesBody(.everything, nation: .scotland).contains(FilterCopy.allOfTheUK))
     }
 
     @Test("Every filter key resolves", arguments: [
@@ -95,7 +105,7 @@ struct FilterCopyTests {
         "topic.housingAndMoney.searchTerms", "topic.work.searchTerms", "topic.reportingAndVictimsRights.searchTerms",
         "filter.search.prompt", "filter.summary", "filter.summary.separator",
         "filter.summary.search", "filter.clear", "filter.clear.hint", "filter.clearFilters",
-        "filter.noMatches.title", "filter.noMatches.rights", "filter.noMatches.body", "filter.noMatches.features.body", "rights.elsewhere",
+        "filter.noMatches.title", "filter.noMatches.rights", "filter.noMatches.body", "filter.noMatches.body.nation", "filter.noMatches.features.body", "rights.elsewhere",
         "filter.resultCount %lld",
     ])
     func keysResolve(key: String) {

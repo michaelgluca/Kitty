@@ -227,6 +227,8 @@ struct FilterSummary: View {
 struct NoMatchesView: View {
 
     let scope: NoMatchesScope
+    /// The nation chosen, if any: it may be why nothing matches.
+    let nation: Nation?
     let onClear: () -> Void
 
     var body: some View {
@@ -236,7 +238,7 @@ struct NoMatchesView: View {
             } icon: {
                 Image(systemName: "magnifyingglass")
             }
-            Text(FilterCopy.noMatchesBody(scope))
+            Text(FilterCopy.noMatchesBody(scope, nation: nation))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)

@@ -95,7 +95,7 @@ private struct HelpSections: View {
         FilterSection(preference: nationPreference, detected: detected, filter: filter)
 
         if content.hasNoMatches {
-            Section { NoMatchesView(scope: .everything) { filter.clear() } }
+            Section { NoMatchesView(scope: .everything, nation: nationPreference.nation) { filter.clear() } }
         }
 
         if !content.services.isEmpty {

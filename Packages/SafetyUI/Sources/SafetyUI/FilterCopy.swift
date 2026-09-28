@@ -121,13 +121,16 @@ enum FilterCopy {
         }
     }
 
-    /// The line under the title. Different on the iPhone features screen: it has no
-    /// nation menu or topic chips, so the line that tells you to clear them would be
-    /// describing controls that are not there.
-    static func noMatchesBody(_ scope: NoMatchesScope) -> String {
+    /// The line under the title. With a nation chosen, it also says how to see help for
+    /// every nation: the nation may be why nothing matches, and Clear keeps it. Different
+    /// on the iPhone features screen: it has no nation menu or topic chips, so the line
+    /// that tells you to clear them would be describing controls that are not there.
+    static func noMatchesBody(_ scope: NoMatchesScope, nation: Nation?) -> String {
         switch scope {
-        case .everything, .rights: Strings.localized("filter.noMatches.body")
-        case .features: Strings.localized("filter.noMatches.features.body")
+        case .everything, .rights:
+            nation == nil ? Strings.localized("filter.noMatches.body") : Strings.localized("filter.noMatches.body.nation")
+        case .features:
+            Strings.localized("filter.noMatches.features.body")
         }
     }
 }

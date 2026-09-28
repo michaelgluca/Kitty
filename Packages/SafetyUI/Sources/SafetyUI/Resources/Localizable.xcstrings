@@ -2402,6 +2402,18 @@
           }
         }
       }
+    },
+    "filter.noMatches.body.nation": {
+      "comment": "Body of the no-matches state when a nation is chosen, which may be why nothing matches (help for another nation is hidden). 'All of the UK' must match filter.nation.all.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear the topics and search to see everything again. Where you are stays as chosen above: choose All of the UK there to see help for every nation."
+          }
+        }
+      }
     }
   }
 }

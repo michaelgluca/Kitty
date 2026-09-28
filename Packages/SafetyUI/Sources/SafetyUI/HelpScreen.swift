@@ -40,7 +40,7 @@ public struct HelpScreen: View {
     }
 
     public var body: some View {
-        let content = content
+        let content = self.content
         NavigationStack {
             ServiceContactHost { contact in
                 List {

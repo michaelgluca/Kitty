@@ -113,15 +113,23 @@ struct TopicTagTests {
         // "must be charged within 6 months, and making a deepfake within 3 years" states
         // the reporting deadline.
         "online-abuse": [.onlineAbuse, .sexualViolence, .reportingAndVictimsRights],
-        // "must take steps to prevent sexual harassment".
-        "rights-at-work": [.work, .stalkingAndHarassment],
+        // "must take steps to prevent sexual harassment". Sexual violence: its own words
+        // name sexual harassment three times ("your employer must take steps to prevent
+        // sexual harassment", "reporting sexual harassment can count as whistleblowing"),
+        // as harassment-in-public's "unwanted sexual comments" earn it the same tag.
+        "rights-at-work": [.work, .stalkingAndHarassment, .sexualViolence],
         // "If a crime happens to you, you have rights": the same rule (a) basis as
         // victim-support, every topic the rights content calls a crime. Some of these
         // rights, such as referral to support, apply "even if you don't report the crime
         // to the police".
         "victims-rights": [.domesticAbuse, .sexualViolence, .stalkingAndHarassment, .onlineAbuse, .forcedMarriageAndFGM, .reportingAndVictimsRights],
-        // Title and summary.
-        "forced-marriage-and-fgm": [.forcedMarriageAndFGM],
+        // Title and summary. Domestic abuse: the Domestic Abuse Act 2021 statutory guidance
+        // (England and Wales) counts so-called honour-based abuse, including forced marriage
+        // and FGM, among the forms domestic abuse can take, and the pack itself pairs them
+        // in Scotland's "Domestic Abuse and Forced Marriage Helpline". This is the only
+        // place the Forced Marriage Unit and NSPCC FGM numbers appear, so the Domestic abuse
+        // chip must not hide it.
+        "forced-marriage-and-fgm": [.domesticAbuse, .forcedMarriageAndFGM],
         // "threatened, harassed or intimidated in public". Sexual violence: the
         // government's examples include "threats of sexual violence", and the Scottish
         // point on "unwanted sexual comments meant to upset you or for sexual thrills" is

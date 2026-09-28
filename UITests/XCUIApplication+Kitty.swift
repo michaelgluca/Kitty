@@ -23,7 +23,7 @@ extension XCUIApplication {
         file: StaticString = #filePath, line: UInt = #line
     ) {
         var attempts = 0
-        while !(element.exists && element.isHittable) && attempts < 30 {
+        while !isRevealed(element) && attempts < 30 {
             if towardsTop {
                 swipeDown(velocity: .slow)
             } else {
@@ -31,7 +31,18 @@ extension XCUIApplication {
             }
             attempts += 1
         }
-        XCTAssertTrue(element.isHittable, "Could not reach \(element)", file: file, line: line)
+        XCTAssertTrue(isRevealed(element), "Could not reach \(element)", file: file, line: line)
+    }
+
+    /// Whether the element is hittable and wholly clear of the tab bar, which floats
+    /// over the scrolling content. `isHittable` alone is true while only a sliver shows
+    /// above the tab bar, and a tap then lands on that sliver: for the nation menu that
+    /// is the row's inset, outside the control, so the menu never opens.
+    @MainActor
+    private func isRevealed(_ element: XCUIElement) -> Bool {
+        guard element.exists && element.isHittable else { return false }
+        let tabBar = tabBars.firstMatch
+        return !tabBar.exists || element.frame.maxY <= tabBar.frame.minY
     }
 
     /// The first element of any type whose label contains `fragment`, for text a test

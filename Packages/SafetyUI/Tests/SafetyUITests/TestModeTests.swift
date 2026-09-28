@@ -62,7 +62,7 @@ struct HelpCallTestModeTests {
     @Test("In Test Mode a Help-screen text opens Messages to the stand-in, never the service")
     func textInTestMode() async throws {
         let real = try #require(PhoneNumber("61016"))
-        let target = ServiceContactActions.textTarget(for: real, testMode: true)
+        let target = ServiceContactActions.target(for: real, testMode: true)
         #expect(target == TestModeNumbers.service)
 
         // SpyTextOpener stops the test outright if handed a number outside the drama
@@ -75,7 +75,7 @@ struct HelpCallTestModeTests {
     @Test("Outside Test Mode a Help-screen text goes to exactly the number shown")
     func textOutsideTestMode() throws {
         let real = try #require(PhoneNumber("61016"))
-        #expect(ServiceContactActions.textTarget(for: real, testMode: false) == real)
+        #expect(ServiceContactActions.target(for: real, testMode: false) == real)
     }
 
     @Test("The Test Mode banner's words resolve to real text")

@@ -24,10 +24,7 @@ public struct HelpScreen: View {
     @Environment(NationPreference.self) private var nationPreference
     @Environment(NearbyModel.self) private var nearby
 
-    @State private var contact = ServiceContactActions()
     @State private var filter = ScreenFilter()
-
-    private var isTestMode: Bool { testMode?.isOn == true }
 
     private let pack: ContentPack?
 
@@ -43,30 +40,32 @@ public struct HelpScreen: View {
     }
 
     public var body: some View {
+        let content = content
         NavigationStack {
-            List {
-                if let testMode, testMode.isOn {
-                    Section { TestModeBanner(session: testMode) }
-                }
+            ServiceContactHost { contact in
+                List {
+                    if let testMode, testMode.isOn {
+                        Section { TestModeBanner(session: testMode) }
+                    }
 
-                if !region.isUnitedKingdom {
-                    Section { NonUKNotice() }
-                }
+                    if !region.isUnitedKingdom {
+                        Section { NonUKNotice() }
+                    }
 
-                if let pack, let content {
-                    HelpSections(
-                        pack: pack, content: content, nationPreference: nationPreference,
-                        detected: nearby.detectedNation, filter: filter,
-                        now: services.time.now, onCall: call, onText: text
-                    )
-                } else {
-                    ContentUnavailableNotice(titleKey: "help.unavailable.title", bodyKey: "help.unavailable.body")
+                    if let pack, let content {
+                        HelpSections(
+                            pack: pack, content: content, nationPreference: nationPreference,
+                            detected: nearby.detectedNation, filter: filter,
+                            now: services.time.now, contact: contact
+                        )
+                    } else {
+                        ContentUnavailableNotice(titleKey: "help.unavailable.title", bodyKey: "help.unavailable.body")
+                    }
                 }
             }
             .navigationTitle(Text("help.title", bundle: .module))
             .filterSearchable(text: $filter.query)
             .announcesResultCount(content?.resultCount ?? 0)
-            .serviceContactDialogs(contact, dialler: services.dialler)
         }
     }
 }
@@ -82,8 +81,7 @@ private struct HelpSections: View {
     let detected: Nation?
     let filter: ScreenFilter
     let now: Date
-    let onCall: (PhoneNumber, String) -> Void
-    let onText: (PhoneNumber) -> Void
+    let contact: ServiceContact
 
     var body: some View {
         // First, and outside the filter: whatever is chosen or typed below, every way
@@ -103,7 +101,7 @@ private struct HelpSections: View {
         if !content.services.isEmpty {
             Section {
                 ForEach(content.services) { service in
-                    ServiceRow(service: service, now: now, onCall: onCall, onText: onText)
+                    ServiceRow(service: service, now: now, contact: contact)
                 }
             } header: {
                 Text("help.section.services", bundle: .module)
@@ -115,7 +113,7 @@ private struct HelpSections: View {
         if !content.reporting.isEmpty {
             Section {
                 ForEach(content.reporting) { route in
-                    ServiceRow(service: route, now: now, onCall: onCall, onText: onText)
+                    ServiceRow(service: route, now: now, contact: contact)
                 }
             } header: {
                 Text("help.section.reporting", bundle: .module)
@@ -136,19 +134,6 @@ private struct HelpSections: View {
             }
             .accessibilityIdentifier("help.features.link")
         }
-    }
-}
-
-extension HelpScreen {
-
-    private func call(_ number: PhoneNumber, serviceName: String) {
-        contact.requestCall(number, serviceName: serviceName, testMode: isTestMode)
-    }
-
-    private func text(_ number: PhoneNumber) {
-        let texter = services.texter
-        let testMode = isTestMode
-        Task { await contact.text(number, testMode: testMode, using: texter) }
     }
 }
 
@@ -195,8 +180,7 @@ struct EmergencyRouteRow: View {
 struct ServiceRow: View {
     let service: SupportService
     let now: Date
-    let onCall: (PhoneNumber, String) -> Void
-    let onText: (PhoneNumber) -> Void
+    let contact: ServiceContact
     /// Whether "This service has no phone line." may render when there is no number.
     /// `true` on Get help, where it exists so nobody goes looking for a number
     /// Women's Aid does not have. `false` in the refuge list (`RefugesScreen`):
@@ -269,11 +253,11 @@ struct ServiceRow: View {
             }
 
             if let text = service.textNumber, let number = PhoneNumber(text) {
-                TextButton(number: number) { onText(number) }
+                TextButton(number: number) { contact.text(number) }
             }
 
             if let phone = service.phone, let number = PhoneNumber(phone) {
-                CallButton(number: number, serviceName: service.name) { onCall(number, service.name) }
+                CallButton(number: number, serviceName: service.name) { contact.call(number, service.name) }
             } else if Self.shouldShowNoPhoneLine(kind: service.kind, showsNoPhoneLine: showsNoPhoneLine) {
                 // Only where someone might go looking for a number that does not
                 // exist — Women's Aid, on Get help. A web-only reporting route such

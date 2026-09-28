@@ -52,6 +52,14 @@ struct FilterCopyTests {
         #expect(FilterCopy.resultCount(6) == "6 results")
     }
 
+    @Test("A changed count is announced only while its screen is on screen, never from a tab behind it")
+    @MainActor
+    func countAnnouncedOnlyWhenOnScreen() {
+        #expect(ResultCountAnnouncement.announcement(for: 6, isOnScreen: true) == "6 results")
+        #expect(ResultCountAnnouncement.announcement(for: 6, isOnScreen: false) == nil)
+        #expect(ResultCountAnnouncement.announcement(for: 0, isOnScreen: false) == nil)
+    }
+
     @Test("The detected-nation offer names the nation and where it came from")
     func offer() {
         #expect(FilterCopy.offer(.scotland) == "Use Scotland — detected from your location")

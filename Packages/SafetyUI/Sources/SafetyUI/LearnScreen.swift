@@ -25,7 +25,7 @@ struct LearnScreen: View {
     }
 
     var body: some View {
-        let content = content
+        let content = self.content
         NavigationStack {
             List {
                 if let content {

@@ -11,9 +11,7 @@ final class FilterTests: XCTestCase {
     @MainActor
     private func launch(_ switches: [String] = [], resetNation: Bool = true) -> XCUIApplication {
         continueAfterFailure = false
-        let app = XCUIApplication()
-        app.launchArguments += ["-AppleLocale", "en_GB", "-AppleLanguages", "(en)", "-kitty.uiTest"]
-            + (resetNation ? ["-kitty.resetNation"] : []) + switches
+        let app = XCUIApplication.forTesting((resetNation ? ["-kitty.resetNation"] : []) + switches)
         app.launch()
         return app
     }
@@ -61,6 +59,16 @@ final class FilterTests: XCTestCase {
         let chip = app.buttons["filter.topic.work"]
         app.reveal(chip)
         chip.tap()
+        // Proves the filter is actually heavy, not just heavy in name: without this,
+        // the search below would leave nothing on its own, and the test would pass
+        // unchanged even if choosing the nation or the chip had silently done nothing.
+        XCTAssertTrue(chip.isSelected, "Work must say it is selected")
+        let summaryBeforeSearch = element("filter.summary", in: app)
+        app.reveal(summaryBeforeSearch)
+        XCTAssertTrue(
+            summaryBeforeSearch.label.contains("Northern Ireland") && summaryBeforeSearch.label.contains("Work"),
+            "The nation and the topic must both have applied: \(summaryBeforeSearch.label)"
+        )
         search("zzqx", in: app)
         XCTAssertTrue(app.buttons["filter.noMatches.clear"].waitForExistence(timeout: 3), "The filter must leave nothing below 999")
 
@@ -116,10 +124,17 @@ final class FilterTests: XCTestCase {
         let victimSupport = app.staticTexts["Victim Support Supportline"]
         app.reveal(victimSupport)
         XCTAssertTrue(victimSupport.exists, "Victim Support is tagged Stalking & harassment")
-        XCTAssertFalse(app.staticTexts["National Domestic Abuse Helpline"].exists)
         let summary = element("filter.summary", in: app)
         app.reveal(summary, towardsTop: true)
         XCTAssertTrue(summary.label.contains("stalking"), summary.label)
+        // Checked here, back at the top, rather than right after revealing Victim
+        // Support: the pack lists that service last, so scrolling down to it would
+        // carry National Domestic Abuse Helpline out of the lazy List regardless of
+        // whether the search filtered anything at all.
+        XCTAssertFalse(
+            app.staticTexts["National Domestic Abuse Helpline"].exists,
+            "National Domestic Abuse Helpline is not tagged Stalking & harassment"
+        )
     }
 
     /// Review Focus 4. List rows are read top to bottom, so vertical order is reading order.

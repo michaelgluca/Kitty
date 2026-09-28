@@ -2,6 +2,18 @@ import XCTest
 
 extension XCUIApplication {
 
+    /// A freshly created app with the base arguments every UI test needs: a pinned
+    /// locale, its own Keychain item for trusted contacts (so a developer's real list
+    /// is never touched), and whatever else this test needs. Not yet launched, so a
+    /// caller that must touch the app first — resetting a system authorization, for
+    /// instance — still can before calling `launch()`.
+    @MainActor
+    static func forTesting(_ switches: [String] = [], locale: String = "en_GB") -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments += ["-AppleLocale", locale, "-AppleLanguages", "(en)", "-kitty.uiTest"] + switches
+        return app
+    }
+
     /// Scrolls until the element exists and can actually be tapped. Scrolls down the
     /// page by default; `towardsTop` scrolls back up, for something above the
     /// current scroll position.

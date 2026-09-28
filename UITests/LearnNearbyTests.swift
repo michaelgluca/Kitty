@@ -10,9 +10,8 @@ final class LearnNearbyTests: XCTestCase {
     @MainActor
     private func launch(_ switches: [String] = [], locale: String = "en_GB", resetLocation: Bool = false) -> XCUIApplication {
         continueAfterFailure = false
-        let app = XCUIApplication()
+        let app = XCUIApplication.forTesting(["-kitty.resetNation"] + switches, locale: locale)
         if resetLocation { app.resetAuthorizationStatus(for: .location) }
-        app.launchArguments += ["-AppleLocale", locale, "-AppleLanguages", "(en)", "-kitty.uiTest", "-kitty.resetNation"] + switches
         app.launch()
         return app
     }

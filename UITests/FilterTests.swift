@@ -195,4 +195,88 @@ final class FilterTests: XCTestCase {
             XCTAssertFalse(chip.isSelected, "\(id) must say it is no longer selected")
         }
     }
+
+    // MARK: - Learn
+
+    @MainActor
+    func testSearchingStalkingOnLearnFindsTheTopic() {
+        let app = launch()
+        app.tabBars.buttons["Learn"].tap()
+        search("stalking", in: app)
+        XCTAssertTrue(app.buttons["learn.rights.stalking-and-harassment"].waitForExistence(timeout: 3))
+        XCTAssertFalse(app.buttons["learn.rights.housing-help"].exists, "A topic with no stalking in it must not match")
+    }
+
+    @MainActor
+    func testRightsForOtherNationsAreCollapsedNotRemoved() {
+        let app = launch()
+        app.tabBars.buttons["Learn"].tap()
+        choose("Scotland", in: app)
+        let topic = app.buttons["learn.rights.what-counts-as-domestic-abuse"]
+        app.reveal(topic)
+        topic.tap()
+        XCTAssertTrue(anything(containing: "Applies in Scotland", in: app).waitForExistence(timeout: 3))
+        XCTAssertFalse(anything(containing: "Applies in England and Wales", in: app).exists,
+                       "Other nations' points start collapsed")
+        let elsewhere = anything(containing: "Different elsewhere in the UK", in: app)
+        app.reveal(elsewhere)
+        elsewhere.tap()
+        let englandAndWales = anything(containing: "Applies in England and Wales", in: app)
+        app.reveal(englandAndWales)
+        XCTAssertTrue(englandAndWales.exists, "Other nations' points are hidden until opened, never removed")
+    }
+
+    /// Review Focus 4, on Learn: the same reading order required on Get help
+    /// (`testTheSummaryAndClearComeBeforeTheResults`) must hold here too — the filter
+    /// controls, summary and Clear read before the results.
+    @MainActor
+    func testTheSummaryAndClearComeBeforeTheResultsOnLearn() {
+        let app = launch()
+        app.tabBars.buttons["Learn"].tap()
+        let chip = app.buttons["filter.topic.domesticAbuse"]
+        app.reveal(chip)
+        let menu = app.buttons["filter.nation"]
+        XCTAssertLessThan(menu.frame.minY, chip.frame.minY, "The nation menu comes before the chips")
+        chip.tap()
+        XCTAssertTrue(chip.isSelected, "A chosen chip must say it is selected")
+        XCTAssertFalse(app.buttons["filter.topic.sexualViolence"].isSelected, "Tapping one chip must not toggle its neighbours")
+
+        let summary = element("filter.summary", in: app)
+        let clear = app.buttons["filter.clear"]
+        let first = app.buttons["learn.rights.what-counts-as-domestic-abuse"]
+        app.reveal(first)
+        XCTAssertTrue(summary.exists && clear.exists, "The summary and Clear must sit just above the first result")
+        XCTAssertLessThan(chip.frame.minY, summary.frame.minY, "The chips come before the summary")
+        XCTAssertLessThanOrEqual(summary.frame.maxY, first.frame.minY, "The summary comes before the results")
+        XCTAssertLessThan(clear.frame.minY, first.frame.minY, "Clear comes before the results")
+        clear.tap()
+        XCTAssertFalse(chip.isSelected, "Clear must deselect the topics")
+    }
+
+    /// Review Focus 3: features ignore topics, so a filter can empty the rights section
+    /// while features are still listed. The rights section must say so, with Clear.
+    @MainActor
+    func testLearnSaysWhenNoRightsTopicMatchesEvenWithFeaturesListed() {
+        let app = launch()
+        app.tabBars.buttons["Learn"].tap()
+        search("check in", in: app)
+        XCTAssertTrue(anything(containing: "No rights topics match", in: app).waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["filter.noMatches.clear"].exists)
+        let feature = app.buttons["learn.feature.check-in"]
+        app.reveal(feature)
+        XCTAssertTrue(feature.exists)
+    }
+
+    @MainActor
+    func testIPhoneFeaturesCanBeSearched() {
+        let app = launch()
+        app.tabBars.buttons["Get help"].tap()
+        let link = app.buttons["help.features.link"]
+        app.reveal(link)
+        link.tap()
+        search("check in", in: app)
+        XCTAssertTrue(app.buttons["learn.feature.check-in"].waitForExistence(timeout: 3))
+        XCTAssertFalse(app.buttons["learn.feature.emergency-sos"].exists)
+        XCTAssertTrue(element("filter.summary", in: app).exists, "An active search is stated")
+    }
 }

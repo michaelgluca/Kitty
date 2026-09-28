@@ -60,14 +60,7 @@ public struct HelpScreen: View {
                         now: services.time.now, onCall: call, onText: text
                     )
                 } else {
-                    // The pack is bundled, so this should be unreachable — but it is
-                    // shown rather than swallowed, because an empty list would read
-                    // as "there is no help available".
-                    ContentUnavailableView {
-                        Label { Text("help.unavailable.title", bundle: .module) } icon: { Image(systemName: "exclamationmark.triangle.fill") }
-                    } description: {
-                        Text("help.unavailable.body", bundle: .module)
-                    }
+                    ContentUnavailableNotice(titleKey: "help.unavailable.title", bodyKey: "help.unavailable.body")
                 }
             }
             .navigationTitle(Text("help.title", bundle: .module))

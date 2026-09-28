@@ -4,8 +4,8 @@ import SafetyServices
 import SwiftUI
 
 /// Calling and texting a support service, with the confirmation and failure report
-/// every such button needs. Shared by the Help and Refuges screens so the safeguards
-/// cannot drift apart between them.
+/// every such button needs. Owned by `ServiceContactHost`, the one place that also
+/// reads Test Mode and the services, so Get help and Refuges cannot drift apart.
 @MainActor
 @Observable
 final class ServiceContactActions {
@@ -27,38 +27,51 @@ final class ServiceContactActions {
         }
     }
 
-    /// Where a text goes. In Test Mode it goes to a drama number, like every other
-    /// flow, so a rehearsal can never open Messages to 61016 or a helpline's text
-    /// line.
-    static func textTarget(for number: PhoneNumber, testMode: Bool) -> PhoneNumber {
+    /// Where a call or text goes. In Test Mode it goes to a drama number, like every
+    /// other flow, so a rehearsal can never ring or open Messages to 61016 or a
+    /// helpline's own line.
+    nonisolated static func target(for number: PhoneNumber, testMode: Bool) -> PhoneNumber {
         testMode ? TestModeNumbers.service : number
     }
 
-    /// In Test Mode a text goes to a drama number, like every other flow.
     func text(_ number: PhoneNumber, testMode: Bool, using texter: any TextOpening) async {
-        let target = Self.textTarget(for: number, testMode: testMode)
+        let target = Self.target(for: number, testMode: testMode)
         if await texter.openText(to: target) == false {
             failure = .text(target)
         }
     }
 }
 
-extension View {
-    /// The confirmation before any call, and the report when a call or text cannot
-    /// start. ONE confirmation per screen, never one per row: with a dialog on every
-    /// row of a List, SwiftUI presented the previous row's dialog (see M2).
-    func serviceContactDialogs(_ actions: ServiceContactActions, dialler: any Dialling) -> some View {
-        modifier(ServiceContactDialogs(actions: actions, dialler: dialler))
-    }
+/// What a service row calls when the person taps Call or Text.
+struct ServiceContact {
+    /// The number, and the service's name for the confirmation.
+    let call: (PhoneNumber, String) -> Void
+    let text: (PhoneNumber) -> Void
 }
 
-private struct ServiceContactDialogs: ViewModifier {
+/// Hands its content the way to call and text a service, and presents the
+/// confirmation and the failure report that go with it. Every screen that lists
+/// services puts them inside one, so Test Mode is read, and its drama number used, in
+/// exactly one place.
+///
+/// ONE confirmation per screen, never one per row: with a dialog on every row of a
+/// List, SwiftUI presented the previous row's dialog.
+struct ServiceContactHost<Content: View>: View {
 
-    let actions: ServiceContactActions
-    let dialler: any Dialling
+    @Environment(\.services) private var services
+    // Optional: returns nil rather than crashing when no session is supplied, such as
+    // in a preview. No session in the environment means Test Mode is off.
+    @Environment(TestModeSession.self) private var testMode: TestModeSession?
 
-    func body(content: Content) -> some View {
-        content
+    @State private var actions = ServiceContactActions()
+
+    @ViewBuilder let content: (ServiceContact) -> Content
+
+    /// Read at the tap, so a call or text always follows Test Mode as it is now.
+    private var isTestMode: Bool { testMode?.isOn == true }
+
+    var body: some View {
+        content(ServiceContact(call: call, text: text))
             .confirmationDialog(
                 Text(actions.pendingCall.map { String(format: Strings.localized("help.callConfirm.title"), $0.serviceName) } ?? ""),
                 isPresented: Binding(get: { actions.pendingCall != nil }, set: { if !$0 { actions.pendingCall = nil } }),
@@ -66,7 +79,7 @@ private struct ServiceContactDialogs: ViewModifier {
                 presenting: actions.pendingCall
             ) { call in
                 Button(Strings.localized("help.callConfirm.confirm")) {
-                    Task { await actions.place(call, using: dialler) }
+                    Task { await actions.place(call, using: services.dialler) }
                 }
                 Button(Strings.localized("help.callConfirm.cancel"), role: .cancel) {}
             } message: { call in
@@ -78,6 +91,16 @@ private struct ServiceContactDialogs: ViewModifier {
             ) {
                 Button(Strings.localized("help.ok"), role: .cancel) {}
             }
+    }
+
+    private func call(_ number: PhoneNumber, serviceName: String) {
+        actions.requestCall(number, serviceName: serviceName, testMode: isTestMode)
+    }
+
+    private func text(_ number: PhoneNumber) {
+        let texter = services.texter
+        let testMode = isTestMode
+        Task { await actions.text(number, testMode: testMode, using: texter) }
     }
 }
 
@@ -96,7 +119,7 @@ struct PendingCall: Equatable {
         PendingCall(
             serviceName: serviceName,
             number: number,
-            dialled: testMode ? TestModeNumbers.service : number,
+            dialled: ServiceContactActions.target(for: number, testMode: testMode),
             isTest: testMode
         )
     }

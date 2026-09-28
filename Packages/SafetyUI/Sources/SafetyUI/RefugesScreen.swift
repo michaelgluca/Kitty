@@ -15,55 +15,42 @@ import SwiftUI
 struct RefugesScreen: View {
 
     @Environment(\.services) private var services
-    @Environment(TestModeSession.self) private var testMode: TestModeSession?
     @Environment(NationPreference.self) private var nationPreference
 
     let pack: ContentPack?
     /// Where Nearby found the person, refreshed each time the parent redraws.
     let detected: Nation?
 
-    @State private var contact = ServiceContactActions()
-
-    init(pack: ContentPack?, detected: Nation?) {
-        self.pack = pack
-        self.detected = detected
-    }
-
-    private var isTestMode: Bool { testMode?.isOn == true }
-
-    private var current: NationShown {
-        Self.nationShown(saved: nationPreference.nation, unsavedChoice: nationPreference.unsavedChoice, detected: detected)
-    }
-
     var body: some View {
-        let shown = current
-        List {
-            if let pack {
-                Section {
-                    VStack(alignment: .leading, spacing: Design.Space.tight) {
-                        Text(pack.refugeNote.text).fixedSize(horizontal: false, vertical: true)
-                        if let url = URL(string: pack.refugeNote.source.url) {
-                            Link(destination: url) { Text(pack.refugeNote.source.title).font(.subheadline) }
+        let shown = Self.nationShown(saved: nationPreference.nation, unsavedChoice: nationPreference.unsavedChoice, detected: detected)
+        ServiceContactHost { contact in
+            List {
+                if let pack {
+                    Section {
+                        VStack(alignment: .leading, spacing: Design.Space.tight) {
+                            Text(pack.refugeNote.text).fixedSize(horizontal: false, vertical: true)
+                            if let url = URL(string: pack.refugeNote.source.url) {
+                                Link(destination: url) { Text(pack.refugeNote.source.title).font(.subheadline) }
+                            }
                         }
+                        .accessibilityIdentifier("refuges.why")
+                    } header: {
+                        Text("refuges.why.header", bundle: .module)
                     }
-                    .accessibilityIdentifier("refuges.why")
-                } header: {
-                    Text("refuges.why.header", bundle: .module)
-                }
 
-                RefugesNationSection(preference: nationPreference, detected: detected, shown: shown, pick: pick)
-                RefugeListSection(pack: pack, nation: shown.nation, now: services.time.now, onCall: call, onText: text)
-            } else {
-                // The pack is bundled, so this should be unreachable in a real
-                // install — but reachable in DEBUG (-kitty.withoutContent), and a
-                // silent empty screen would read as "there are no refuges", which is
-                // both false and dangerous. Shown rather than swallowed, matching
-                // `LearnScreen`.
-                ContentUnavailableNotice(titleKey: "learn.unavailable.title", bodyKey: "learn.unavailable.body")
+                    RefugesNationSection(preference: nationPreference, detected: detected, shown: shown, pick: pick)
+                    RefugeListSection(pack: pack, nation: shown.nation, now: services.time.now, contact: contact)
+                } else {
+                    // The pack is bundled, so this should be unreachable in a real
+                    // install — but reachable in DEBUG (-kitty.withoutContent), and a
+                    // silent empty screen would read as "there are no refuges", which is
+                    // both false and dangerous. Shown rather than swallowed, matching
+                    // `LearnScreen`.
+                    ContentUnavailableNotice(titleKey: "learn.unavailable.title", bodyKey: "learn.unavailable.body")
+                }
             }
         }
         .navigationTitle(Text("refuges.title", bundle: .module))
-        .serviceContactDialogs(contact, dialler: services.dialler)
     }
 
     /// Saves the pick for every screen. If it cannot be saved, `NationPreference` keeps it
@@ -74,19 +61,6 @@ struct RefugesScreen: View {
     private func pick(_ nation: Nation?) {
         guard let nation else { return }
         nationPreference.choose(nation)
-    }
-}
-
-extension RefugesScreen {
-
-    private func call(_ number: PhoneNumber, serviceName: String) {
-        contact.requestCall(number, serviceName: serviceName, testMode: isTestMode)
-    }
-
-    private func text(_ number: PhoneNumber) {
-        let texter = services.texter
-        let testMode = isTestMode
-        Task { await contact.text(number, testMode: testMode, using: texter) }
     }
 }
 
@@ -185,14 +159,13 @@ private struct RefugeListSection: View {
     let pack: ContentPack
     let nation: Nation?
     let now: Date
-    let onCall: (PhoneNumber, String) -> Void
-    let onText: (PhoneNumber) -> Void
+    let contact: ServiceContact
 
     var body: some View {
         if let nation {
             Section {
                 ForEach(pack.refuges(for: nation)) { service in
-                    ServiceRow(service: service, now: now, onCall: onCall, onText: onText, showsNoPhoneLine: false)
+                    ServiceRow(service: service, now: now, contact: contact, showsNoPhoneLine: false)
                 }
             } header: {
                 Text(String(format: Strings.localized("refuges.list.header"), NationCopy.name(nation)))

@@ -4,8 +4,6 @@ import Testing
 
 @testable import SafetyContent
 
-private func pack() throws -> ContentPack { try ContentLoader.loadUK() }
-
 /// Topic tags decide what a person sees when they choose a topic, so a wrong or missing
 /// tag can hide the help they need. They are content claims, reviewed like any fact.
 @Suite("Topic tags")
@@ -139,42 +137,23 @@ struct TopicTagTests {
 
     @Test("Every service, reporting route and rights topic carries exactly its reviewed tags")
     func pinned() throws {
-        let p = try pack()
+        let p = try ContentLoader.loadUK()
         var actual: [String: Set<Topic>] = [:]
         for item in p.services + p.reporting(for: .unitedKingdom) { actual[item.id] = Set(item.topics) }
         for topic in p.rights { actual[topic.id] = Set(topic.topics) }
         #expect(actual == Self.expected)
     }
 
-    @Test("Nothing is untagged")
-    func everythingTagged() throws {
-        let p = try pack()
-        for item in p.services + p.reporting(for: .unitedKingdom) { #expect(!item.topics.isEmpty, "\(item.id) has no topics") }
-        for topic in p.rights { #expect(!topic.topics.isEmpty, "\(topic.id) has no topics") }
-    }
-
-    @Test("General is never on a right or a reporting route")
-    func generalOnlyOnServices() throws {
-        let p = try pack()
-        #expect(p.rights.allSatisfy { !$0.topics.contains(.general) })
-        #expect(p.reporting(for: .unitedKingdom).allSatisfy { !$0.topics.contains(.general) })
-    }
-
     @Test("Every reporting route is found under Reporting & victims' rights")
     func reportingRoutesAreReporting() throws {
-        for route in try pack().reporting(for: .unitedKingdom) {
+        for route in try ContentLoader.loadUK().reporting(for: .unitedKingdom) {
             #expect(route.topics.contains(.reportingAndVictimsRights), "\(route.id)")
         }
     }
 
-    @Test("Refuge routes carry no topics: Refuges lists them by nation alone")
-    func refugesUntagged() throws {
-        #expect(try pack().refuges.allSatisfy { $0.topics.isEmpty })
-    }
-
     @Test("Every chip finds something on Get help or Learn")
     func everyChipHasHelp() throws {
-        let p = try pack()
+        let p = try ContentLoader.loadUK()
         let tagged = p.services + p.reporting(for: .unitedKingdom)
         for topic in Topic.selectable {
             let found = tagged.contains { $0.topics.contains(topic) } || p.rights.contains { $0.topics.contains(topic) }

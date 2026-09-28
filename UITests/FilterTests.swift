@@ -137,29 +137,42 @@ final class FilterTests: XCTestCase {
         )
     }
 
-    /// Review Focus 4. List rows are read top to bottom, so vertical order is reading order.
+    /// Review Focus 4. List rows are read top to bottom, so vertical order is reading
+    /// order. Shared by Get help and Learn, which must both read the same way: the
+    /// nation menu, then the chips, then the summary and Clear, then the results.
     @MainActor
-    func testTheSummaryAndClearComeBeforeTheResults() {
+    private func assertFilterControlsPrecedeResults(
+        onTab tab: String, firstResult: (XCUIApplication) -> XCUIElement,
+        file: StaticString = #filePath, line: UInt = #line
+    ) {
         let app = launch()
-        app.tabBars.buttons["Get help"].tap()
+        app.tabBars.buttons[tab].tap()
         let chip = app.buttons["filter.topic.domesticAbuse"]
-        app.reveal(chip)
+        app.reveal(chip, file: file, line: line)
         let menu = app.buttons["filter.nation"]
-        XCTAssertLessThan(menu.frame.minY, chip.frame.minY, "The nation menu comes before the chips")
+        XCTAssertLessThan(menu.frame.minY, chip.frame.minY, "The nation menu comes before the chips", file: file, line: line)
         chip.tap()
-        XCTAssertTrue(chip.isSelected, "A chosen chip must say it is selected")
-        XCTAssertFalse(app.buttons["filter.topic.sexualViolence"].isSelected, "Tapping one chip must not toggle its neighbours")
+        XCTAssertTrue(chip.isSelected, "A chosen chip must say it is selected", file: file, line: line)
+        XCTAssertFalse(
+            app.buttons["filter.topic.sexualViolence"].isSelected, "Tapping one chip must not toggle its neighbours",
+            file: file, line: line
+        )
 
         let summary = element("filter.summary", in: app)
         let clear = app.buttons["filter.clear"]
-        let first = app.staticTexts["National Domestic Abuse Helpline"]
-        app.reveal(first)
-        XCTAssertTrue(summary.exists && clear.exists, "The summary and Clear must sit just above the first result")
-        XCTAssertLessThan(chip.frame.minY, summary.frame.minY, "The chips come before the summary")
-        XCTAssertLessThanOrEqual(summary.frame.maxY, first.frame.minY, "The summary comes before the results")
-        XCTAssertLessThan(clear.frame.minY, first.frame.minY, "Clear comes before the results")
+        let first = firstResult(app)
+        app.reveal(first, file: file, line: line)
+        XCTAssertTrue(summary.exists && clear.exists, "The summary and Clear must sit just above the first result", file: file, line: line)
+        XCTAssertLessThan(chip.frame.minY, summary.frame.minY, "The chips come before the summary", file: file, line: line)
+        XCTAssertLessThanOrEqual(summary.frame.maxY, first.frame.minY, "The summary comes before the results", file: file, line: line)
+        XCTAssertLessThan(clear.frame.minY, first.frame.minY, "Clear comes before the results", file: file, line: line)
         clear.tap()
-        XCTAssertFalse(chip.isSelected, "Clear must deselect the topics")
+        XCTAssertFalse(chip.isSelected, "Clear must deselect the topics", file: file, line: line)
+    }
+
+    @MainActor
+    func testTheSummaryAndClearComeBeforeTheResults() {
+        assertFilterControlsPrecedeResults(onTab: "Get help") { $0.staticTexts["National Domestic Abuse Helpline"] }
     }
 
     @MainActor
@@ -218,7 +231,9 @@ final class FilterTests: XCTestCase {
         XCTAssertTrue(anything(containing: "Applies in Scotland", in: app).waitForExistence(timeout: 3))
         XCTAssertFalse(anything(containing: "Applies in England and Wales", in: app).exists,
                        "Other nations' points start collapsed")
-        let elsewhere = anything(containing: "Different elsewhere in the UK", in: app)
+        // The identifier, not the English label: proves it lands on the disclosure
+        // row itself, not on every row it expands to reveal.
+        let elsewhere = app.buttons["rights.elsewhere"]
         app.reveal(elsewhere)
         elsewhere.tap()
         let englandAndWales = anything(containing: "Applies in England and Wales", in: app)
@@ -226,45 +241,34 @@ final class FilterTests: XCTestCase {
         XCTAssertTrue(englandAndWales.exists, "Other nations' points are hidden until opened, never removed")
     }
 
-    /// Review Focus 4, on Learn: the same reading order required on Get help
-    /// (`testTheSummaryAndClearComeBeforeTheResults`) must hold here too — the filter
-    /// controls, summary and Clear read before the results.
+    /// Review Focus 4, on Learn: the same reading order required on Get help must hold
+    /// here too — see `assertFilterControlsPrecedeResults`.
     @MainActor
     func testTheSummaryAndClearComeBeforeTheResultsOnLearn() {
-        let app = launch()
-        app.tabBars.buttons["Learn"].tap()
-        let chip = app.buttons["filter.topic.domesticAbuse"]
-        app.reveal(chip)
-        let menu = app.buttons["filter.nation"]
-        XCTAssertLessThan(menu.frame.minY, chip.frame.minY, "The nation menu comes before the chips")
-        chip.tap()
-        XCTAssertTrue(chip.isSelected, "A chosen chip must say it is selected")
-        XCTAssertFalse(app.buttons["filter.topic.sexualViolence"].isSelected, "Tapping one chip must not toggle its neighbours")
-
-        let summary = element("filter.summary", in: app)
-        let clear = app.buttons["filter.clear"]
-        let first = app.buttons["learn.rights.what-counts-as-domestic-abuse"]
-        app.reveal(first)
-        XCTAssertTrue(summary.exists && clear.exists, "The summary and Clear must sit just above the first result")
-        XCTAssertLessThan(chip.frame.minY, summary.frame.minY, "The chips come before the summary")
-        XCTAssertLessThanOrEqual(summary.frame.maxY, first.frame.minY, "The summary comes before the results")
-        XCTAssertLessThan(clear.frame.minY, first.frame.minY, "Clear comes before the results")
-        clear.tap()
-        XCTAssertFalse(chip.isSelected, "Clear must deselect the topics")
+        assertFilterControlsPrecedeResults(onTab: "Learn") { $0.buttons["learn.rights.what-counts-as-domestic-abuse"] }
     }
 
     /// Review Focus 3: features ignore topics, so a filter can empty the rights section
-    /// while features are still listed. The rights section must say so, with Clear.
+    /// while features are still listed. The rights section must say so, with Clear,
+    /// and Clear must actually restore the rights list.
     @MainActor
     func testLearnSaysWhenNoRightsTopicMatchesEvenWithFeaturesListed() {
         let app = launch()
         app.tabBars.buttons["Learn"].tap()
         search("check in", in: app)
         XCTAssertTrue(anything(containing: "No rights topics match", in: app).waitForExistence(timeout: 3))
-        XCTAssertTrue(app.buttons["filter.noMatches.clear"].exists)
+        let clear = app.buttons["filter.noMatches.clear"]
+        XCTAssertTrue(clear.exists)
         let feature = app.buttons["learn.feature.check-in"]
         app.reveal(feature)
         XCTAssertTrue(feature.exists)
+
+        app.reveal(clear, towardsTop: true)
+        clear.tap()
+        let topic = app.buttons["learn.rights.what-counts-as-domestic-abuse"]
+        app.reveal(topic, towardsTop: true)
+        XCTAssertTrue(topic.exists, "Clear must bring the rights list back")
+        XCTAssertFalse(anything(containing: "No rights topics match", in: app).exists)
     }
 
     @MainActor
@@ -278,5 +282,23 @@ final class FilterTests: XCTestCase {
         XCTAssertTrue(app.buttons["learn.feature.check-in"].waitForExistence(timeout: 3))
         XCTAssertFalse(app.buttons["learn.feature.emergency-sos"].exists)
         XCTAssertTrue(element("filter.summary", in: app).exists, "An active search is stated")
+    }
+
+    @MainActor
+    func testIPhoneFeaturesSayWhenNothingMatchesAndClearRestoresTheList() {
+        let app = launch()
+        app.tabBars.buttons["Get help"].tap()
+        let link = app.buttons["help.features.link"]
+        app.reveal(link)
+        link.tap()
+        search("zzqx", in: app)
+        let clear = app.buttons["filter.noMatches.clear"]
+        app.reveal(clear)
+        XCTAssertTrue(element("filter.noMatches", in: app).exists, "Nothing matching must be said, never shown as an empty list")
+        clear.tap()
+        let feature = app.buttons["learn.feature.emergency-sos"]
+        app.reveal(feature)
+        XCTAssertTrue(feature.exists, "Clear must bring the feature list back")
+        XCTAssertFalse(element("filter.noMatches", in: app).exists)
     }
 }

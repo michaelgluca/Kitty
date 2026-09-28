@@ -95,23 +95,25 @@ struct SafetyFeaturesList: View {
 
 /// The destination of the Help tab's "iPhone safety features" link. Search only: the
 /// features are the same in every nation and for every situation.
+///
+/// Its caller always has a pack (`HelpSections` only reaches this screen `if let
+/// pack`), so `pack` is not optional here — an optional with no caller that passes
+/// `nil` is a branch nobody can exercise.
 struct SafetyFeaturesScreen: View {
-    let pack: ContentPack?
+    let pack: ContentPack
 
     @State private var filter = ScreenFilter()
 
     var body: some View {
-        let guides = pack.map { ContentFilter.guides($0.guides, matching: filter.criteria(nation: nil)) } ?? []
+        let guides = ContentFilter.guides(pack.guides, matching: filter.criteria(nation: nil))
         List {
-            if pack != nil {
-                if let summary = FilterCopy.summary(nation: nil, topics: [], query: filter.query) {
-                    Section { FilterSummary(text: summary) { filter.clear() } }
-                }
-                if guides.isEmpty {
-                    Section { NoMatchesView(scope: .everything) { filter.clear() } }
-                } else {
-                    SafetyFeaturesList(guides: guides)
-                }
+            if let summary = FilterCopy.summary(nation: nil, topics: [], query: filter.query) {
+                Section { FilterSummary(text: summary) { filter.clear() } }
+            }
+            if guides.isEmpty {
+                Section { NoMatchesView(scope: .features) { filter.clear() } }
+            } else {
+                SafetyFeaturesList(guides: guides)
             }
         }
         .navigationTitle(Text("learn.features.header", bundle: .module))
@@ -138,16 +140,14 @@ private struct TopicLabel: View {
 
 /// One rights topic: the law in plain English, then who has to look further and how.
 ///
-/// Read here rather than passed in, so the split between "here" and "elsewhere"
-/// follows the nation even when it is changed on another tab while this screen is
-/// open. `RootView` must inject the `NationPreference` this screen reads from the
-/// Environment.
+/// `NationPreference` is read here rather than passed in, so the split between "here"
+/// and "elsewhere" follows the nation even when it changes on another tab while this
+/// screen is open. `RootView` must inject it into the Environment.
 struct RightsTopicScreen: View {
 
     let topic: RightsTopic
 
     @Environment(NationPreference.self) private var nationPreference
-    @State private var showsElsewhere = false
 
     var body: some View {
         let points = Self.points(of: topic, for: nationPreference.nation)
@@ -167,8 +167,9 @@ struct RightsTopicScreen: View {
             if !points.elsewhere.isEmpty {
                 Section {
                     // Hidden until opened, never removed: someone may be about to move, or
-                    // be helping a friend in another nation.
-                    DisclosureGroup(isExpanded: $showsElsewhere) {
+                    // be helping a friend in another nation. `DisclosureGroup` starts
+                    // collapsed and manages its own expansion state, so none is kept here.
+                    DisclosureGroup {
                         ForEach(Array(points.elsewhere.enumerated()), id: \.offset) { _, point in
                             RightsPointRow(point: point)
                         }

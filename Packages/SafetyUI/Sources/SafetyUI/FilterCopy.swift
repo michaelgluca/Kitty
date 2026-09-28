@@ -43,6 +43,9 @@ enum NoMatchesScope: Sendable {
     case everything
     /// Learn: no rights topic matches, though iPhone features may.
     case rights
+    /// The iPhone features screen: search only, with no nation menu or topic chips to
+    /// mention clearing.
+    case features
 }
 
 enum FilterCopy {
@@ -95,8 +98,18 @@ enum FilterCopy {
 
     static func noMatchesTitle(_ scope: NoMatchesScope) -> String {
         switch scope {
-        case .everything: Strings.localized("filter.noMatches.title")
+        case .everything, .features: Strings.localized("filter.noMatches.title")
         case .rights: Strings.localized("filter.noMatches.rights")
+        }
+    }
+
+    /// The line under the title. Different on the iPhone features screen: it has no
+    /// nation menu or topic chips, so the line that tells you to clear them would be
+    /// describing controls that are not there.
+    static func noMatchesBody(_ scope: NoMatchesScope) -> String {
+        switch scope {
+        case .everything, .rights: Strings.localized("filter.noMatches.body")
+        case .features: Strings.localized("filter.noMatches.features.body")
         }
     }
 }

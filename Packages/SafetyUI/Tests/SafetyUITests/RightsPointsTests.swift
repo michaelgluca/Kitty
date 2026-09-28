@@ -16,8 +16,10 @@ struct RightsPointsTests {
     func scotland() throws {
         let t = try topic("what-counts-as-domestic-abuse")
         let points = RightsTopicScreen.points(of: t, for: .scotland)
+        #expect(!points.here.isEmpty)
         #expect(points.here.allSatisfy { $0.nations.contains(.scotland) })
         #expect(!points.elsewhere.isEmpty)
+        #expect(points.elsewhere.allSatisfy { !$0.nations.contains(.scotland) })
         #expect(points.here.count + points.elsewhere.count == t.points.count)
     }
 

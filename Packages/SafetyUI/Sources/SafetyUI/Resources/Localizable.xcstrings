@@ -2282,6 +2282,18 @@
           }
         }
       }
+    },
+    "filter.noMatches.features.body": {
+      "comment": "Shown under 'Nothing matches' on the iPhone features screen, which has no nation menu or topic chips — unlike filter.noMatches.body, said elsewhere.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clear the search to see every feature again."
+          }
+        }
+      }
     }
   }
 }

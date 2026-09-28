@@ -236,7 +236,7 @@ struct NoMatchesView: View {
             } icon: {
                 Image(systemName: "magnifyingglass")
             }
-            Text("filter.noMatches.body", bundle: .module)
+            Text(FilterCopy.noMatchesBody(scope))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)

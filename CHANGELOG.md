@@ -74,7 +74,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Get help and Learn can be narrowed to where you are (England, Wales, Scotland or Northern
   Ireland) and to what is happening, with eight topics, and searched offline. The ways to reach
   999 are never filtered, a line always says what is being shown with a Clear button, and a
-  search that finds nothing says so. The nation you choose is remembered on this device and
+  search that finds nothing says so, suggesting All of the UK when a nation is chosen. Search
+  finds help by the words people use as well as the words on each entry ("domestic violence"
+  finds every domestic abuse helpline), and searches every point of a rights topic ("Clare's Law",
+  "coercive control"). The nation you choose is remembered on this device and
   shared with the refuges list. It is never chosen for you: a nation found from your location is
   offered, not applied.
 - Rights topics show the points for your nation first, with the rest under "Different elsewhere

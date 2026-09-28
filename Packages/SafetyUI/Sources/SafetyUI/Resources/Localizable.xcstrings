@@ -2294,6 +2294,18 @@
           }
         }
       }
+    },
+    "refuges.nation.couldNotSaveElsewhere": {
+      "comment": "Refuges: a choice could not be saved, but it isn't the one shown on this screen — said without claiming anything about what is shown, unlike refuges.nation.notSaved.",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your choice of where you are could not be saved."
+          }
+        }
+      }
     }
   }
 }

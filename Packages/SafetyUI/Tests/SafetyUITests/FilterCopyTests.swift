@@ -54,6 +54,8 @@ struct FilterCopyTests {
         #expect(FilterCopy.problem(.couldNotRead).contains("all of the UK"))
         #expect(FilterCopy.problem(.couldNotSave).contains("all of the UK"))
         #expect(FilterCopy.refugesProblem(.couldNotSave).contains("this screen only"))
+        #expect(!FilterCopy.refugesCouldNotSaveElsewhere.contains("this screen only"),
+                "This wording must claim nothing about what is on screen")
         #expect(FilterCopy.nationName(nil) == "All of the UK")
     }
 
@@ -69,6 +71,7 @@ struct FilterCopyTests {
     @Test("Every filter key resolves", arguments: [
         "filter.nation.title", "filter.nation.all", "filter.nation.offer", "filter.nation.couldNotRead",
         "filter.nation.couldNotSave", "refuges.nation.couldNotRead", "refuges.nation.notSaved",
+        "refuges.nation.couldNotSaveElsewhere",
         "filter.topics.label", "topic.domesticAbuse", "topic.sexualViolence", "topic.stalkingAndHarassment",
         "topic.onlineAbuse", "topic.forcedMarriageAndFGM", "topic.housingAndMoney", "topic.work",
         "topic.reportingAndVictimsRights", "filter.search.prompt", "filter.summary", "filter.summary.separator",

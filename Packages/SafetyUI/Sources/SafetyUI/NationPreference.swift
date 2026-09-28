@@ -20,15 +20,23 @@ final class NationPreference {
         case couldNotSave
     }
 
+    /// A choice made this session that could not be saved. A plain `Nation?` cannot
+    /// represent this: a failed choice can itself be "all of the UK", which must be told
+    /// apart from no failed choice at all, or the two collapse to the same `nil`.
+    struct UnsavedChoice: Equatable, Sendable {
+        /// `nil` when the failed choice was "all of the UK" itself, not a nation.
+        let nation: Nation?
+    }
+
     /// `nil` means all of the UK.
     private(set) var nation: Nation?
     private(set) var problem: Problem?
-    /// A choice made this session that could not be saved. Get help and Learn never read
-    /// this — they fall back to all of the UK, as `problem` alone says to. Refuges needs a
-    /// nation to list, so it shows this instead, with its own wording, for as long as the
-    /// failure it belongs to is current. Never persisted, and never left over: cleared by
-    /// any later choice, saved or not, so it cannot reattach to an unrelated failure.
-    private(set) var unsavedChoice: Nation?
+    /// Get help and Learn never read this — they fall back to all of the UK, as `problem`
+    /// alone says to. Refuges needs a nation to list, so it shows the one named here
+    /// instead, with its own wording, for as long as the failure it belongs to is current.
+    /// Never persisted, and never left over: cleared by any later choice, saved or not, so
+    /// it cannot reattach to an unrelated failure.
+    private(set) var unsavedChoice: UnsavedChoice?
 
     private let store: any NationStoring
 
@@ -73,7 +81,7 @@ final class NationPreference {
         } catch {
             nation = nil
             problem = .couldNotSave
-            unsavedChoice = newNation
+            unsavedChoice = UnsavedChoice(nation: newNation)
         }
     }
 

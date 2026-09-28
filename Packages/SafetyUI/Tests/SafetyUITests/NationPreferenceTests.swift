@@ -6,6 +6,8 @@ import Testing
 
 @testable import SafetyUI
 
+private typealias UnsavedChoice = NationPreference.UnsavedChoice
+
 @MainActor
 @Suite("Saved nation")
 struct NationPreferenceTests {
@@ -125,7 +127,7 @@ struct NationPreferenceTests {
 
         store.failsToSave = true
         preference.choose(.wales)
-        #expect(preference.unsavedChoice == .wales)
+        #expect(preference.unsavedChoice == UnsavedChoice(nation: .wales))
         #expect(preference.problem == .couldNotSave)
 
         store.failsToSave = false
@@ -142,7 +144,7 @@ struct NationPreferenceTests {
 
         store.failsToSave = true
         preference.choose(.wales)
-        #expect(preference.unsavedChoice == .wales)
+        #expect(preference.unsavedChoice == UnsavedChoice(nation: .wales))
 
         store.failsToSave = false
         preference.choose(.scotland)
@@ -150,7 +152,21 @@ struct NationPreferenceTests {
 
         store.failsToSave = true
         preference.choose(.england)
-        #expect(preference.unsavedChoice == .england, "The new failure replaces the old, unrelated one")
+        #expect(preference.unsavedChoice == UnsavedChoice(nation: .england), "The new failure replaces the old, unrelated one")
         #expect(preference.problem == .couldNotSave)
+    }
+
+    @Test("A failed choice of 'all of the UK' is a real failure, not nothing: it must be told apart from no failure at all")
+    func unsavedChoiceOfAllOfTheUKIsNotNil() {
+        let store = TogglingNationStore()
+        let preference = loaded(store)
+        #expect(preference.unsavedChoice == nil, "Nothing has failed yet")
+
+        store.failsToSave = true
+        preference.choose(nil)
+        #expect(preference.problem == .couldNotSave)
+        #expect(preference.unsavedChoice == UnsavedChoice(nation: nil),
+                "A failed choice of all of the UK is recorded, not indistinguishable from no failure")
+        #expect(preference.unsavedChoice != nil)
     }
 }

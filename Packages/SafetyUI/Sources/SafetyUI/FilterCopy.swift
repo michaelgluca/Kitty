@@ -69,12 +69,20 @@ enum FilterCopy {
     }
 
     /// On Refuges, which needs a nation to list anything, so it says what it does instead.
+    /// Only for a save failure whose pick is the one Refuges is actually showing —
+    /// otherwise use `refugesCouldNotSaveElsewhere`, which claims nothing about what is
+    /// on screen.
     static func refugesProblem(_ problem: NationPreference.Problem) -> String {
         switch problem {
         case .couldNotRead: Strings.localized("refuges.nation.couldNotRead")
         case .couldNotSave: Strings.localized("refuges.nation.notSaved")
         }
     }
+
+    /// A save failure whose pick — a nation, or "all of the UK" itself — is not the one
+    /// Refuges is showing: naming it here would misattribute somebody else's screen, or a
+    /// choice that was never a nation to begin with, to this one.
+    static var refugesCouldNotSaveElsewhere: String { Strings.localized("refuges.nation.couldNotSaveElsewhere") }
 
     /// The line that says what the list is narrowed to: "Showing Scotland · Stalking &
     /// harassment". `nil` when nothing is narrowed. Topics follow chip order, not the

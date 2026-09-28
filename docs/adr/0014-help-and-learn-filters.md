@@ -75,7 +75,7 @@ wrong filter hides the line someone needed. These are the rules that keep that f
   summary, audience, and its topics' search terms, and combines the result with the nation and topics
   by AND (`FilterCriteria`). A query of only spaces or punctuation folds to no words, so it is no
   search at all — `FilterCopy.summary` and the no-matches state both check
-  `SearchText.words(in:).isEmpty`, not the raw string.
+  `SearchText.isSearch(_:)`, not the raw string.
 - **Search finds help by the words people type, not only the words an entry uses.** Each topic's
   search terms (`TopicCopy.searchTerms`) are its chip name plus a catalogue string of the other words
   people use for it (`topic.<id>.searchTerms`: "domestic violence, coercive control…" for Domestic

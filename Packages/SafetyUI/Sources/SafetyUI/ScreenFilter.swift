@@ -31,7 +31,7 @@ final class ScreenFilter {
     }
 
     /// Whether Clear would change anything.
-    var canClear: Bool { !topics.isEmpty || !SearchText.words(in: query).isEmpty }
+    var canClear: Bool { !topics.isEmpty || SearchText.isSearch(query) }
 
     func criteria(nation: Nation?) -> FilterCriteria {
         FilterCriteria(nation: nation, topics: topics, query: query)

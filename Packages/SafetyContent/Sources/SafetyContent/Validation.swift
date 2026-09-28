@@ -15,46 +15,35 @@ public extension ContentPack {
     func validate() throws {
         func fail(_ reason: String) -> ContentLoader.Failure { .malformed(reason) }
 
+        // Topic tags decide what a person sees under a chip, so an untagged item would
+        // vanish the moment any chip is chosen. A repeated tag would pass the pinned
+        // test's `Set` comparison unnoticed, and is never intentional. `general` means
+        // "for anyone in distress", which only a service can be.
+        func checkTags(_ tags: [Topic], of item: String, allowsGeneral: Bool) throws {
+            if tags.isEmpty { throw fail("\(item) has no topics") }
+            if Set(tags).count != tags.count { throw fail("\(item) has a duplicate topic") }
+            if !allowsGeneral, tags.contains(.general) { throw fail("\(item) is tagged general") }
+        }
+
         for topic in rights {
             if topic.points.isEmpty { throw fail("rights topic \(topic.id) has no points") }
             if topic.sources.isEmpty { throw fail("rights topic \(topic.id) has no sources") }
             if topic.points.contains(where: { $0.nations.isEmpty }) { throw fail("a point in \(topic.id) names no nation") }
+            try checkTags(topic.topics, of: "rights topic \(topic.id)", allowsGeneral: false)
         }
         for guide in guides where guide.steps.isEmpty {
             throw fail("guide \(guide.id) has no steps")
         }
-        for route in refuges where route.coverage == nil {
-            throw fail("refuge route \(route.id) names no nation")
+        // Refuge routes are listed by nation alone.
+        for route in refuges {
+            if route.coverage == nil { throw fail("refuge route \(route.id) names no nation") }
+            if !route.topics.isEmpty { throw fail("refuge route \(route.id) has topics; refuges are listed by nation only") }
         }
-        // A repeated tag would pass the pinned test's `Set` comparison unnoticed, and it
-        // is never intentional: rule (b) says add a missing tag, not double one already
-        // there. Refuges are excluded: they must carry none, which the check below rejects
-        // whether or not any of those are repeated.
-        for service in services where Set(service.topics).count != service.topics.count {
-            throw fail("service \(service.id) has a duplicate topic")
-        }
-        for route in reporting where Set(route.topics).count != route.topics.count {
-            throw fail("reporting route \(route.id) has a duplicate topic")
-        }
-        for topic in rights where Set(topic.topics).count != topic.topics.count {
-            throw fail("rights topic \(topic.id) has a duplicate topic")
-        }
-        // Topic tags decide what a person sees under a chip, so an untagged item would
-        // vanish the moment any chip is chosen. `general` means "for anyone in distress",
-        // which only a service can be. Refuge routes are listed by nation alone.
-        for service in services where service.topics.isEmpty {
-            throw fail("service \(service.id) has no topics")
+        for service in services {
+            try checkTags(service.topics, of: "service \(service.id)", allowsGeneral: true)
         }
         for route in reporting {
-            if route.topics.isEmpty { throw fail("reporting route \(route.id) has no topics") }
-            if route.topics.contains(.general) { throw fail("reporting route \(route.id) is tagged general") }
-        }
-        for topic in rights {
-            if topic.topics.isEmpty { throw fail("rights topic \(topic.id) has no topics") }
-            if topic.topics.contains(.general) { throw fail("rights topic \(topic.id) is tagged general") }
-        }
-        for route in refuges where !route.topics.isEmpty {
-            throw fail("refuge route \(route.id) has topics; refuges are listed by nation only")
+            try checkTags(route.topics, of: "reporting route \(route.id)", allowsGeneral: false)
         }
         for nation in Nation.allCases where refuges(for: nation).isEmpty {
             throw fail("no refuge route for \(nation.rawValue)")

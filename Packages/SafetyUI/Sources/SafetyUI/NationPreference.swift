@@ -23,6 +23,12 @@ final class NationPreference {
     /// `nil` means all of the UK.
     private(set) var nation: Nation?
     private(set) var problem: Problem?
+    /// A choice made this session that could not be saved. Get help and Learn never read
+    /// this — they fall back to all of the UK, as `problem` alone says to. Refuges needs a
+    /// nation to list, so it shows this instead, with its own wording, for as long as the
+    /// failure it belongs to is current. Never persisted, and never left over: cleared by
+    /// any later choice, saved or not, so it cannot reattach to an unrelated failure.
+    private(set) var unsavedChoice: Nation?
 
     private let store: any NationStoring
 
@@ -31,6 +37,7 @@ final class NationPreference {
     }
 
     func load() {
+        unsavedChoice = nil
         do {
             guard let id = try store.load() else {
                 nation = nil
@@ -54,15 +61,19 @@ final class NationPreference {
 
     /// Saves the person's choice. If it cannot be saved, the screens show all of the UK
     /// and say so, rather than the old nation (which is no longer what they want) or the
-    /// new one (which would silently be lost at the next launch).
+    /// new one (which would silently be lost at the next launch). Every call, whether it
+    /// succeeds or fails, replaces whatever `unsavedChoice` held before — a failure never
+    /// outlives itself by attaching to a later, unrelated one.
     func choose(_ newNation: Nation?) {
         do {
             try store.save(newNation?.rawValue)
             nation = newNation
             problem = nil
+            unsavedChoice = nil
         } catch {
             nation = nil
             problem = .couldNotSave
+            unsavedChoice = newNation
         }
     }
 

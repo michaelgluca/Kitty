@@ -1,4 +1,5 @@
 import SafetyContent
+import SafetyDomain
 import SafetyServices
 import SwiftUI
 
@@ -22,10 +23,6 @@ struct RefugesScreen: View {
     let detected: Nation?
 
     @State private var contact = ServiceContactActions()
-    /// A nation picked here that could not be saved. Get help and Learn fall back to all
-    /// of the UK when the store fails, but a refuge list needs a nation, so the person's
-    /// pick is kept for this screen, and the screen says it was not saved.
-    @State private var unsaved: Nation?
 
     init(pack: ContentPack?, detected: Nation?) {
         self.pack = pack
@@ -34,16 +31,12 @@ struct RefugesScreen: View {
 
     private var isTestMode: Bool { testMode?.isOn == true }
 
-    /// `unsaved` only while its warning is still current — otherwise a pick that
-    /// failed to save here would keep being shown after a later, successful save
-    /// made elsewhere (Get help or Learn) cleared the problem.
     private var current: NationShown {
-        let unsavedPick = nationPreference.problem == .couldNotSave ? unsaved : nil
-        return Self.nationShown(saved: nationPreference.nation, unsaved: unsavedPick, detected: detected)
+        Self.nationShown(saved: nationPreference.nation, unsaved: nationPreference.unsavedChoice, detected: detected)
     }
 
     var body: some View {
-        let current = self.current
+        let shown = current
         List {
             if let pack {
                 Section {
@@ -58,58 +51,8 @@ struct RefugesScreen: View {
                     Text("refuges.why.header", bundle: .module)
                 }
 
-                Section {
-                    Picker(selection: Binding(get: { current.nation }, set: pick)) {
-                        // Offered only until a nation is shown: once one is, choosing it
-                        // would silently do nothing (a nil pick is ignored, see `pick`),
-                        // and this screen's nation is never reset to all of the UK.
-                        if current.nation == nil {
-                            Text("refuges.nation.choose", bundle: .module).tag(Nation?.none)
-                        }
-                        ForEach(Nation.allCases) { nation in
-                            Text(NationCopy.name(nation)).tag(Optional(nation))
-                        }
-                    } label: {
-                        Text("refuges.nation.header", bundle: .module)
-                    }
-                    .accessibilityIdentifier("refuges.nation")
-
-                    if let problem = nationPreference.problem {
-                        NationProblemRow(text: FilterCopy.refugesProblem(problem))
-                    }
-                    // The person may have moved since choosing: offered, never applied.
-                    if let detected, nationPreference.isStale(detected: detected) {
-                        NationOfferButton(nation: detected) { pick(detected) }
-                    }
-                } footer: {
-                    if current.isFromLocation {
-                        Text("refuges.nation.fromLocation", bundle: .module)
-                    }
-                }
-
-                if let nation = current.nation {
-                    Section {
-                        ForEach(pack.refuges(for: nation)) { service in
-                            ServiceRow(
-                                service: service,
-                                now: services.time.now,
-                                onCall: { contact.requestCall($0, serviceName: $1, testMode: isTestMode) },
-                                onText: { number in
-                                    let texter = services.texter
-                                    let testMode = isTestMode
-                                    Task { await contact.text(number, testMode: testMode, using: texter) }
-                                },
-                                showsNoPhoneLine: false
-                            )
-                        }
-                    } header: {
-                        Text(String(format: Strings.localized("refuges.list.header"), NationCopy.name(nation)))
-                    }
-                } else {
-                    Section {
-                        Text("refuges.nation.prompt", bundle: .module).foregroundStyle(.secondary)
-                    }
-                }
+                RefugesNationSection(preference: nationPreference, detected: detected, shown: shown, pick: pick)
+                RefugeListSection(pack: pack, nation: shown.nation, now: services.time.now, onCall: call, onText: text)
             } else {
                 // The pack is bundled, so this should be unreachable in a real
                 // install — but reachable in DEBUG (-kitty.withoutContent), and a
@@ -123,14 +66,27 @@ struct RefugesScreen: View {
         .serviceContactDialogs(contact, dialler: services.dialler)
     }
 
-    /// Saves the pick for every screen. If it cannot be saved, it is kept for this one.
-    /// A `nil` pick is ignored: the picker offers one only until a nation is shown, but
-    /// this guards the same rule at the point where it matters, so choosing here can
-    /// never reset the nation Get help and Learn share back to all of the UK.
+    /// Saves the pick for every screen. If it cannot be saved, `NationPreference` keeps it
+    /// for this screen only. A `nil` pick is ignored: the picker offers one only until a
+    /// nation is shown, but this guards the same rule at the point where it matters, so
+    /// choosing here can never reset the nation Get help and Learn share back to all of
+    /// the UK.
     private func pick(_ nation: Nation?) {
         guard let nation else { return }
         nationPreference.choose(nation)
-        unsaved = nationPreference.problem == .couldNotSave ? nation : nil
+    }
+}
+
+extension RefugesScreen {
+
+    private func call(_ number: PhoneNumber, serviceName: String) {
+        contact.requestCall(number, serviceName: serviceName, testMode: isTestMode)
+    }
+
+    private func text(_ number: PhoneNumber) {
+        let texter = services.texter
+        let testMode = isTestMode
+        Task { await contact.text(number, testMode: testMode, using: texter) }
     }
 }
 
@@ -152,5 +108,89 @@ extension RefugesScreen {
         if let saved { return NationShown(nation: saved, isFromLocation: false) }
         if let unsaved { return NationShown(nation: unsaved, isFromLocation: false) }
         return NationShown(nation: detected, isFromLocation: detected != nil)
+    }
+
+    /// The problem row's text. The refuges-specific "could not be saved, so it is used on
+    /// this screen only" wording is true only when the nation this screen is actually
+    /// showing is the unsaved pick it would be talking about — otherwise (the failed pick
+    /// belongs to a different nation than the one shown, which `NationPreference` should
+    /// never produce, but this does not trust that silently) it says what Get help and
+    /// Learn say. A read failure has no such pick to misattribute, so it always uses the
+    /// refuges-specific wording.
+    static func problemText(_ problem: NationPreference.Problem, shown nation: Nation?, unsavedChoice: Nation?) -> String {
+        switch problem {
+        case .couldNotRead:
+            FilterCopy.refugesProblem(problem)
+        case .couldNotSave:
+            nation == unsavedChoice ? FilterCopy.refugesProblem(problem) : FilterCopy.problem(problem)
+        }
+    }
+}
+
+/// The nation picker, the store-failure row, and the detected-nation offer — extracted so
+/// `RefugesScreen.body` reads as one screen, matching `HelpScreen`'s `HelpSections`.
+private struct RefugesNationSection: View {
+
+    let preference: NationPreference
+    let detected: Nation?
+    let shown: NationShown
+    let pick: (Nation?) -> Void
+
+    var body: some View {
+        Section {
+            Picker(selection: Binding(get: { shown.nation }, set: { pick($0) })) {
+                // Offered only until a nation is shown: once one is, choosing it
+                // would silently do nothing (a nil pick is ignored, see `pick`),
+                // and this screen's nation is never reset to all of the UK.
+                if shown.nation == nil {
+                    Text("refuges.nation.choose", bundle: .module).tag(Nation?.none)
+                }
+                ForEach(Nation.allCases) { nation in
+                    Text(NationCopy.name(nation)).tag(Optional(nation))
+                }
+            } label: {
+                Text("refuges.nation.header", bundle: .module)
+            }
+            .accessibilityIdentifier("refuges.nation")
+
+            if let problem = preference.problem {
+                NationProblemRow(text: RefugesScreen.problemText(problem, shown: shown.nation, unsavedChoice: preference.unsavedChoice))
+            }
+            // The person may have moved since choosing: offered, never applied.
+            if let detected, preference.isStale(detected: detected) {
+                NationOfferButton(nation: detected) { pick(detected) }
+            }
+        } footer: {
+            if shown.isFromLocation {
+                Text("refuges.nation.fromLocation", bundle: .module)
+            }
+        }
+    }
+}
+
+/// The refuge list for the shown nation, or the prompt to choose one — extracted so
+/// `RefugesScreen.body` reads as one screen, matching `HelpScreen`'s `HelpSections`.
+private struct RefugeListSection: View {
+
+    let pack: ContentPack
+    let nation: Nation?
+    let now: Date
+    let onCall: (PhoneNumber, String) -> Void
+    let onText: (PhoneNumber) -> Void
+
+    var body: some View {
+        if let nation {
+            Section {
+                ForEach(pack.refuges(for: nation)) { service in
+                    ServiceRow(service: service, now: now, onCall: onCall, onText: onText, showsNoPhoneLine: false)
+                }
+            } header: {
+                Text(String(format: Strings.localized("refuges.list.header"), NationCopy.name(nation)))
+            }
+        } else {
+            Section {
+                Text("refuges.nation.prompt", bundle: .module).foregroundStyle(.secondary)
+            }
+        }
     }
 }

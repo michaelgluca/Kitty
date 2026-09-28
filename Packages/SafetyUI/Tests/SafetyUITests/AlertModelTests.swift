@@ -17,21 +17,16 @@ private func london(age: TimeInterval = 5) -> LocationFix {
 }
 
 /// A message composer that never answers until released. Proves the busy guard
-/// holds while `.composing`, not just while `.locating`. Same shape as
-/// `HangingLocationProvider`: a lock, stored continuations, and a `release`.
+/// holds while `.composing`, not just while `.locating`.
 private final class HangingMessageComposer: MessageComposing, @unchecked Sendable {
-    private let lock = NSLock()
-    private var released: MessageOutcome?
-    private var waiters: [CheckedContinuation<MessageOutcome, Never>] = []
-    private var _composedCount = 0
+    private let reply = Gate<MessageOutcome>()
+    @MainActor private(set) var composedCount = 0
 
     let canSendText: Bool
 
     init(canSendText: Bool = true) {
         self.canSendText = canSendText
     }
-
-    var composedCount: Int { lock.withLock { _composedCount } }
 
     @MainActor
     func compose(recipients: [PhoneNumber], body: String) async -> MessageOutcome {
@@ -40,25 +35,13 @@ private final class HangingMessageComposer: MessageComposing, @unchecked Sendabl
             recipients.allSatisfy(\.isReservedForDrama),
             "HangingMessageComposer was given a number outside Ofcom's reserved drama range: \(recipients.map(\.dialable))"
         )
-        lock.withLock { _composedCount += 1 }
-        return await withCheckedContinuation { continuation in
-            let answerNow = lock.withLock { () -> MessageOutcome? in
-                if let released { return released }
-                waiters.append(continuation)
-                return nil
-            }
-            if let answerNow { continuation.resume(returning: answerNow) }
-        }
+        composedCount += 1
+        return await reply.wait()
     }
 
     /// Lets every waiting caller finish, so a test leaves nothing hanging.
     func release(with outcome: MessageOutcome = .sent) {
-        let pending = lock.withLock { () -> [CheckedContinuation<MessageOutcome, Never>] in
-            released = outcome
-            defer { waiters = [] }
-            return waiters
-        }
-        pending.forEach { $0.resume(returning: outcome) }
+        reply.open(with: outcome)
     }
 }
 

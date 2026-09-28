@@ -71,10 +71,8 @@ public final class StubLocationProvider: LocationProviding, @unchecked Sendable 
 
 /// A location provider that ignores its own timeout and never answers until
 /// released. Proves callers do not trust a provider to keep its promise.
-public final class HangingLocationProvider: LocationProviding, @unchecked Sendable {
-    private let lock = NSLock()
-    private var released = false
-    private var waiters: [CheckedContinuation<LocationFix?, Never>] = []
+public struct HangingLocationProvider: LocationProviding {
+    private let fix = Gate<LocationFix?>()
 
     public init() {}
 
@@ -83,24 +81,12 @@ public final class HangingLocationProvider: LocationProviding, @unchecked Sendab
 
     @MainActor
     public func currentFix(timeout: Duration) async -> LocationFix? {
-        await withCheckedContinuation { continuation in
-            let answerNow = lock.withLock { () -> Bool in
-                if released { return true }
-                waiters.append(continuation)
-                return false
-            }
-            if answerNow { continuation.resume(returning: nil) }
-        }
+        await fix.wait()
     }
 
     /// Lets every waiting caller finish, so a test leaves nothing hanging.
     public func release() {
-        let pending = lock.withLock { () -> [CheckedContinuation<LocationFix?, Never>] in
-            released = true
-            defer { waiters = [] }
-            return waiters
-        }
-        pending.forEach { $0.resume(returning: nil) }
+        fix.open(with: nil)
     }
 }
 

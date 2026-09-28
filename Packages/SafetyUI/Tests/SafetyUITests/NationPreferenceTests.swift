@@ -14,20 +14,6 @@ struct NationPreferenceTests {
 
     private struct Broken: Error {}
 
-    /// Unlike `InMemoryNationStore`, whose save behaviour is fixed at `init`, this can
-    /// switch between choices — needed to prove `unsavedChoice` behaves correctly across
-    /// a fail, then a success, then another fail.
-    private final class TogglingNationStore: NationStoring, @unchecked Sendable {
-        var failsToSave = false
-        private var stored: String?
-
-        func load() throws -> String? { stored }
-        func save(_ nationID: String?) throws {
-            guard !failsToSave else { throw Broken() }
-            stored = nationID
-        }
-    }
-
     private func loaded(_ store: any NationStoring) -> NationPreference {
         let preference = NationPreference(store: store)
         preference.load()
@@ -119,37 +105,23 @@ struct NationPreferenceTests {
                 "With all of the UK chosen, the offer stays in the menu and is not flagged")
     }
 
-    @Test("A pick that could not be saved is remembered for Refuges, until a later choice succeeds")
-    func unsavedChoiceClearsOnSuccess() {
-        let store = TogglingNationStore()
+    @Test("A pick that could not be saved is remembered for Refuges until a later choice succeeds, and never outlives its own failure")
+    func unsavedChoiceDoesNotOutliveItsFailure() {
+        let store = InMemoryNationStore()
         let preference = loaded(store)
 
-        store.failsToSave = true
+        store.saveFailure = Broken()
         preference.choose(.wales)
         #expect(preference.unsavedChoice == UnsavedChoice(nation: .wales))
         #expect(preference.problem == .couldNotSave)
 
-        store.failsToSave = false
+        store.saveFailure = nil
         preference.choose(.scotland)
         #expect(preference.nation == .scotland)
         #expect(preference.problem == nil)
         #expect(preference.unsavedChoice == nil, "A later success must clear the earlier failed pick")
-    }
 
-    @Test("An unsaved pick never outlives its own failure: an unrelated later failure replaces it, rather than the old one resurfacing")
-    func unsavedChoiceDoesNotOutliveItsFailure() {
-        let store = TogglingNationStore()
-        let preference = loaded(store)
-
-        store.failsToSave = true
-        preference.choose(.wales)
-        #expect(preference.unsavedChoice == UnsavedChoice(nation: .wales))
-
-        store.failsToSave = false
-        preference.choose(.scotland)
-        #expect(preference.unsavedChoice == nil, "Cleared by the success in between")
-
-        store.failsToSave = true
+        store.saveFailure = Broken()
         preference.choose(.england)
         #expect(preference.unsavedChoice == UnsavedChoice(nation: .england), "The new failure replaces the old, unrelated one")
         #expect(preference.problem == .couldNotSave)
@@ -157,11 +129,11 @@ struct NationPreferenceTests {
 
     @Test("A failed choice of 'all of the UK' is a real failure, not nothing: it must be told apart from no failure at all")
     func unsavedChoiceOfAllOfTheUKIsNotNil() {
-        let store = TogglingNationStore()
+        let store = InMemoryNationStore()
         let preference = loaded(store)
         #expect(preference.unsavedChoice == nil, "Nothing has failed yet")
 
-        store.failsToSave = true
+        store.saveFailure = Broken()
         preference.choose(nil)
         #expect(preference.problem == .couldNotSave)
         #expect(preference.unsavedChoice == UnsavedChoice(nation: nil),

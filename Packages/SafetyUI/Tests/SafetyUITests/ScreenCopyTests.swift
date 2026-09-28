@@ -128,6 +128,6 @@ struct ScreenCopyTests {
         "settings.testMode.toggle", "settings.testMode.footer",
     ])
     func keysResolve(key: String) {
-        #expect(Strings.localized(String.LocalizationValue(key)) != key, "Missing catalogue entry: \(key)")
+        expectCatalogueEntry(key)
     }
 }

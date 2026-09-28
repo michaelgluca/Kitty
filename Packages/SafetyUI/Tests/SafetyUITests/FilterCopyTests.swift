@@ -109,6 +109,6 @@ struct FilterCopyTests {
         "filter.resultCount %lld",
     ])
     func keysResolve(key: String) {
-        #expect(Strings.localized(String.LocalizationValue(key)) != key, "Missing catalogue entry: \(key)")
+        expectCatalogueEntry(key)
     }
 }

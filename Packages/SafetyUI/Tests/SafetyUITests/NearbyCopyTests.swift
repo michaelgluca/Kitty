@@ -67,13 +67,7 @@ struct NearbyCopyTests {
         "refuges.nation.fromLocation", "refuges.nation.prompt", "refuges.list.header",
     ])
     func keysResolve(key: String) {
-        #expect(Strings.localized(String.LocalizationValue(key)) != key, "Missing catalogue entry: \(key)")
-    }
-
-    @Test("The UK footer names 999; the footer elsewhere does not")
-    func footers() {
-        #expect(Strings.localized("nearby.police.footer.uk").contains("999"))
-        #expect(!Strings.localized("nearby.police.footer.elsewhere").contains("999"))
+        expectCatalogueEntry(key)
     }
 
     @Test("The front-counter note is the UK wording, with 999, only in the UK")

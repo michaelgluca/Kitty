@@ -1,7 +1,6 @@
 import Foundation
 import SafetyContent
 import SafetyDomain
-import SafetyTesting
 import Testing
 
 @testable import SafetyUI
@@ -9,18 +8,18 @@ import Testing
 /// The search words the screens use, from the String Catalog.
 private let terms = TopicCopy.searchTerms
 
+/// All of the UK, then each nation.
+private let everyNationChoice: [Nation?] = [nil] + Nation.allCases.map(Optional.some)
+
 @MainActor
 @Suite("Screen filter and what each screen shows")
 struct ScreenFilterTests {
 
-    private func pack() throws -> ContentPack { try ContentLoader.loadUK() }
-
     @Test("The 999 routes are never filtered, whatever the nation, topics, search or region")
     func emergencyRoutesNeverFiltered() throws {
-        let p = try pack()
-        let nations: [Nation?] = [nil] + Nation.allCases.map(Optional.some)
+        let p = try ContentLoader.loadUK()
         let topicSets: [Set<Topic>] = [[]] + Topic.selectable.map { [$0] } + [Set(Topic.selectable)]
-        for nation in nations {
+        for nation in everyNationChoice {
             for topics in topicSets {
                 for query in ["", "stalking", "zzqx nothing matches this"] {
                     for region in [RegionStance.unitedKingdom, .elsewhere(countryCode: "US")] {
@@ -35,7 +34,7 @@ struct ScreenFilterTests {
 
     @Test("Nothing matching is reported even though the 999 routes are still on screen")
     func noMatchesDespite999() throws {
-        let p = try pack()
+        let p = try ContentLoader.loadUK()
         let content = HelpContent(pack: p, region: .unitedKingdom, criteria: FilterCriteria(query: "zzqx"), topicTerms: terms)
         #expect(content.hasNoMatches)
         #expect(content.resultCount == 0)
@@ -44,8 +43,8 @@ struct ScreenFilterTests {
 
     @Test("Clearing topics and search never leaves Get help or Learn empty, for any nation")
     func clearedIsNeverEmpty() throws {
-        let p = try pack()
-        for nation in [Nation?.none] + Nation.allCases.map(Optional.some) {
+        let p = try ContentLoader.loadUK()
+        for nation in everyNationChoice {
             let criteria = FilterCriteria(nation: nation)
             #expect(!HelpContent(pack: p, region: .unitedKingdom, criteria: criteria, topicTerms: terms).hasNoMatches,
                     "\(String(describing: nation))")
@@ -56,7 +55,7 @@ struct ScreenFilterTests {
 
     @Test("Scotland shows Scotland's helpline and not England's; help with no stated coverage stays")
     func scotland() throws {
-        let content = HelpContent(pack: try pack(), region: .unitedKingdom, criteria: FilterCriteria(nation: .scotland), topicTerms: terms)
+        let content = HelpContent(pack: try ContentLoader.loadUK(), region: .unitedKingdom, criteria: FilterCriteria(nation: .scotland), topicTerms: terms)
         let ids = content.services.map(\.id)
         #expect(ids.contains("scotland-domestic-abuse-forced-marriage-helpline"))
         #expect(!ids.contains("national-domestic-abuse-helpline"))
@@ -66,7 +65,7 @@ struct ScreenFilterTests {
     @Test("Outside the UK, crime reporting stays withheld whatever the filter (Guideline 1.7)")
     func reportingGateKept() throws {
         let content = HelpContent(
-            pack: try pack(), region: .elsewhere(countryCode: "US"),
+            pack: try ContentLoader.loadUK(), region: .elsewhere(countryCode: "US"),
             criteria: FilterCriteria(topics: [.reportingAndVictimsRights]), topicTerms: terms
         )
         #expect(content.reporting.isEmpty)
@@ -74,7 +73,7 @@ struct ScreenFilterTests {
 
     @Test("Learn's iPhone features ignore the nation and topics, and answer only to search")
     func guidesSearchOnly() throws {
-        let p = try pack()
+        let p = try ContentLoader.loadUK()
         #expect(LearnContent(pack: p, criteria: FilterCriteria(nation: .northernIreland, topics: [.work]), topicTerms: terms).guides == p.guides)
         let searched = LearnContent(pack: p, criteria: FilterCriteria(query: "crash detection"), topicTerms: terms)
         #expect(searched.guides.map(\.id) == ["crash-detection"])
@@ -93,17 +92,12 @@ struct ScreenFilterTests {
 
     @Test("Clear resets topics and search, and keeps the nation")
     func clearKeepsNation() {
-        let preference = NationPreference(store: InMemoryNationStore(saved: "scotland"))
-        preference.load()
         let filter = ScreenFilter()
         filter.toggle(.work)
         filter.query = "refuge"
         #expect(filter.canClear)
         filter.clear()
-        #expect(filter.topics.isEmpty)
-        #expect(filter.query.isEmpty)
-        #expect(preference.nation == .scotland)
-        #expect(filter.criteria(nation: preference.nation) == FilterCriteria(nation: .scotland))
+        #expect(filter.criteria(nation: .scotland) == FilterCriteria(nation: .scotland))
     }
 
     @Test("A search of only spaces or punctuation leaves nothing to clear")

@@ -64,7 +64,7 @@ public final class NearbyModel {
     nonisolated public static let resultMaximumAge: TimeInterval = 5 * 60
 
     /// None of `PlaceSearching`, `RouteFinding` or `AreaNaming` promise to return
-    /// (unlike `MessageComposing`): their Task 9 implementations are plain network
+    /// (unlike `MessageComposing`): their MapKit implementations are plain network
     /// calls with no timeout of their own. Every await on them is bounded by
     /// `firstResult(within:_:)`, the same helper the location fix uses, so a stalled
     /// call can never leave the busy guard locked with no way forward.
@@ -108,13 +108,12 @@ public final class NearbyModel {
     private let searchStepTimeout: Duration
     private let routeTimeout: Duration
 
-    /// Counts each `refresh()` call. Because `state` reaches a terminal value (and
-    /// so `isBusy` goes false) before the nation lookup's own tail is awaited, a new
-    /// refresh can start and finish while an old one is still only waiting on that
-    /// lookup. Captured per call as `myGeneration`, so a late-arriving nation from an
-    /// old refresh can be told apart from the current one and never overwrite it —
-    /// the same stale-nation defect this model exists to prevent, reached by a path
-    /// this restructuring opened up rather than by the location/lookup paths above.
+    /// Counts each `refresh()` call. `state` reaches a terminal value, and so `isBusy`
+    /// goes false, before the nation lookup is awaited, so a new refresh can start and
+    /// finish while an old one is still waiting on its lookup. Each refresh keeps its
+    /// own count, so a nation arriving late from an old refresh is told apart from the
+    /// current one and never overwrites it: a nation from a place the person has left
+    /// would otherwise be offered as where they are.
     private var refreshGeneration = 0
 
     public init(
@@ -140,78 +139,29 @@ public final class NearbyModel {
     public func refresh() async {
         guard !isBusy else { return }
         refreshGeneration += 1
-        let myGeneration = refreshGeneration
+        let generation = refreshGeneration
+        // However this refresh ends, a nation from an earlier reading is not offered as
+        // "from your location": the refuge list asks until this refresh finds its own.
+        detectedNation = nil
 
-        switch services.location.authorization {
-        case .notDetermined:
-            detectedNation = nil
-            return finish(.needsPermission)
-        case .denied:
-            detectedNation = nil
-            return finish(.locationOff)
-        case .restricted:
-            detectedNation = nil
-            return finish(.locationRestricted)
-        case .authorizedReducedAccuracy:
-            detectedNation = nil
-            return finish(.locationApproximate)
-        case .authorizedWhenInUse: break
+        if let blocked = Self.blockedState(for: services.location.authorization) {
+            return finish(blocked)
         }
 
         // The old result stays on screen, marked as updating, until this refresh
-        // lands or fails. Its nation does not: it came from the reading being
-        // replaced, so the refuge list asks rather than label it "from your location".
+        // lands or fails.
         if case let .found(found) = state { previousResult = found }
-        detectedNation = nil
         state = .locating
-        let location = services.location
-        let fixTimeout = locationTimeout
-        guard let fix = await firstResult(within: fixTimeout, { await location.currentFix(timeout: fixTimeout) }) else {
-            detectedNation = nil
-            return finish(.noLocation)
-        }
-        let origin = fix.coordinate
+        guard let fix = await locate() else { return finish(.noLocation) }
         let fixedAt = services.time.now
 
-        // Moves past "locating" the moment the fix arrives. The nation lookup never
-        // gates the station search — it runs alongside it — and it is only folded
-        // into `detectedNation` after the search has already produced its own state,
-        // so a slow lookup never delays the stations being shown.
+        // Moves past "locating" the moment the fix arrives. The nation lookup runs
+        // alongside the station search and is folded in only after the search has
+        // its own state, so a slow lookup never delays the stations being shown.
         state = .searching
-        let areas = services.areas
-        let places = services.places
-        let routes = services.routes
-        let nationTimeout = nationLookupTimeout
-        let stepTimeout = searchStepTimeout
-        let routeTimeoutValue = routeTimeout
-        async let areaLookup = firstResult(within: nationTimeout) { await areas.area(at: origin) }
-
-        for radius in Self.searchRadii {
-            switch await firstResult(within: stepTimeout, { await places.policeStations(near: origin, radiusMetres: radius) }) {
-            case nil, .failed:
-                // A timed-out search is reported exactly like one that could not run:
-                // a visible failure with a retry, never "nothing nearby".
-                finish(.searchFailed)
-                applyNation(await areaLookup, generation: myGeneration)
-                return
-            case .noneFound:
-                continue
-            case let .found(found):
-                let nearest = Array(found.nearestFirst(from: origin).prefix(Self.maximumStations))
-                guard let first = nearest.first else { continue }
-                let route: WalkingRoute? = switch await firstResult(within: routeTimeoutValue, { await routes.walkingRoute(from: origin, to: first) }) {
-                case .found(let route)?: route
-                // A missing or timed-out route never hides the station: it is shown
-                // without one.
-                case .failed?, nil: nil
-                }
-                finish(.found(Found(origin: origin, fixedAt: fixedAt, stations: nearest, route: route)))
-                applyNation(await areaLookup, generation: myGeneration)
-                return
-            }
-        }
-        finish(.noneFound(searchedMetres: Self.widestRadius))
-        applyNation(await areaLookup, generation: myGeneration)
+        async let area = lookUpArea(at: fix.coordinate)
+        finish(await searchStations(from: fix.coordinate, fixedAt: fixedAt))
+        applyNation(await area, generation: generation)
     }
 
     /// The only place the location prompt is shown from: an explicit button.
@@ -226,6 +176,59 @@ public final class NearbyModel {
         directionsFailed = await services.maps.openWalkingDirections(to: place) == false
     }
 
+    /// The state for a location permission that rules out a search, or `nil` when the
+    /// search can go ahead. None of them prompts: only `allowLocation()` does.
+    private static func blockedState(for authorization: LocationAuthorization) -> State? {
+        switch authorization {
+        case .notDetermined: .needsPermission
+        case .denied: .locationOff
+        case .restricted: .locationRestricted
+        case .authorizedReducedAccuracy: .locationApproximate
+        case .authorizedWhenInUse: nil
+        }
+    }
+
+    private func locate() async -> LocationFix? {
+        let location = services.location
+        let timeout = locationTimeout
+        return await firstResult(within: timeout) { await location.currentFix(timeout: timeout) }
+    }
+
+    private func lookUpArea(at coordinate: Coordinate) async -> GeocodedArea? {
+        let areas = services.areas
+        return await firstResult(within: nationLookupTimeout) { await areas.area(at: coordinate) }
+    }
+
+    /// Widens the search through `searchRadii` and returns the state it ends in.
+    private func searchStations(from origin: Coordinate, fixedAt: Date) async -> State {
+        let places = services.places
+        for radius in Self.searchRadii {
+            switch await firstResult(within: searchStepTimeout, { await places.policeStations(near: origin, radiusMetres: radius) }) {
+            case nil, .failed:
+                // A timed-out search is reported exactly like one that could not run:
+                // a visible failure with a retry, never "nothing nearby".
+                return .searchFailed
+            case .noneFound:
+                continue
+            case let .found(found):
+                let nearest = Array(found.nearestFirst(from: origin).prefix(Self.maximumStations))
+                guard let first = nearest.first else { continue }
+                let route = await walkingRoute(from: origin, to: first)
+                return .found(Found(origin: origin, fixedAt: fixedAt, stations: nearest, route: route))
+            }
+        }
+        return .noneFound(searchedMetres: Self.widestRadius)
+    }
+
+    /// A missing or timed-out route never hides the station: it is shown without one.
+    private func walkingRoute(from origin: Coordinate, to station: NearbyPlace) async -> WalkingRoute? {
+        let routes = services.routes
+        return switch await firstResult(within: routeTimeout, { await routes.walkingRoute(from: origin, to: station) }) {
+        case let .found(route)?: route
+        case .failed?, nil: nil
+        }
+    }
+
     /// Every state a refresh ends in goes through here, so the result it replaced
     /// never outlives it.
     private func finish(_ newState: State) {
@@ -238,8 +241,8 @@ public final class NearbyModel {
     /// out, found nothing, or the area is not a UK nation: `Nation(area:)` already
     /// returns `nil` for the last case, so a timed-out lookup is simply handled the
     /// same way — the refuge list asks rather than guessing.
-    private func applyNation(_ lookup: GeocodedArea?, generation myGeneration: Int) {
-        guard myGeneration == refreshGeneration else { return }
+    private func applyNation(_ lookup: GeocodedArea?, generation: Int) {
+        guard generation == refreshGeneration else { return }
         detectedNation = lookup.flatMap(Nation.init(area:))
     }
 }

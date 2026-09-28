@@ -2,22 +2,49 @@ import SafetyContent
 import SwiftUI
 
 /// The Learn tab: your rights, and the iPhone's own safety features. Entirely offline.
+///
+/// Rights can be narrowed by nation, topic and search; iPhone features by search only,
+/// because they are the same everywhere (ADR-0014).
+///
+/// `RootView` must inject the `NationPreference` and `NearbyModel` this screen reads
+/// from the Environment.
 struct LearnScreen: View {
 
+    @Environment(NationPreference.self) private var nationPreference
+    @Environment(NearbyModel.self) private var nearby
+
     let pack: ContentPack?
+
+    @State private var filter = ScreenFilter()
+
+    /// What the filter leaves. `nil` only without a pack.
+    private var content: LearnContent? {
+        pack.map {
+            LearnContent(pack: $0, criteria: filter.criteria(nation: nationPreference.nation), topicNames: TopicCopy.names)
+        }
+    }
 
     var body: some View {
         NavigationStack {
             List {
-                if let pack {
+                if let content {
+                    FilterSection(preference: nationPreference, detected: nearby.detectedNation, filter: filter)
+
                     Section {
-                        ForEach(pack.rights) { topic in
-                            NavigationLink {
-                                RightsTopicScreen(topic: topic)
-                            } label: {
-                                TopicLabel(title: topic.title, summary: topic.summary)
+                        if content.rights.isEmpty {
+                            // Said here even while iPhone features are still listed below:
+                            // they ignore topics, so without this a filter could leave a
+                            // screen of features and no word that no right matched.
+                            NoMatchesView(scope: content.hasNoMatches ? .everything : .rights) { filter.clear() }
+                        } else {
+                            ForEach(content.rights) { match in
+                                NavigationLink {
+                                    RightsTopicScreen(topic: match.topic)
+                                } label: {
+                                    TopicLabel(title: match.topic.title, summary: match.topic.summary)
+                                }
+                                .accessibilityIdentifier("learn.rights.\(match.topic.id)")
                             }
-                            .accessibilityIdentifier("learn.rights.\(topic.id)")
                         }
                     } header: {
                         Text("learn.rights.header", bundle: .module)
@@ -25,16 +52,16 @@ struct LearnScreen: View {
                         Text("learn.rights.footer", bundle: .module)
                     }
 
-                    SafetyFeaturesList(guides: pack.guides)
-                } else {
-                    ContentUnavailableView {
-                        Label { Text("learn.unavailable.title", bundle: .module) } icon: { Image(systemName: "exclamationmark.triangle.fill") }
-                    } description: {
-                        Text("learn.unavailable.body", bundle: .module)
+                    if !content.guides.isEmpty {
+                        SafetyFeaturesList(guides: content.guides)
                     }
+                } else {
+                    ContentUnavailableNotice(titleKey: "learn.unavailable.title", bodyKey: "learn.unavailable.body")
                 }
             }
             .navigationTitle(Text("tab.learn", bundle: .module))
+            .filterSearchable(text: $filter.query)
+            .announcesResultCount(content?.resultCount ?? 0)
         }
     }
 }
@@ -66,15 +93,30 @@ struct SafetyFeaturesList: View {
     }
 }
 
-/// The destination of the Help tab's "iPhone safety features" link.
+/// The destination of the Help tab's "iPhone safety features" link. Search only: the
+/// features are the same in every nation and for every situation.
 struct SafetyFeaturesScreen: View {
     let pack: ContentPack?
 
+    @State private var filter = ScreenFilter()
+
     var body: some View {
+        let guides = pack.map { ContentFilter.guides($0.guides, matching: filter.criteria(nation: nil)) } ?? []
         List {
-            if let pack { SafetyFeaturesList(guides: pack.guides) }
+            if pack != nil {
+                if let summary = FilterCopy.summary(nation: nil, topics: [], query: filter.query) {
+                    Section { FilterSummary(text: summary) { filter.clear() } }
+                }
+                if guides.isEmpty {
+                    Section { NoMatchesView(scope: .everything) { filter.clear() } }
+                } else {
+                    SafetyFeaturesList(guides: guides)
+                }
+            }
         }
         .navigationTitle(Text("learn.features.header", bundle: .module))
+        .filterSearchable(text: $filter.query)
+        .announcesResultCount(guides.count)
     }
 }
 
@@ -94,34 +136,47 @@ private struct TopicLabel: View {
     }
 }
 
+/// One rights topic: the law in plain English, then who has to look further and how.
+///
+/// Read here rather than passed in, so the split between "here" and "elsewhere"
+/// follows the nation even when it is changed on another tab while this screen is
+/// open. `RootView` must inject the `NationPreference` this screen reads from the
+/// Environment.
 struct RightsTopicScreen: View {
 
     let topic: RightsTopic
 
+    @Environment(NationPreference.self) private var nationPreference
+    @State private var showsElsewhere = false
+
     var body: some View {
+        let points = Self.points(of: topic, for: nationPreference.nation)
         List {
             Section {
                 Text(topic.summary).fixedSize(horizontal: false, vertical: true)
             }
 
             Section {
-                ForEach(Array(topic.points.enumerated()), id: \.offset) { _, point in
-                    VStack(alignment: .leading, spacing: Design.Space.tight) {
-                        Text(point.text).fixedSize(horizontal: false, vertical: true)
-                        // Always shown, never implied: the law differs by nation.
-                        Label {
-                            Text(NationCopy.appliesIn(point.nations))
-                        } icon: {
-                            Image(systemName: "mappin.and.ellipse")
-                        }
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                    }
-                    .padding(.vertical, 2)
-                    .accessibilityElement(children: .combine)
+                ForEach(Array(points.here.enumerated()), id: \.offset) { _, point in
+                    RightsPointRow(point: point)
                 }
             } header: {
                 Text("rights.whatTheLawSays", bundle: .module)
+            }
+
+            if !points.elsewhere.isEmpty {
+                Section {
+                    // Hidden until opened, never removed: someone may be about to move, or
+                    // be helping a friend in another nation.
+                    DisclosureGroup(isExpanded: $showsElsewhere) {
+                        ForEach(Array(points.elsewhere.enumerated()), id: \.offset) { _, point in
+                            RightsPointRow(point: point)
+                        }
+                    } label: {
+                        Text("rights.elsewhere", bundle: .module)
+                    }
+                    .accessibilityIdentifier("rights.elsewhere")
+                }
             }
 
             Section {
@@ -159,6 +214,40 @@ struct RightsTopicScreen: View {
             }
         }
         .navigationTitle(topic.title)
+    }
+}
+
+extension RightsTopicScreen {
+
+    /// The points to show first, and those collapsed under "Different elsewhere in the
+    /// UK". If the chosen nation has no point of its own here, every point is shown
+    /// rather than none. Learn never lists such a topic, but the nation can change on
+    /// another tab while this screen is open.
+    static func points(of topic: RightsTopic, for nation: Nation?) -> (here: [RightsPoint], elsewhere: [RightsPoint]) {
+        let match = ContentFilter.split(topic, for: nation)
+        return match.here.isEmpty ? (topic.points, []) : (match.here, match.elsewhere)
+    }
+}
+
+/// One point of law, with the nations it applies in. Always shown, never implied: the law
+/// differs by nation.
+private struct RightsPointRow: View {
+
+    let point: RightsPoint
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Design.Space.tight) {
+            Text(point.text).fixedSize(horizontal: false, vertical: true)
+            Label {
+                Text(NationCopy.appliesIn(point.nations))
+            } icon: {
+                Image(systemName: "mappin.and.ellipse")
+            }
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+        }
+        .padding(.vertical, 2)
+        .accessibilityElement(children: .combine)
     }
 }
 

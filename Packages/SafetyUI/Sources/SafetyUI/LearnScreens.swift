@@ -35,7 +35,7 @@ struct LearnScreen: View {
                             // Said here even while iPhone features are still listed below:
                             // they ignore topics, so without this a filter could leave a
                             // screen of features and no word that no right matched.
-                            NoMatchesView(scope: content.hasNoMatches ? .everything : .rights) { filter.clear() }
+                            NoMatchesView(scope: content.hasNoMatches ? .everything : .rights, nation: nationPreference.nation) { filter.clear() }
                         } else {
                             ForEach(content.rights) { match in
                                 NavigationLink {
@@ -111,7 +111,7 @@ struct SafetyFeaturesScreen: View {
                 Section { FilterSummary(text: summary) { filter.clear() } }
             }
             if guides.isEmpty {
-                Section { NoMatchesView(scope: .features) { filter.clear() } }
+                Section { NoMatchesView(scope: .features, nation: nil) { filter.clear() } }
             } else {
                 SafetyFeaturesList(guides: guides)
             }

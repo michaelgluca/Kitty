@@ -269,8 +269,32 @@ extension View {
     /// Tells VoiceOver how many results there are each time the number changes, so a
     /// person who cannot see the list knows what a chip or a word did.
     func announcesResultCount(_ count: Int) -> some View {
-        onChange(of: count) { _, newCount in
-            AccessibilityNotification.Announcement(FilterCopy.resultCount(newCount)).post()
-        }
+        modifier(ResultCountAnnouncement(count: count))
+    }
+}
+
+/// Announces only while its screen is on screen. The nation is shared, so choosing one
+/// changes the count on every tab, and tabs the person has visited stay alive: without
+/// this, Learn could announce its count over Get help's, or a screen pushed on top
+/// could be talked over by the one beneath it.
+struct ResultCountAnnouncement: ViewModifier {
+
+    let count: Int
+
+    @State private var isOnScreen = false
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear { isOnScreen = true }
+            .onDisappear { isOnScreen = false }
+            .onChange(of: count) { _, newCount in
+                if let announcement = Self.announcement(for: newCount, isOnScreen: isOnScreen) {
+                    AccessibilityNotification.Announcement(announcement).post()
+                }
+            }
+    }
+
+    static func announcement(for count: Int, isOnScreen: Bool) -> String? {
+        isOnScreen ? FilterCopy.resultCount(count) : nil
     }
 }

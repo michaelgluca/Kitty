@@ -57,7 +57,7 @@ final class AlertFlowTests: XCTestCase {
         return result
     }
 
-    // MARK: - US-1: alert my people
+    // MARK: - Alert my people
 
     @MainActor
     func testAlertWithNoContactsOpensSetup() {
@@ -127,7 +127,7 @@ final class AlertFlowTests: XCTestCase {
         XCTAssertGreaterThanOrEqual(done.frame.width, 44, "Done must clear the minimum tap target")
     }
 
-    /// Spec §7: the alert control is in thumb reach and one tap from launch at every
+    /// The alert control is in thumb reach and one tap from launch at every
     /// text size — never below the fold, and never pushed down by the Test Mode
     /// banner.
     @MainActor
@@ -223,7 +223,7 @@ final class AlertFlowTests: XCTestCase {
         XCTAssertFalse(app.buttons["Call Alice (07700 900001)"].exists)
     }
 
-    // MARK: - US-3: call for help
+    // MARK: - Call for help
 
     @MainActor
     func testEmergencyCallAlwaysAsksFirst() throws {
@@ -347,7 +347,7 @@ final class AlertFlowTests: XCTestCase {
         XCTAssertFalse(call.label.contains("Test Mode"), call.label)
     }
 
-    // MARK: - US-2: choose my people
+    // MARK: - Choose my people
 
     @MainActor
     func testRemovingAContactAsksFirstAndIsRemembered() {

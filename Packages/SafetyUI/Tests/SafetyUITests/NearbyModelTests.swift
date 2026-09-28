@@ -239,8 +239,8 @@ struct NearbyModelTests {
     func staleNationLookupNeverOverwritesANewerOne() async {
         // Wales is what the *second* refresh's own lookup answers, immediately.
         // Scotland is what the *first* refresh's lookup eventually answers, late —
-        // after the second refresh has already finished. If the fix in NearbyModel
-        // regressed, Scotland would land last and stomp Wales.
+        // after the second refresh has already finished. Without the refresh
+        // generation check, Scotland would land last and stomp Wales.
         let namer = SequencedAreaNamer(subsequent: GeocodedArea(countryCode: "GB", names: ["Wales"]))
         let places = StubPlaceSearch([.found([station("a", north: 400)]), .found([station("a", north: 400)])])
         var s = services(places: places)

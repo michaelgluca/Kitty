@@ -62,7 +62,8 @@ struct ContactsScreen: View {
 
                             // A visible, one-tap way to remove a contact, alongside the
                             // swipe action below — not everyone discovers swipe-to-delete,
-                            // and US-2 asks for a visible tap plus confirmation.
+                            // and removing someone who would be alerted deserves a visible
+                            // tap plus confirmation.
                             if model.canEdit {
                                 Button {
                                     pendingRemoval = contact

@@ -48,7 +48,7 @@ final class FilterTests: XCTestCase {
 
     // MARK: - Get help
 
-    /// The spec's hardest case: Test Mode on, a nation, a chip, and a search that matches
+    /// The hardest case: Test Mode on, a nation, a chip, and a search that matches
     /// nothing. The model test proves every combination; this proves the screen.
     @MainActor
     func test999AndTheTestModeBannerAreNeverFiltered() {
@@ -137,9 +137,10 @@ final class FilterTests: XCTestCase {
         )
     }
 
-    /// Review Focus 4. List rows are read top to bottom, so vertical order is reading
-    /// order. Shared by Get help and Learn, which must both read the same way: the
-    /// nation menu, then the chips, then the summary and Clear, then the results.
+    /// VoiceOver must reach the filter controls, and hear what is narrowed, before the
+    /// results. List rows are read top to bottom, so vertical order is reading order.
+    /// Shared by Get help and Learn, which must both read the same way: the nation
+    /// menu, then the chips, then the summary and Clear, then the results.
     @MainActor
     private func assertFilterControlsPrecedeResults(
         onTab tab: String, firstResult: (XCUIApplication) -> XCUIElement,
@@ -241,14 +242,14 @@ final class FilterTests: XCTestCase {
         XCTAssertTrue(englandAndWales.exists, "Other nations' points are hidden until opened, never removed")
     }
 
-    /// Review Focus 4, on Learn: the same reading order required on Get help must hold
-    /// here too — see `assertFilterControlsPrecedeResults`.
+    /// The same reading order required on Get help must hold on Learn too — see
+    /// `assertFilterControlsPrecedeResults`.
     @MainActor
     func testTheSummaryAndClearComeBeforeTheResultsOnLearn() {
         assertFilterControlsPrecedeResults(onTab: "Learn") { $0.buttons["learn.rights.what-counts-as-domestic-abuse"] }
     }
 
-    /// Review Focus 3: features ignore topics, so a filter can empty the rights section
+    /// Features ignore topics, so a filter can empty the rights section
     /// while features are still listed. The rights section must say so, with Clear,
     /// and Clear must actually restore the rights list.
     @MainActor
@@ -331,7 +332,7 @@ final class FilterTests: XCTestCase {
         XCTAssertTrue(summary.label.contains("Showing Wales"), "Changing it on Refuges must change it on Get help: \(summary.label)")
     }
 
-    /// Review Focus 1: a person who saved Scotland and is now in England (the stub's
+    /// A person who saved Scotland and is now in England (the stub's
     /// location) is offered England, visibly, and is never switched without a tap.
     @MainActor
     func testAMovedPersonIsOfferedTheNewNationButNeverSwitched() {

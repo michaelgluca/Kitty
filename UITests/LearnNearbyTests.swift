@@ -47,7 +47,7 @@ final class LearnNearbyTests: XCTestCase {
         feature.tap()
         XCTAssertTrue(app.staticTexts["Set it up"].waitForExistence(timeout: 3))
         // Each step's accessibility label comes from the "Step %1$d: %2$@" catalogue
-        // key (Task 7), not from a bare "1" static text: a bare Label whose icon is
+        // key, not from a bare "1" static text: a bare Label whose icon is
         // just the step number is not read out by VoiceOver on its own, and the
         // number is not exposed as its own static text once the label is set.
         XCTAssertTrue(anything(containing: "Step 1: ", in: app).waitForExistence(timeout: 3), "Steps are numbered")
@@ -63,7 +63,7 @@ final class LearnNearbyTests: XCTestCase {
         XCTAssertTrue(app.buttons["learn.feature.emergency-sos"].waitForExistence(timeout: 3))
     }
 
-    /// Task 8's review: with no content pack, the Learn tab must say so, never show
+    /// With no content pack, the Learn tab must say so, never show
     /// an empty list, and the Refuges link — reachable from Nearby regardless of the
     /// pack — must do the same rather than a silent empty screen.
     @MainActor
@@ -108,7 +108,7 @@ final class LearnNearbyTests: XCTestCase {
         XCTAssertTrue(app.staticTexts["nearby.counterNote"].label.contains("call 999"))
     }
 
-    /// Review Focus 4: the 999 line must be on screen when no station is shown, not
+    /// The 999 line must be on screen when no station is shown, not
     /// only beside one — the person with no signal is the one who most needs it.
     @MainActor
     func testFailedSearchStillSaysFrontCountersAreLimitedAndToCall999() {
@@ -144,7 +144,7 @@ final class LearnNearbyTests: XCTestCase {
         app.reveal(scotland)
         XCTAssertTrue(scotland.exists)
         XCTAssertFalse(app.staticTexts["National Domestic Abuse Helpline"].exists, "England's helpline must not be listed for Scotland")
-        // Task 8's review: the "chosen from your location" note is seeded from the
+        // The "chosen from your location" note is seeded from the
         // stub's location, not from whatever is picked afterwards — it must not
         // survive picking a different nation by hand.
         XCTAssertFalse(anything(containing: "Chosen from your location", in: app).exists,
@@ -159,7 +159,7 @@ final class LearnNearbyTests: XCTestCase {
         XCTAssertFalse(app.buttons["nearby.refuges"].exists)
     }
 
-    /// Review Focus: the refuge list must name the nation it is filtered to, and must
+    /// The refuge list must name the nation it is filtered to, and must
     /// never show an address, postcode or map pin — refuge addresses are kept
     /// confidential to protect people who fled to one (ADR-0013).
     @MainActor
@@ -183,8 +183,7 @@ final class LearnNearbyTests: XCTestCase {
         // Non-vacuous: a UK postcode dropped into any refuge text (the "why" note,
         // a summary, a name) would match this and fail the test. Proved by
         // temporarily injecting "SW1A 1AA" into refugeNote.text in
-        // uk-content.json, confirming this assertion failed, then reverting —
-        // see the Task 10 fix report.
+        // uk-content.json, confirming this assertion failed, then reverting.
         let postcodeShaped = app.staticTexts.matching(NSPredicate(
             format: "label MATCHES %@",
             "(?i).*\\b[A-Z]{1,2}[0-9][A-Z0-9]? ?[0-9][A-Z]{2}\\b.*"
@@ -199,7 +198,7 @@ final class LearnNearbyTests: XCTestCase {
         XCTAssertFalse(app.descendants(matching: .any)["nearby.map"].exists, "Refuges must never show a map")
     }
 
-    /// Task 8's review: Women's Aid having no phone line is worth saying on Get help,
+    /// Women's Aid having no phone line is worth saying on Get help,
     /// where someone might otherwise go looking for a number — but every phoneless
     /// entry in the refuge list is a directory or council route that was never a
     /// phone line, so the same sentence must never appear there.

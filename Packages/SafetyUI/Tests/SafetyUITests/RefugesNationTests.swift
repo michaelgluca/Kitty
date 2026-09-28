@@ -49,7 +49,7 @@ struct RefugesNationTests {
                 == FilterCopy.refugesProblem(.couldNotRead))
     }
 
-    /// Every combination the controller's ruling names: the failed pick itself may be
+    /// Every combination that could misattribute a failure: the failed pick itself may be
     /// "all of the UK" (`nil`), a nation that is what Refuges lists, or a nation that
     /// isn't — each crossed with a detected nation present or absent. `nationShown` is
     /// used to derive what Refuges would actually show for each combination, so this

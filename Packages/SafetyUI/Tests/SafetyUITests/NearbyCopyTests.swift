@@ -84,7 +84,7 @@ struct NearbyCopyTests {
         #expect(!NearbyCopy.counterNote(isUnitedKingdom: false).contains("999"))
     }
 
-    /// Review Focus 4: the person who most needs "call 999" is the one for whom no
+    /// The person who most needs "call 999" is the one for whom no
     /// station was found, the search could not run, or there was no fix — not only
     /// the one looking at a station.
     @Test("The front-counter and 999 note shows whenever a station was looked for, found or not", arguments: [

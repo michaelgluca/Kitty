@@ -181,9 +181,7 @@ struct ServiceRow: View {
     /// the people who use the largest text, so the layout changes rather than the
     /// text shrinking.
     private var headerLayout: AnyLayout {
-        typeSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: Design.Space.tight))
-            : AnyLayout(HStackLayout(alignment: .firstTextBaseline, spacing: Design.Space.tight))
+        Design.adaptiveStack(at: typeSize)
     }
 
     var body: some View {

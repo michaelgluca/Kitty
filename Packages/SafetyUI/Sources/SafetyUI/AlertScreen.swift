@@ -99,7 +99,7 @@ struct AlertScreen: View {
                     titleVisibility: .visible,
                     presenting: pendingEmergency
                 ) { plan in
-                    // Dials exactly what was confirmed — the plan captured at the tap.
+                    // Dials exactly what was confirmed: the `EmergencyCallPlan` captured at the tap.
                     Button(Strings.localized("help.callConfirm.confirm")) { dial(plan.dialled) }
                     Button(Strings.localized("help.callConfirm.cancel"), role: .cancel) {}
                 } message: { plan in

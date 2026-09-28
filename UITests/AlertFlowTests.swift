@@ -25,15 +25,9 @@ final class AlertFlowTests: XCTestCase {
     @MainActor
     private func launch(_ switches: [String] = [], locale: String = "en_GB") -> XCUIApplication {
         continueAfterFailure = false
-        let app = XCUIApplication()
-        app.launchArguments += ["-AppleLocale", locale, "-AppleLanguages", "(en)", "-kitty.uiTest", "-kitty.resetNation"] + switches
+        let app = XCUIApplication.forTesting(["-kitty.resetNation"] + switches, locale: locale)
         app.launch()
         return app
-    }
-
-    @MainActor
-    private func turnOnTestMode(in app: XCUIApplication) {
-        app.turnOnTestMode()
     }
 
     @MainActor
@@ -148,7 +142,7 @@ final class AlertFlowTests: XCTestCase {
         XCTAssertTrue(button.isHittable, "The alert button must be on screen at launch, without scrolling")
         XCTAssertGreaterThan(button.frame.midY, window.midY, "The alert button must sit in the lower half, in thumb reach")
 
-        turnOnTestMode(in: app)
+        app.turnOnTestMode()
         XCTAssertTrue(app.staticTexts["Test Mode is on"].waitForExistence(timeout: 3))
         XCTAssertTrue(button.isHittable, "The Test Mode banner must not push the alert button off screen")
         XCTAssertGreaterThan(button.frame.midY, window.midY, "The alert button must stay in thumb reach in Test Mode")
@@ -164,7 +158,7 @@ final class AlertFlowTests: XCTestCase {
         let callAlice = app.buttons["Call Alice (07700 900001)"]
         XCTAssertTrue(callAlice.exists, "The real alert must first offer a call")
 
-        turnOnTestMode(in: app)
+        app.turnOnTestMode()
         XCTAssertTrue(app.staticTexts["Test Mode is on"].waitForExistence(timeout: 3))
 
         XCTAssertTrue(result.waitForNonExistence(timeout: 3),
@@ -180,7 +174,7 @@ final class AlertFlowTests: XCTestCase {
     func testTurningTestModeOffClearsARehearsalsCallButtons() throws {
         try XCTSkipUnless(Self.onSimulator, "Relies on the simulator's Messages behaviour.")
         let app = launch(["-kitty.resetContacts", "-kitty.seedContacts"])
-        turnOnTestMode(in: app)
+        app.turnOnTestMode()
         XCTAssertTrue(app.staticTexts["Test Mode is on"].waitForExistence(timeout: 3))
 
         let result = try raiseToCannotText(in: app)
@@ -277,7 +271,7 @@ final class AlertFlowTests: XCTestCase {
     @MainActor
     func testTestModeIsUnmistakableAndNeverDials999() {
         let app = launch(["-kitty.resetContacts", "-kitty.seedContacts"])
-        turnOnTestMode(in: app)
+        app.turnOnTestMode()
         XCTAssertTrue(app.staticTexts["Test Mode is on"].waitForExistence(timeout: 3),
                       "Test Mode must be announced on the Alert tab")
 
@@ -303,7 +297,7 @@ final class AlertFlowTests: XCTestCase {
     @MainActor
     func testHelpScreenCallsUseTheStandInDuringTestMode() {
         let app = launch(["-kitty.resetContacts"])
-        turnOnTestMode(in: app)
+        app.turnOnTestMode()
         app.tabBars.buttons["Get help"].tap()
         XCTAssertTrue(app.staticTexts["Test Mode is on"].waitForExistence(timeout: 3),
                       "Test Mode must be announced on the Help tab")
@@ -320,7 +314,7 @@ final class AlertFlowTests: XCTestCase {
     @MainActor
     func testTestModeSwitchesOffWhenYouLeaveTheApp() {
         let app = launch(["-kitty.resetContacts"])
-        turnOnTestMode(in: app)
+        app.turnOnTestMode()
         XCTAssertTrue(app.staticTexts["Test Mode is on"].waitForExistence(timeout: 3))
 
         XCUIDevice.shared.press(.home)
@@ -336,7 +330,7 @@ final class AlertFlowTests: XCTestCase {
     @MainActor
     func testTurnOffTestModeButtonIsReadableAndWorks() {
         let app = launch(["-kitty.resetContacts"])
-        turnOnTestMode(in: app)
+        app.turnOnTestMode()
         XCTAssertTrue(app.staticTexts["Test Mode is on"].waitForExistence(timeout: 3))
 
         let turnOff = app.buttons["testMode.turnOff"]

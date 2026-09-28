@@ -117,6 +117,9 @@ struct NationProblemRow: View {
             Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
         }
         .font(.footnote)
+        // Otherwise VoiceOver reads the icon and the problem as two separate swipes
+        // inside what is really one line, the way FilterSummary's label does.
+        .accessibilityElement(children: .combine)
         .accessibilityIdentifier("filter.nation.problem")
     }
 }
@@ -202,9 +205,8 @@ struct FilterSummary: View {
                 Image(systemName: "line.3.horizontal.decrease.circle")
             }
             .font(.subheadline.weight(.medium))
-            // Otherwise the icon and the text surface as two elements sharing the same
-            // identifier, and anything that looks the summary up by it — as the UI
-            // tests do — finds an ambiguous match instead of one row.
+            // Otherwise VoiceOver reads the icon and the summary as two separate
+            // swipes inside what is really one line, the way NationMenu's label does.
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("filter.summary")
             if !typeSize.isAccessibilitySize { Spacer(minLength: Design.Space.tight) }

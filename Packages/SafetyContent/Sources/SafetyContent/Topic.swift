@@ -6,7 +6,7 @@ import Foundation
 /// topic nobody can choose. Tags are content claims, checked against the research like
 /// any fact; the whole table is pinned by `TopicTagTests`. The JSON is reused verbatim
 /// by the Kotlin port, and `ContentFilter` states the rules it follows.
-public enum Topic: String, Codable, Sendable, CaseIterable, Hashable {
+public enum Topic: String, Codable, Sendable, CaseIterable {
     case domesticAbuse
     case sexualViolence
     case stalkingAndHarassment

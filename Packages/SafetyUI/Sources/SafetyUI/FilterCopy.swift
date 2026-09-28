@@ -102,7 +102,7 @@ enum FilterCopy {
         if let nation { parts.append(NationCopy.name(nation)) }
         parts += Topic.selectable.filter(topics.contains).compactMap(TopicCopy.name)
         let typed = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !SearchText.words(in: typed).isEmpty {
+        if SearchText.isSearch(typed) {
             parts.append(String(format: Strings.localized("filter.summary.search"), typed))
         }
         guard !parts.isEmpty else { return nil }

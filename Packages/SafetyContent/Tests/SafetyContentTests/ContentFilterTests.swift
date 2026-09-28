@@ -201,8 +201,15 @@ struct SearchFilterTests {
         let item = try service("s")
         for query in ["", "   ", " & ", "\u{201C}\u{201D}", "…"] {
             #expect(FilterCriteria(query: query).words.isEmpty, "\(query)")
+            #expect(!SearchText.isSearch(query), "\(query)")
             #expect(finds(query, item), "\(query)")
         }
+    }
+
+    @Test("Anything with a word in it is a search")
+    func isSearch() {
+        #expect(SearchText.isSearch(" stalking "))
+        #expect(SearchText.isSearch("\u{201C}999\u{201D}"))
     }
 
     @Test("Words are folded, and trimmed of the punctuation around them")

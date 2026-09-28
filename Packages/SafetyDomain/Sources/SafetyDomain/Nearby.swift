@@ -103,7 +103,6 @@ public func readsAsPoliceStation(name: String?) -> Bool {
     if words.contains(where: PoliceStationName.rejectedWords.contains) { return false }
     if PoliceStationName.rejectedPhrases.contains(where: { spaced.contains(" \($0) ") }) { return false }
 
-    if lower.contains("police station") { return true }
     if lower.contains("police office") { return true }
     if lower.contains("psni") { return true }
     if lower.contains("police service of northern ireland") { return true }

@@ -16,7 +16,7 @@ public struct FilterCriteria: Sendable, Equatable {
     }
 
     /// The words searched for; empty when nothing searchable was typed.
-    public var words: [String] { SearchText.words(in: query) }
+    var words: [String] { SearchText.words(in: query) }
 }
 
 /// A rights topic as shown for a nation.

@@ -7,7 +7,7 @@ public enum SearchText {
     /// Fixed, never the device's. The same query must find the same help on every phone
     /// and in every test run, and a phone set to Turkish must not fold "I" to a dotless
     /// "ı" and miss "STALKING". The pack is written in British English.
-    public static let locale = Locale(identifier: "en_GB")
+    static let locale = Locale(identifier: "en_GB")
 
     /// Removed on both sides before comparing, so "women's" typed with iOS smart
     /// punctuation finds "Women's Aid", the pack's own curly apostrophes are found with a
@@ -15,7 +15,7 @@ public enum SearchText {
     static let apostrophes: Set<Character> = ["'", "\u{2018}", "\u{2019}", "\u{02BC}"]
 
     /// Case, diacritics and full-width forms folded; apostrophes removed.
-    public static func normalise(_ text: String) -> String {
+    static func normalise(_ text: String) -> String {
         text.folding(options: [.caseInsensitive, .diacriticInsensitive, .widthInsensitive], locale: locale)
             .filter { !apostrophes.contains($0) }
     }
@@ -23,11 +23,17 @@ public enum SearchText {
     /// The words to search for: normalised, split on whitespace, with the punctuation
     /// around each word trimmed (curly quotes like "\u{201C}stalking\u{201D}," become "stalking").
     /// Empty when nothing searchable was typed, which is then no search at all rather than a search for nothing.
-    public static func words(in query: String) -> [String] {
+    static func words(in query: String) -> [String] {
         normalise(query)
             .split(whereSeparator: { $0.isWhitespace })
             .map { $0.trimmingCharacters(in: .punctuationCharacters) }
             .filter { !$0.isEmpty }
+    }
+
+    /// Whether a query is a search at all. Only spaces or punctuation is not: it is no
+    /// search, rather than a search for nothing, and no screen should claim one.
+    public static func isSearch(_ query: String) -> Bool {
+        !words(in: query).isEmpty
     }
 
     /// Whether every word appears, as part of any word, in one of the fields. No words
